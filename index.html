@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI CommandOS V7 | 全功能终极版</title>
+    <title>AI CommandOS V8 | 大师级全量版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #09090b;
-            --sidebar: #18181b;
-            --card: #27272a;
-            --input-bg: #3f3f46;
-            --border: #52525b;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --text: #f4f4f5;
-            --text-mute: #a1a1aa;
+            --bg: #020617;
+            --sidebar: #0f172a;
+            --card: #1e293b;
+            --input-bg: #334155;
+            --border: #475569;
+            --accent: #3b82f6; /* Blue */
+            --accent-hover: #2563eb;
+            --text: #f8fafc;
+            --text-mute: #94a3b8;
             --gold: #f59e0b;
+            --success: #10b981;
         }
 
         * { box-sizing: border-box; outline: none; scrollbar-width: thin; }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
@@ -45,19 +46,20 @@
         .brand {
             font-size: 1.4rem;
             font-weight: 800;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             color: white;
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.5px;
         }
         .brand span { color: var(--accent); }
 
         .menu-category {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             color: var(--text-mute);
-            margin: 25px 0 10px 10px;
+            margin: 20px 0 10px 10px;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
@@ -102,17 +104,18 @@
         }
 
         .pro-btn {
-            background: linear-gradient(90deg, #f59e0b, #d97706);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
-            padding: 8px 20px;
+            padding: 8px 24px;
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
             border: none;
+            transition: 0.2s;
         }
-        .pro-btn:hover { transform: scale(1.05); }
+        .pro-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
 
         .content-area {
             flex: 1;
@@ -121,24 +124,25 @@
         }
 
         /* --- 面板与组件 --- */
-        .panel { display: none; max-width: 1100px; margin: 0 auto; padding-bottom: 50px; }
+        .panel { display: none; max-width: 1200px; margin: 0 auto; padding-bottom: 50px; }
         .panel.active { display: block; animation: fadeUp 0.3s ease; }
         @keyframes fadeUp { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
         .header-box { margin-bottom: 30px; }
-        .header-box h2 { margin: 0 0 10px 0; font-size: 1.8rem; }
-        .header-box p { color: var(--text-mute); margin: 0; }
+        .header-box h2 { margin: 0 0 10px 0; font-size: 2rem; font-weight: 700; }
+        .header-box p { color: var(--text-mute); margin: 0; font-size: 1rem; }
 
         .card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .input-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-mute); }
+        label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-mute); font-weight: 600; }
         
         input, textarea, select {
             width: 100%;
@@ -148,16 +152,26 @@
             padding: 14px;
             border-radius: 8px;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: 0.2s;
+            appearance: none; /* 去除原生样式 */
         }
-        input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent); ring: 2px solid var(--accent); }
 
         textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
 
+        /* 美化 Select 下拉箭头 */
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 0.65em auto;
+            padding-right: 2.5rem;
+        }
+
         .btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: var(--accent);
             color: white;
             border: none;
@@ -168,25 +182,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             transition: 0.2s;
         }
-        .btn:hover { background: var(--accent-hover); }
+        .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
         
         .btn-copy {
-            background: var(--input-bg); color: var(--text-mute); font-size: 0.8rem; padding: 8px 12px;
-            width: auto; display: inline-flex; margin-top: 10px;
+            background: var(--input-bg); color: var(--text-mute); font-size: 0.8rem; padding: 6px 12px;
+            width: auto; display: inline-flex; margin-top: 10px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border);
         }
         .btn-copy:hover { background: var(--border); color: white; }
 
         /* --- 布局网格 --- */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; } /* 更紧凑的卡片 */
         .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
 
         .matrix-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
-        .matrix-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; color: var(--text-mute); display: flex; justify-content: space-between;}
-        .matrix-textarea { height: 150px; font-size: 0.85rem; }
+        .matrix-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; color: var(--text-mute); display: flex; justify-content: space-between; align-items: center;}
+        .matrix-textarea { height: 150px; font-size: 0.85rem; font-family: monospace; }
 
         /* --- 库卡片 --- */
         .lib-card {
@@ -198,10 +212,19 @@
             transition: all 0.2s;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .lib-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .lib-icon { font-size: 1.5rem; color: var(--accent); margin-bottom: 15px; }
+        .lib-card:hover { transform: translateY(-5px); border-color: var(--accent); background: #263345; }
+        .lib-icon { 
+            font-size: 1.5rem; color: var(--accent); margin-bottom: 15px; 
+            background: rgba(59, 130, 246, 0.1); padding: 10px; border-radius: 10px;
+        }
+        .lib-card h4 { margin: 0 0 5px 0; color: var(--text); font-size: 1rem; }
+        .lib-card p { font-size: 0.8rem; color: var(--text-mute); margin: 0; line-height: 1.4; }
         
+        /* Pro 锁 */
         .locked { opacity: 0.7; }
         .locked::after {
             content: ""; position: absolute; inset: 0;
@@ -210,23 +233,24 @@
         .lock-icon {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 2; color: var(--gold); font-size: 2rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         /* --- 弹窗 --- */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             display: none; justify-content: center; align-items: center; z-index: 100;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
         .modal {
-            background: #18181b; padding: 40px; border-radius: 20px;
-            text-align: center; max-width: 400px; border: 1px solid var(--border);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: #0f172a; padding: 40px; border-radius: 24px;
+            text-align: center; max-width: 420px; width: 90%; border: 1px solid var(--border);
+            box-shadow: 0 25px 60px -12px rgba(0,0,0,0.7);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
-        .price { font-size: 2rem; font-weight: bold; margin: 20px 0; color: var(--gold); }
-        .price span { font-size: 1rem; color: var(--text-mute); font-weight: normal; color: var(--text); }
+        .price { font-size: 2.5rem; font-weight: 800; margin: 20px 0; color: var(--gold); }
+        .price span { font-size: 1rem; color: var(--text-mute); font-weight: normal; color: var(--text-mute); }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -234,7 +258,8 @@
             .menu-category, .brand { display: none; }
             .menu-item { white-space: nowrap; padding: 8px 12px; margin: 0 5px; background: var(--card); }
             .grid-2, .grid-4 { grid-template-columns: 1fr; }
-            .topbar { display: none; }
+            .topbar { padding: 0 15px; }
+            .content-area { padding: 15px; }
         }
     </style>
 </head>
@@ -242,19 +267,19 @@
 
     <div class="modal-overlay" id="proModal" onclick="closeModal(event)">
         <div class="modal">
-            <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 20px;"></i>
-            <h2>升级 Pro 会员</h2>
-            <p style="color: var(--text-mute);">解锁所有赚钱级指令库与高级生成模式</p>
+            <i class="fas fa-crown" style="font-size: 3.5rem; color: var(--gold); margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(245,158,11,0.4));"></i>
+            <h2 style="margin: 0; color: white;">升级 Pro 会员</h2>
+            <p style="color: var(--text-mute); margin-top: 10px;">解锁所有赚钱级指令库与高级生成模式</p>
             <div class="price">¥99 <span>/年</span></div>
-            <button class="btn" style="background: var(--gold); color: black;" onclick="window.open('https://your-payment-link.com')">立即解锁</button>
-            <p style="font-size: 0.8rem; color: var(--text-mute); margin-top: 15px; cursor: pointer;" onclick="document.getElementById('proModal').style.display='none'">残忍拒绝</p>
+            <button class="btn" style="background: var(--gold); color: black; font-weight: 800;" onclick="window.open('https://your-payment-link.com')">立即解锁</button>
+            <p style="font-size: 0.8rem; color: var(--text-mute); margin-top: 15px; cursor: pointer; text-decoration: underline;" onclick="document.getElementById('proModal').style.display='none'">下次一定</p>
         </div>
     </div>
 
     <nav class="sidebar">
-        <div class="brand"><i class="fas fa-terminal"></i> Command<span>OS</span></div>
+        <div class="brand"><i class="fas fa-cube"></i> Command<span>OS</span></div>
 
-        <div class="menu-category">核心功能</div>
+        <div class="menu-category">生成中心</div>
         <div class="menu-item active" onclick="nav('panel-stealth', this)">
             <i class="fas fa-user-secret"></i> <span>去 AI 拟人化</span>
         </div>
@@ -262,7 +287,7 @@
             <i class="fas fa-th-large"></i> <span>一键矩阵宣发</span>
         </div>
         <div class="menu-item" onclick="nav('panel-visual', this)">
-            <i class="fas fa-camera-retro"></i> <span>视觉导演 (MJ/Sora)</span>
+            <i class="fas fa-video"></i> <span>视觉导演 (MJ/Sora)</span>
         </div>
         <div class="menu-item" onclick="nav('panel-music', this)">
             <i class="fas fa-music"></i> <span>音乐制作 (Suno)</span>
@@ -279,8 +304,8 @@
 
     <div class="main">
         <div class="topbar">
-            <div style="color: var(--text-mute); font-size: 0.9rem;">Server Status: Online</div>
-            <button class="pro-btn" onclick="showPro()">👑 解锁全部功能</button>
+            <div style="color: var(--text-mute); font-size: 0.9rem; font-family: monospace;">STATUS: ONLINE | V8.0.0</div>
+            <button class="pro-btn" onclick="showPro()"><i class="fas fa-rocket"></i> 解锁全部功能</button>
         </div>
 
         <div class="content-area">
@@ -308,7 +333,7 @@
                     <button class="btn" onclick="genStealth()"><i class="fas fa-magic"></i> 执行拟人化改写</button>
                     
                     <div style="margin-top: 20px;">
-                        <textarea id="stealthResult" readonly placeholder="等待生成..." style="height: 200px; font-family: monospace; color: #10b981;"></textarea>
+                        <textarea id="stealthResult" readonly placeholder="等待生成..." style="height: 200px; font-family: monospace; color: var(--success);"></textarea>
                         <button class="btn-copy" onclick="copyID('stealthResult')">复制指令</button>
                     </div>
                 </div>
@@ -328,19 +353,19 @@
 
                     <div class="grid-4">
                         <div class="matrix-box">
-                            <div class="matrix-title">📕 小红书 (种草风) <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-xhs')"></i></div>
+                            <div class="matrix-title">📕 小红书 <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-xhs')"></i></div>
                             <textarea id="res-xhs" class="matrix-textarea" readonly></textarea>
                         </div>
                         <div class="matrix-box">
-                            <div class="matrix-title">🎵 抖音 (口播脚本) <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-dy')"></i></div>
+                            <div class="matrix-title">🎵 抖音脚本 <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-dy')"></i></div>
                             <textarea id="res-dy" class="matrix-textarea" readonly></textarea>
                         </div>
                         <div class="matrix-box">
-                            <div class="matrix-title">📝 公众号 (深度评测) <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-gzh')"></i></div>
+                            <div class="matrix-title">📝 公众号/文章 <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-gzh')"></i></div>
                             <textarea id="res-gzh" class="matrix-textarea" readonly></textarea>
                         </div>
                         <div class="matrix-box">
-                            <div class="matrix-title">🐦 Twitter (极简观点) <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-tw')"></i></div>
+                            <div class="matrix-title">🐦 Twitter Thread <i class="far fa-copy" style="cursor:pointer" onclick="copyID('res-tw')"></i></div>
                             <textarea id="res-tw" class="matrix-textarea" readonly></textarea>
                         </div>
                     </div>
@@ -350,7 +375,7 @@
             <div id="panel-visual" class="panel">
                 <div class="header-box">
                     <h2>🎬 视觉导演中心 (Visual Director)</h2>
-                    <p>Midjourney V6 + Runway/Sora 联合指令生成。</p>
+                    <p>大师级光影与运镜，支持 MJ V6 与 Sora 双模态生成。</p>
                 </div>
                 <div class="card">
                     <div class="input-group">
@@ -359,20 +384,47 @@
                     </div>
                     <div class="grid-2">
                         <div class="input-group">
-                            <label>运镜方式 (Camera)</label>
+                            <label>运镜方式 (Camera Movement)</label>
                             <select id="vidCam">
-                                <option value="Drone shot, aerial view">🚁 无人机航拍</option>
-                                <option value="Zoom in slowly">🔍 缓慢推近</option>
-                                <option value="FPV fast moving">🏎️ FPV 第一人称</option>
-                                <option value="Low angle shot">📐 低角度仰拍</option>
+                                <optgroup label="基础运镜">
+                                    <option value="Wide angle shot">Wide Angle (广角)</option>
+                                    <option value="Close up shot">Close Up (特写)</option>
+                                    <option value="Overhead drone shot">Drone/God's Eye (上帝视角)</option>
+                                </optgroup>
+                                <optgroup label="电影级运镜">
+                                    <option value="Dolly Zoom">Dolly Zoom (希区柯克变焦)</option>
+                                    <option value="Low angle tracking shot">Low Angle Tracking (低角度跟拍)</option>
+                                    <option value="POV shot">POV (第一人称)</option>
+                                    <option value="Dutch Angle">Dutch Angle (荷兰式倾斜)</option>
+                                    <option value="Arc Shot">Arc Shot (环绕拍摄)</option>
+                                </optgroup>
+                                <optgroup label="特殊镜头">
+                                    <option value="Fisheye lens style">Fisheye (鱼眼)</option>
+                                    <option value="Macro photography">Macro (微距)</option>
+                                    <option value="GoPro action camera style">GoPro (运动相机)</option>
+                                </optgroup>
                             </select>
                         </div>
                         <div class="input-group">
                             <label>光影风格 (Lighting)</label>
                             <select id="vidLight">
-                                <option value="Cinematic lighting, warm tones">🌅 电影质感 (暖色)</option>
-                                <option value="Neon lights, cyberpunk">🌃 赛博朋克 (霓虹)</option>
-                                <option value="Natural daylight, soft">☀️ 自然柔光</option>
+                                <optgroup label="自然光">
+                                    <option value="Golden Hour lighting">Golden Hour (黄金时刻)</option>
+                                    <option value="Blue Hour lighting">Blue Hour (蓝调时刻)</option>
+                                    <option value="Natural soft lighting">Natural Soft (自然柔光)</option>
+                                    <option value="Overcast lighting">Overcast (阴天漫射)</option>
+                                </optgroup>
+                                <optgroup label="艺术布光">
+                                    <option value="Rembrandt lighting">Rembrandt (伦勃朗光)</option>
+                                    <option value="Chiaroscuro lighting">Chiaroscuro (明暗对照)</option>
+                                    <option value="Volumetric lighting">Volumetric (体积光/丁达尔)</option>
+                                    <option value="Studio softbox lighting">Studio Softbox (影棚柔光)</option>
+                                </optgroup>
+                                <optgroup label="风格化">
+                                    <option value="Cyberpunk neon lighting">Cyberpunk Neon (赛博霓虹)</option>
+                                    <option value="Bioluminescent lighting">Bioluminescent (生物荧光)</option>
+                                    <option value="Silhouette lighting">Silhouette (剪影)</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -400,15 +452,38 @@
                 <div class="card">
                     <div class="grid-2">
                         <div class="input-group">
-                            <label>音乐风格 (Style)</label>
-                            <input type="text" id="musicStyle" placeholder="e.g. K-pop, Cyberpunk Phonk, Lo-fi Study">
+                            <label>音乐风格 (Genre/Style)</label>
+                            <select id="musicStyle">
+                                <optgroup label="流行与电子">
+                                    <option value="K-pop, upbeat, energetic">K-pop (韩流)</option>
+                                    <option value="J-pop, anime intro style">J-pop (动漫风)</option>
+                                    <option value="EDM, house, danceable">EDM/House (电子舞曲)</option>
+                                    <option value="Cyberpunk Phonk, aggressive">Phonk (赛博漂移)</option>
+                                    <option value="Synthwave, retro 80s">Synthwave (80s复古)</option>
+                                </optgroup>
+                                <optgroup label="氛围与学习">
+                                    <option value="Lo-fi Hip Hop, chill, study beats">Lo-fi (学习/放松)</option>
+                                    <option value="Ambient, ethereal, meditation">Ambient (冥想/空灵)</option>
+                                    <option value="Jazz, smooth, coffee shop vibe">Jazz (爵士/咖啡厅)</option>
+                                </optgroup>
+                                <optgroup label="叙事与史诗">
+                                    <option value="Epic Orchestral, cinematic, trailer">Epic Orchestral (史诗/预告片)</option>
+                                    <option value="Chinese Traditional, Guqin, atmospheric">古风/国潮 (Traditional Chinese)</option>
+                                    <option value="Ballad, piano, emotional">Ballad (抒情钢琴)</option>
+                                </optgroup>
+                                <optgroup label="硬核">
+                                    <option value="Heavy Metal, aggressive guitar">Heavy Metal (重金属)</option>
+                                    <option value="Trap, heavy bass, dark">Trap (陷阱说唱)</option>
+                                </optgroup>
+                            </select>
                         </div>
                         <div class="input-group">
-                            <label>歌曲结构</label>
+                            <label>歌曲结构 (Structure)</label>
                             <select id="musicStruct">
-                                <option value="pop">流行标配 (Verse-Chorus)</option>
+                                <option value="pop">流行标配 (Verse-Chorus-Bridge)</option>
                                 <option value="rap">说唱 Flow (Intro-Hook-Verse)</option>
                                 <option value="edm">电子舞曲 (Build-up-Drop)</option>
+                                <option value="short">短视频 BGM (30s Loop)</option>
                             </select>
                         </div>
                     </div>
@@ -428,25 +503,60 @@
             <div id="panel-library" class="panel">
                 <div class="header-box">
                     <h2>📚 爆款指令库</h2>
-                    <p>点击卡片直接使用，VIP 区域包含高价值变现指令。</p>
+                    <p>内置高频场景模板，点击即可一键复制使用。</p>
                 </div>
                 
-                <h3 style="color: var(--text-mute); font-size: 0.9rem; margin-bottom: 15px;">🔥 免费常用区</h3>
+                <h3 style="color: var(--text-mute); font-size: 0.9rem; margin-bottom: 15px;">🔥 免费常用区 (10款)</h3>
                 <div class="grid-3">
-                    <div class="lib-card" onclick="alert('已复制：Python代码解释指令！')">
+                    <div class="lib-card" onclick="copyLib('Python 解释器', '请作为 Google 首席架构师，解释这段代码的运行逻辑，并指出潜在的 Bug 和优化空间：\n[在此粘贴代码]')">
                         <div class="lib-icon"><i class="fab fa-python"></i></div>
                         <h4>代码解释器</h4>
-                        <p>让 AI 解释复杂的代码逻辑，并查错。</p>
+                        <p>解释复杂代码逻辑与查错。</p>
                     </div>
-                    <div class="lib-card" onclick="alert('已复制：周报生成指令！')">
+                    <div class="lib-card" onclick="copyLib('周报生成器', '请根据以下工作内容，使用 STAR 法则（情境-任务-行动-结果）写一份专业的周报，突出数据成果：\n[在此输入工作内容]')">
                         <div class="lib-icon"><i class="fas fa-file-alt"></i></div>
                         <h4>职场周报神器</h4>
-                        <p>基于 STAR 法则生成高大上周报。</p>
+                        <p>STAR 法则生成高大上周报。</p>
                     </div>
-                    <div class="lib-card" onclick="alert('已复制：雅思口语指令！')">
-                        <div class="lib-icon"><i class="fas fa-microphone"></i></div>
+                    <div class="lib-card" onclick="copyLib('Excel 公式', '我需要一个 Excel 公式来实现：[描述需求，如：对比A列和B列，如果相同则在C列显示是，否则显示否]。请给出公式并解释。')">
+                        <div class="lib-icon"><i class="fas fa-table"></i></div>
+                        <h4>Excel 公式生成</h4>
+                        <p>不再需要背复杂的函数。</p>
+                    </div>
+                    <div class="lib-card" onclick="copyLib('雅思口语', '请作为雅思前任考官，与我进行 Part 2 的模拟对练。主题是：[输入话题]。请在每次回答后指出我的语法错误并提供更高分的表达。')">
+                        <div class="lib-icon"><i class="fas fa-language"></i></div>
                         <h4>雅思口语教练</h4>
-                        <p>模拟考官进行 1 对 1 对话。</p>
+                        <p>模拟考官 1 对 1 纠错。</p>
+                    </div>
+                    <div class="lib-card" onclick="copyLib('中英翻译', '请将以下中文翻译成地道的英文。要求：不要使用机翻痕迹，使用母语者的习惯用语，并提供两个版本（正式版/口语版）：\n[输入中文]')">
+                        <div class="lib-icon"><i class="fas fa-globe-americas"></i></div>
+                        <h4>信达雅翻译</h4>
+                        <p>生成正式与口语两个版本。</p>
+                    </div>
+                    <div class="lib-card" onclick="copyLib('健身计划', '我是[性别]，[年龄]，体重[kg]，目标是[增肌/减脂]。请为我制定一份为期一周的详细健身计划和饮食建议，考虑我只能在[在家/健身房]运动。')">
+                        <div class="lib-icon"><i class="fas fa-dumbbell"></i></div>
+                        <h4>私人健身教练</h4>
+                        <p>定制饮食与运动计划。</p>
+                    </div>
+                    <div class="lib-card" onclick="copyLib('解梦师', '我做了一个梦：[描述梦境]。请根据荣格心理学和弗洛伊德理论，分析这个梦背后的潜意识含义和心理暗示。')">
+                        <div class="lib-icon"><i class="fas fa-moon"></i></div>
+                        <h4>AI 解梦师</h4>
+                        <p>荣格心理学分析梦境。</p>
+                    </div>
+                    <div class="lib-card" onclick="copyLib('高情商回复', '对方说：[输入对方的话]。现在的场景是[描述场景，如相亲/吵架]。请帮我生成 3 个不同风格的高情商回复（幽默/诚恳/拒绝）。')">
+                        <div class="lib-icon"><i class="fas fa-comment-dots"></i></div>
+                        <h4>高情商嘴替</h4>
+                        <p>应对各种尴尬聊天场景。</p>
+                    </div>
+                    <div class="lib-card" onclick="copyLib('食谱生成', '我冰箱里只有：[输入食材]。请帮我设计 3 道简单美味的菜谱，包含详细的烹饪步骤。')">
+                        <div class="lib-icon"><i class="fas fa-utensils"></i></div>
+                        <h4>冰箱大厨</h4>
+                        <p>根据现有食材生成菜谱。</p>
+                    </div>
+                    <div class="lib-card" onclick="copyLib('面试模拟', '我正在面试[职位名称]。请作为面试官，问我 5 个该职位最常见的刁钻问题，并在我回答后给予点评。')">
+                        <div class="lib-icon"><i class="fas fa-briefcase"></i></div>
+                        <h4>面试模拟官</h4>
+                        <p>针对特定职位的压力面。</p>
                     </div>
                 </div>
 
@@ -505,6 +615,19 @@
             alert('复制成功！');
         }
 
+        // 4. 库复制逻辑 (增强版)
+        function copyLib(title, content) {
+            // 创建临时文本域来复制
+            const tempInput = document.createElement("textarea");
+            tempInput.value = content;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            alert(`【${title}】指令已复制！\n你可以直接去 AI 对话框粘贴了。`);
+        }
+
         // --- 生成算法 ---
 
         // A. 拟人化生成
@@ -527,20 +650,13 @@
         function genMatrix() {
             const topic = document.getElementById('matrixTopic').value;
             
-            // 小红书
             document.getElementById('res-xhs').value = `角色：小红书爆款博主\n任务：为"${topic}"写笔记。\n要求：\n1. 标题带Emoji，吸引眼球。\n2. 正文分点，语气像闺蜜聊天。\n3. 结尾互动求评论。`;
-            
-            // 抖音
             document.getElementById('res-dy').value = `角色：短视频编剧\n任务：为"${topic}"写30秒脚本。\n结构：\n1. [0-3s] 黄金钩子\n2. [3-15s] 痛点展示\n3. [15-30s] 解决方案与反转`;
-            
-            // 公众号
             document.getElementById('res-gzh').value = `角色：资深主编\n任务：为"${topic}"写深度评测。\n要求：\n1. 逻辑严密，数据支撑。\n2. 结构：背景-分析-结论。\n3. 语气专业客观。`;
-            
-            // 推特
             document.getElementById('res-tw').value = `角色：Twitter 思想家\n任务：把"${topic}"拆解为 Thread。\n要求：\n1. 极简主义，每条不超过140字。\n2. 观点犀利，引发思考。`;
         }
 
-        // C. 视觉生成
+        // C. 视觉生成 (支持新参数)
         function genVisual() {
             const sub = document.getElementById('visualInput').value;
             const cam = document.getElementById('vidCam').value;
@@ -553,7 +669,7 @@
             document.getElementById('res-vid').value = `(Runway/Sora): ${sub}, ${cam}, ${light}, cinematic motion, 4k, high quality --motion 5`;
         }
 
-        // D. 音乐生成
+        // D. 音乐生成 (支持新参数)
         function genMusic() {
             const style = document.getElementById('musicStyle').value;
             const topic = document.getElementById('musicTopic').value;
@@ -565,6 +681,8 @@
                 lyrics += `[Intro]\n(Melodic build up)\n\n[Verse 1]\n(Sets the scene)\n\n[Chorus]\n(Catchy hook)\n\n[Verse 2]\n\n[Bridge]\n\n[Outro]`;
             } else if (struct === 'rap') {
                 lyrics += `[Intro]\n(Beat drops)\n\n[Hook]\n(Repetitive phrase)\n\n[Verse 1]\n(Fast flow)\n\n[Break]\n\n[Verse 2]\n\n[Outro]`;
+            } else if (struct === 'short') {
+                lyrics += `[Intro]\n(Catchy melody)\n\n[Main Loop]\n(High energy, 15 seconds)\n\n[Outro]\n(Sudden stop)`;
             } else {
                 lyrics += `[Intro]\n(Synth pad)\n\n[Build-up]\n\n[Drop]\n(Bass heavy)\n\n[Outro]`;
             }
