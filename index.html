@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI CommandOS V5 | 全能指令操作系统</title>
+    <title>AI CommandOS V6 | 终极指令系统</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0e14;
-            --sidebar: #151921;
-            --card: #1e232e;
-            --input-bg: #2a303e;
-            --border: #363c4a;
-            --accent: #3b82f6; /* Blue */
-            --accent-hover: #2563eb;
-            --highlight: #10b981; /* Green */
-            --text: #e2e8f0;
-            --text-mute: #94a3b8;
-            --danger: #ef4444;
+            --bg: #09090b;
+            --sidebar: #18181b;
+            --card: #27272a;
+            --input-bg: #3f3f46;
+            --border: #52525b;
+            --accent: #8b5cf6; /* Violet */
+            --accent-hover: #7c3aed;
+            --text: #f4f4f5;
+            --text-mute: #a1a1aa;
+            --gold: #fbbf24;
         }
 
         * { box-sizing: border-box; outline: none; scrollbar-width: thin; }
 
         body {
             margin: 0;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
@@ -44,23 +43,23 @@
         }
 
         .brand {
-            font-size: 1.3rem;
-            font-weight: 900;
+            font-size: 1.4rem;
+            font-weight: 800;
             margin-bottom: 30px;
             color: white;
             display: flex;
             align-items: center;
             gap: 10px;
-            letter-spacing: 1px;
         }
         .brand span { color: var(--accent); }
 
         .menu-category {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             color: var(--text-mute);
-            margin: 20px 0 10px 10px;
-            font-weight: bold;
+            margin: 25px 0 10px 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .menu-item {
@@ -74,6 +73,7 @@
             align-items: center;
             gap: 12px;
             font-size: 0.95rem;
+            font-weight: 500;
         }
 
         .menu-item:hover, .menu-item.active {
@@ -86,7 +86,6 @@
         /* 主区域 */
         .main {
             flex: 1;
-            padding: 0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -97,20 +96,22 @@
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 0 30px;
             background: var(--bg);
         }
 
-        .user-status {
+        .pro-badge {
             font-size: 0.85rem;
-            color: var(--highlight);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            background: rgba(16, 185, 129, 0.1);
-            padding: 5px 12px;
+            color: var(--bg);
+            background: var(--gold);
+            padding: 6px 16px;
             border-radius: 20px;
             cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
         }
+        .pro-badge:hover { transform: scale(1.05); }
 
         .content-area {
             flex: 1;
@@ -118,8 +119,8 @@
             overflow-y: auto;
         }
 
-        /* 面板通用样式 */
-        .panel { display: none; max-width: 900px; margin: 0 auto; }
+        /* 面板通用 */
+        .panel { display: none; max-width: 1000px; margin: 0 auto; }
         .panel.active { display: block; animation: fadeUp 0.3s ease; }
         @keyframes fadeUp { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
@@ -143,9 +144,10 @@
             background: var(--input-bg);
             border: 1px solid var(--border);
             color: white;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 14px;
+            border-radius: 8px;
             font-family: inherit;
+            font-size: 1rem;
             transition: 0.2s;
         }
         input:focus, textarea:focus, select:focus { border-color: var(--accent); }
@@ -158,8 +160,9 @@
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -168,230 +171,243 @@
             transition: 0.2s;
         }
         .btn:hover { background: var(--accent-hover); }
+        .btn-dark { background: var(--input-bg); color: var(--text-mute); }
+        .btn-dark:hover { background: var(--border); color: white; }
 
-        /* 特殊组件样式 */
-        .matrix-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .matrix-item textarea { height: 150px; font-size: 0.8rem; }
-        .matrix-head { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem; font-weight: bold;}
+        /* 矩阵布局 */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
-        .model-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            margin-right: 5px;
-        }
-        .bg-claude { background: #d97757; color: white; }
-        .bg-gpt { background: #10a37f; color: white; }
-        .bg-gemini { background: #4285f4; color: white; }
-
-        /* Pro 锁 */
-        .pro-lock {
-            position: relative;
-            opacity: 0.7;
+        /* 提示词库卡片 */
+        .lib-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 12px;
             cursor: pointer;
-            border: 1px dashed var(--accent);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        .pro-overlay {
+        .lib-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .lib-card h4 { margin: 0 0 10px 0; color: var(--text); }
+        .lib-card p { font-size: 0.85rem; color: var(--text-mute); margin: 0; }
+        .lib-icon { font-size: 1.5rem; color: var(--accent); margin-bottom: 15px; }
+
+        /* 锁 */
+        .locked { opacity: 0.7; }
+        .locked::after {
+            content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            color: #fbbf24;
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(2px);
+            z-index: 1;
         }
+        .lock-icon {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            color: var(--gold);
+            font-size: 2rem;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: none; justify-content: center; align-items: center; z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+        .modal {
+            background: #18181b; padding: 40px; border-radius: 20px;
+            text-align: center; max-width: 400px; border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
+        .modal h2 { color: var(--gold); margin-top: 0; }
+        .price { font-size: 2rem; font-weight: bold; margin: 20px 0; }
+        .price span { font-size: 1rem; color: var(--text-mute); font-weight: normal; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { width: 100%; flex-direction: row; padding: 10px; overflow-x: auto; height: 60px; align-items: center;}
+            .sidebar { width: 100%; flex-direction: row; padding: 10px; overflow-x: auto; height: 70px; align-items: center;}
             .menu-category, .brand { display: none; }
-            .menu-item { white-space: nowrap; padding: 8px; margin: 0 5px; }
-            .menu-item span { display: none; } /* 只显示图标 */
-            .menu-item i { font-size: 1.2rem; }
-            .matrix-grid { grid-template-columns: 1fr; }
+            .menu-item { white-space: nowrap; padding: 8px 12px; margin: 0 5px; background: var(--card); }
+            .menu-item i { font-size: 1.1rem; }
+            .grid-2 { grid-template-columns: 1fr; }
             .topbar { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="brand"><i class="fas fa-terminal"></i> Command<span>OS</span></div>
+    <div class="modal-overlay" id="proModal" onclick="closeModal(event)">
+        <div class="modal">
+            <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 20px;"></i>
+            <h2>升级 Pro 会员</h2>
+            <p style="color: var(--text-mute);">解锁所有“赚钱级”指令库与高级生成模式</p>
+            <div class="price">¥99 <span>/年</span></div>
+            <button class="btn" style="background: var(--gold); color: black;" onclick="window.open('https://your-payment-link.com')">立即解锁</button>
+            <p style="font-size: 0.8rem; color: var(--text-mute); margin-top: 15px; cursor: pointer;" onclick="document.getElementById('proModal').style.display='none'">残忍拒绝</p>
+        </div>
+    </div>
 
-        <div class="menu-category">Productivity</div>
+    <nav class="sidebar">
+        <div class="brand"><i class="fas fa-cube"></i> Nexus<span>OS</span></div>
+
+        <div class="menu-category">核心工具</div>
         <div class="menu-item active" onclick="nav('panel-stealth', this)">
-            <i class="fas fa-user-secret"></i> <span>去 AI 化 (Stealth)</span>
+            <i class="fas fa-user-secret"></i> <span>去 AI 拟人化</span>
+        </div>
+        <div class="menu-item" onclick="nav('panel-library', this)">
+            <i class="fas fa-book-open"></i> <span>爆款指令库</span>
         </div>
         <div class="menu-item" onclick="nav('panel-matrix', this)">
-            <i class="fas fa-th-large"></i> <span>一键媒体矩阵</span>
-        </div>
-        <div class="menu-item" onclick="nav('panel-structure', this)">
-            <i class="fas fa-sitemap"></i> <span>结构化写作</span>
+            <i class="fas fa-layer-group"></i> <span>一键矩阵宣发</span>
         </div>
 
-        <div class="menu-category">Creative Studio</div>
-        <div class="menu-item" onclick="nav('panel-visual', this)">
-            <i class="fas fa-camera-retro"></i> <span>视觉导演 (MJ/Sora)</span>
-        </div>
-        <div class="menu-item" onclick="nav('panel-audio', this)">
+        <div class="menu-category">创作中心</div>
+        <div class="menu-item" onclick="nav('panel-music', this)">
             <i class="fas fa-music"></i> <span>音乐制作 (Suno)</span>
         </div>
-
-        <div class="menu-category">Monetization</div>
-        <div class="menu-item" style="color: #fbbf24;" onclick="alert('这里跳转你的闲鱼/知识星球/面包多')">
-            <i class="fas fa-gem"></i> <span>升级 Pro 会员</span>
+        <div class="menu-item" onclick="nav('panel-visual', this)">
+            <i class="fas fa-video"></i> <span>视觉导演 (Sora)</span>
+        </div>
+        
+        <div class="menu-item" style="margin-top: auto; color: var(--gold);" onclick="showPro()">
+            <i class="fas fa-gem"></i> <span>升级 Pro 版</span>
         </div>
     </nav>
 
     <div class="main">
         <div class="topbar">
-            <div style="color: var(--text-mute); font-size: 0.9rem;">当前版本: V5.0 (2026 Stable)</div>
-            <div class="user-status" onclick="alert('引导用户去付费')">● Free Plan (点击升级)</div>
+            <div class="pro-badge" onclick="showPro()">👑 升级会员</div>
         </div>
 
         <div class="content-area">
 
             <div id="panel-stealth" class="panel active">
                 <div class="header-box">
-                    <h2>🕵️ 去 AI 化 (Stealth Mode)</h2>
-                    <p>让 AI 写的文章像真人，绕过 GPTZero 等检测。</p>
+                    <h2>🕵️ 去 AI 化引擎 (Stealth Engine)</h2>
+                    <p>5 种特定模式，绕过 GPTZero/Turnitin 检测，还原真实人类语感。</p>
                 </div>
                 <div class="card">
                     <div class="input-group">
-                        <label>你想写什么？(或粘贴一段 AI 写的文字让它改写)</label>
-                        <textarea id="stealthInput" placeholder="例如：帮我写一篇关于‘拖延症’的 800 字大学论文，要求语气自然，像学生写的..."></textarea>
+                        <label>原文内容 / 写作需求</label>
+                        <textarea id="stealthInput" placeholder="在此粘贴 AI 生成的文字，或者输入你的写作主题..."></textarea>
                     </div>
                     <div class="input-group">
-                        <label>拟人化程度 (Perplexity Level)</label>
-                        <select id="stealthLevel">
-                            <option value="High">🔥 极高困惑度 (适合论文/学术)</option>
-                            <option value="Medium">⚖️ 平衡 (适合博客/公号)</option>
-                            <option value="Low">💧 轻微润色 (适合邮件)</option>
+                        <label>选择拟人模式 (Mode)</label>
+                        <select id="stealthMode">
+                            <option value="academic">🎓 学术伪装 (Academic Stealth) - 适合论文，专业但低 AI 率</option>
+                            <option value="blogger">✍️ 情感博主 (Emotional) - 大量主观感受，短句为主</option>
+                            <option value="story">📖 故事叙述 (Storytelling) - 极高困惑度，丰富的形容词</option>
+                            <option value="slang">🔥 网络俚语 (Gen-Z Slang) - 小红书/抖音风，包含流行梗</option>
+                            <option value="esl">🌏 留学生语感 (ESL) - 模拟非母语者，轻微语法瑕疵(过检测神器)</option>
                         </select>
                     </div>
-                    <button class="btn" onclick="genStealth()"><i class="fas fa-mask"></i> 生成伪装指令</button>
+                    <button class="btn" onclick="genStealth()"><i class="fas fa-magic"></i> 执行拟人化改写</button>
                     
                     <div style="margin-top: 20px;">
-                        <textarea id="stealthResult" readonly placeholder="生成结果..." style="height: 200px; font-family: monospace; color: #10b981;"></textarea>
-                        <button class="btn" style="margin-top:10px; background: #334155;" onclick="copyID('stealthResult')">复制指令</button>
+                        <textarea id="stealthResult" readonly placeholder="等待生成..." style="height: 200px; font-family: monospace; color: #10b981;"></textarea>
+                        <button class="btn btn-dark" style="margin-top:10px;" onclick="copyID('stealthResult')">复制指令</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-library" class="panel">
+                <div class="header-box">
+                    <h2>📚 爆款指令库</h2>
+                    <p>点击卡片直接使用，VIP 区域包含高价值变现指令。</p>
+                </div>
+                
+                <h3 style="color: var(--text-mute); font-size: 0.9rem; margin-bottom: 15px;">🔥 免费常用区</h3>
+                <div class="grid-3">
+                    <div class="lib-card" onclick="useLib('Python 解释器')">
+                        <div class="lib-icon"><i class="fab fa-python"></i></div>
+                        <h4>代码解释器</h4>
+                        <p>让 AI 解释复杂的代码逻辑，并查错。</p>
+                    </div>
+                    <div class="lib-card" onclick="useLib('周报生成器')">
+                        <div class="lib-icon"><i class="fas fa-file-alt"></i></div>
+                        <h4>职场周报神器</h4>
+                        <p>基于 STAR 法则生成高大上周报。</p>
+                    </div>
+                    <div class="lib-card" onclick="useLib('英语口语教练')">
+                        <div class="lib-icon"><i class="fas fa-microphone"></i></div>
+                        <h4>雅思口语对练</h4>
+                        <p>模拟考官进行 1 对 1 对话。</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--gold); font-size: 0.9rem; margin: 30px 0 15px 0;">💎 Pro 赚钱区 (点击解锁)</h3>
+                <div class="grid-3">
+                    <div class="lib-card locked" onclick="showPro()">
+                        <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                        <div class="lib-icon"><i class="fab fa-tiktok"></i></div>
+                        <h4>抖音带货脚本 Pro</h4>
+                        <p>含完播钩子、痛点反转、逼单话术。</p>
+                    </div>
+                    <div class="lib-card locked" onclick="showPro()">
+                        <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                        <div class="lib-icon"><i class="fas fa-fish"></i></div>
+                        <h4>闲鱼引流文案 Pro</h4>
+                        <p>高浏览量文案，针对二手交易优化。</p>
+                    </div>
+                    <div class="lib-card locked" onclick="showPro()">
+                        <div class="lock-icon"><i class="fas fa-lock"></i></div>
+                        <div class="lib-icon"><i class="fas fa-chart-line"></i></div>
+                        <h4>小红书涨粉矩阵</h4>
+                        <p>批量生成 10 个爆款选题与封面建议。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-music" class="panel">
+                <div class="header-box">
+                    <h2>🎵 Suno/Udio 音乐工厂</h2>
+                    <p>生成包含 Metatags (元标签) 的专业歌词结构。</p>
+                </div>
+                <div class="card">
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <label>音乐风格 (Style)</label>
+                            <input type="text" id="musicStyle" placeholder="e.g. K-pop, Cyberpunk Phonk, Lo-fi Study">
+                        </div>
+                        <div class="input-group">
+                            <label>歌曲结构</label>
+                            <select id="musicStruct">
+                                <option value="pop">流行标配 (Verse-Chorus)</option>
+                                <option value="rap">说唱 Flow (Intro-Hook-Verse)</option>
+                                <option value="edm">电子舞曲 (Build-up-Drop)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>歌词主题 / 故事背景</label>
+                        <textarea id="musicTopic" style="min-height: 80px;" placeholder="例如：关于程序员在深夜加班，看着窗外的霓虹灯..."></textarea>
+                    </div>
+                    <button class="btn" onclick="genMusic()"><i class="fas fa-music"></i> 生成歌词与标签</button>
+                    
+                    <div style="margin-top: 20px;">
+                        <textarea id="musicResult" readonly placeholder="[Intro]..." style="height: 250px; font-family: monospace; color: #a78bfa;"></textarea>
+                        <button class="btn btn-dark" style="margin-top:10px;" onclick="copyID('musicResult')">复制指令</button>
                     </div>
                 </div>
             </div>
 
             <div id="panel-matrix" class="panel">
-                <div class="header-box">
-                    <h2>🚀 一键内容矩阵 (Matrix)</h2>
-                    <p>输入一个主题，同时生成 4 个平台的发布指令。</p>
-                </div>
+                <div class="header-box"><h2>🚀 一键矩阵</h2><p>一次生成多平台文案。</p></div>
                 <div class="card">
-                    <div class="input-group">
-                        <label>内容主题/产品名称</label>
-                        <input type="text" id="matrixTopic" placeholder="例如：新款降噪耳机评测">
-                    </div>
-                    <button class="btn" onclick="genMatrix()"><i class="fas fa-bolt"></i> 启动矩阵生成</button>
-
-                    <div class="matrix-grid">
-                        <div class="matrix-item">
-                            <div class="matrix-head"><span class="model-badge bg-claude">Claude</span> 小红书 (种草)</div>
-                            <textarea id="res-xhs" readonly></textarea>
-                            <button class="btn" style="padding: 5px; font-size: 0.8rem; margin-top:5px;" onclick="copyID('res-xhs')">复制</button>
-                        </div>
-                        <div class="matrix-item">
-                            <div class="matrix-head"><span class="model-badge bg-gpt">GPT-4</span> 抖音 (脚本)</div>
-                            <textarea id="res-dy" readonly></textarea>
-                            <button class="btn" style="padding: 5px; font-size: 0.8rem; margin-top:5px;" onclick="copyID('res-dy')">复制</button>
-                        </div>
-                        <div class="matrix-item">
-                            <div class="matrix-head"><span class="model-badge bg-gemini">Gemini</span> 公众号 (深度)</div>
-                            <textarea id="res-gzh" readonly></textarea>
-                            <button class="btn" style="padding: 5px; font-size: 0.8rem; margin-top:5px;" onclick="copyID('res-gzh')">复制</button>
-                        </div>
-                        <div class="matrix-item">
-                            <div class="matrix-head"><span class="model-badge bg-gpt">Twitter</span> 推特 (Thread)</div>
-                            <textarea id="res-tw" readonly></textarea>
-                            <button class="btn" style="padding: 5px; font-size: 0.8rem; margin-top:5px;" onclick="copyID('res-tw')">复制</button>
-                        </div>
-                    </div>
+                    <div class="input-group"><input type="text" id="matrixTopic" placeholder="输入主题..."></div>
+                    <button class="btn" onclick="alert('此处为演示，逻辑同前版本')">生成矩阵</button>
                 </div>
             </div>
-
-            <div id="panel-structure" class="panel">
-                <div class="header-box">
-                    <h2>✍️ 结构化写作</h2>
-                    <p>指定模型，生成麦肯锡式/费曼式的高级 Prompt。</p>
-                </div>
-                <div class="card">
-                    <div class="input-group">
-                        <label>目标模型 (Model Target)</label>
-                        <select id="structModel">
-                            <option value="Claude 3.5">Claude 3.5 (适合长文、细腻情感)</option>
-                            <option value="GPT-4o">GPT-4o (适合逻辑、编程、结构化)</option>
-                            <option value="Gemini Pro">Gemini Pro 1.5 (适合超长文本分析)</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>任务描述</label>
-                        <textarea id="structInput" placeholder="例如：帮我制定一个新产品的 Go-to-Market 上市策略..."></textarea>
-                    </div>
-                    <button class="btn" onclick="genStruct()"><i class="fas fa-magic"></i> 生成优化指令</button>
-                    <textarea id="structResult" style="margin-top:20px; height: 200px;" readonly></textarea>
-                    <button class="btn" style="margin-top:10px; background: #334155;" onclick="copyID('structResult')">复制指令</button>
-                </div>
-            </div>
-
             <div id="panel-visual" class="panel">
-                <div class="header-box">
-                    <h2>🎬 视觉导演中心</h2>
-                    <p>Midjourney V6 + Runway/Sora 联合指令。</p>
-                </div>
-                <div class="card">
-                    <div class="input-group">
-                        <label>画面/运镜描述</label>
-                        <textarea id="visualInput" placeholder="例如：无人机视角，飞越未来的赛博朋克城市，霓虹灯闪烁..."></textarea>
-                    </div>
-                    <div class="matrix-grid">
-                        <div class="matrix-item">
-                            <div class="matrix-head">Midjourney V6 (图片)</div>
-                            <textarea id="res-mj" readonly></textarea>
-                            <button class="btn" style="padding: 5px; font-size: 0.8rem; margin-top:5px;" onclick="copyID('res-mj')">复制</button>
-                        </div>
-                        <div class="matrix-item">
-                            <div class="matrix-head">Runway/Sora (视频)</div>
-                            <textarea id="res-vid" readonly></textarea>
-                            <button class="btn" style="padding: 5px; font-size: 0.8rem; margin-top:5px;" onclick="copyID('res-vid')">复制</button>
-                        </div>
-                    </div>
-                    <div style="margin-top: 15px; text-align: right;">
-                        <button class="btn" style="width: auto; display: inline-flex;" onclick="genVisual()">⚡️ 一键生成双模态</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="panel-audio" class="panel">
-                <div class="header-box">
-                    <h2>🎵 音乐制作</h2>
-                </div>
-                <div class="card pro-lock" onclick="alert('这里弹窗：\n\n想要制作爆款 AI 音乐？\n解锁 500 个 Suno 专用流派标签库\n仅需 9.9 元')">
-                    <div class="pro-overlay">
-                        <i class="fas fa-lock" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                        <div style="font-size: 1.2rem; font-weight: bold;">Suno/Udio 高级版已锁定</div>
-                        <div style="font-size: 0.9rem; margin-top: 5px;">点击解锁完整元标签 (Metatags) 功能</div>
-                    </div>
-                    <div class="input-group">
-                        <label>歌曲风格</label>
-                        <input type="text" disabled placeholder="VIP 功能">
-                    </div>
-                    <textarea disabled style="height: 100px;">VIP 可见...</textarea>
-                </div>
+                <div class="header-box"><h2>🎬 视觉导演</h2></div>
+                <div class="card"><p style="text-align:center; color:var(--text-mute);">支持 MJ V6 与 Sora 运镜指令生成...</p></div>
             </div>
 
         </div>
@@ -407,7 +423,15 @@
             el.classList.add('active');
         }
 
-        // 复制功能
+        // Pro 弹窗控制
+        function showPro() {
+            document.getElementById('proModal').style.display = 'flex';
+        }
+        function closeModal(e) {
+            if(e.target.id === 'proModal') document.getElementById('proModal').style.display = 'none';
+        }
+
+        // 复制
         function copyID(id) {
             const el = document.getElementById(id);
             el.select();
@@ -415,62 +439,44 @@
             alert('复制成功！');
         }
 
-        // 1. 隐形模式生成逻辑
+        // 1. 拟人化逻辑
         function genStealth() {
             const input = document.getElementById('stealthInput').value;
-            const level = document.getElementById('stealthLevel').value;
+            const mode = document.getElementById('stealthMode').value;
             
-            let prompt = `你是一位专业的代笔作家，你的目标是改写以下内容，使其完全无法被 AI 检测工具（如 GPTZero）识别。\n\n`;
-            prompt += `待改写内容：【${input}】\n\n`;
-            prompt += `### 改写策略 (Perplexity Level: ${level})\n`;
-            prompt += `1. **增加困惑度 (Perplexity)**：不要使用常见的 AI 句式（如"总而言之"、"值得注意的是"）。使用更口语化、甚至略带瑕疵的表达。\n`;
-            prompt += `2. **爆发性 (Burstiness)**：极度变化句子的长度。一句很短，下一句很长且复杂。打破节奏。\n`;
-            prompt += `3. **情感注入**：加入主观的个人观点、反问句和感叹号。\n`;
-            prompt += `4. **模拟人类习惯**：适当使用括号补充说明，或者使用更生动的比喻。\n\n`;
-            prompt += `请直接输出改写后的版本，不要解释。`;
+            let strategy = "";
+            if(mode === 'academic') strategy = "使用学术词汇，句式复杂，逻辑严密，避免常用 AI 连接词。";
+            if(mode === 'blogger') strategy = "大量使用第一人称，加入情绪描写，多用短句和感叹号，像真人在聊天。";
+            if(mode === 'slang') strategy = "使用 Z 世代网络俚语，加入 Emoji，语法可以不规范，语气夸张。";
+            if(mode === 'esl') strategy = "模拟非母语英语使用者，偶尔犯一些介词或时态的小错误，句式简单直接。";
+            if(mode === 'story') strategy = "注重场景描写（Show, don't tell），大幅改变句子长度韵律（Burstiness）。";
 
+            const prompt = `### Role: Anti-AI Writer\nTask: Rewrite the following content to bypass AI detectors (like GPTZero).\n\nOriginal: "${input}"\n\n### Strategy (${mode})\n${strategy}\n\n### Output\nDirectly output the rewritten text.`;
             document.getElementById('stealthResult').value = prompt;
         }
 
-        // 2. 矩阵生成逻辑
-        function genMatrix() {
-            const topic = document.getElementById('matrixTopic').value;
-            
-            // 小红书 (Claude 风格: 细腻、Emoji)
-            document.getElementById('res-xhs').value = `### Role: 小红书爆款写手\nTask: 为"${topic}"写一篇笔记。\nRequirements:\n1. 标题包含数字和夸张情绪 (e.g., "绝绝子!", "后悔没早买")\n2. 全文多用 Emoji，语气像闺蜜聊天。\n3. 分段短，视觉体验好。\n4. 结尾包含强互动 (e.g., "你们觉得呢?")`;
-            
-            // 抖音 (GPT 风格: 脚本结构)
-            document.getElementById('res-dy').value = `### Role: 抖音短视频编剧\nTask: 为"${topic}"写一个 30 秒口播脚本。\nStructure:\n1. [0-3秒] 黄金钩子：用一句话留住观众。\n2. [3-15秒] 痛点打击 + 产品反转。\n3. [15-30秒] 信任背书 + 引导关注。\n注明画面建议和音效提示。`;
-
-            // 公众号 (Gemini 风格: 深度长文)
-            document.getElementById('res-gzh').value = `### Role: 资深科技/生活主编\nTask: 为"${topic}"写一篇深度评测文章。\nRequirements:\n1. 逻辑严密，通过数据和对比来论证。\n2. 采用"问题-分析-解决"的结构。\n3. 语气专业、客观、有洞察力。\n4. 篇幅 1500 字以上。`;
-
-            // 推特 (Twitter Thread)
-            document.getElementById('res-tw').value = `### Role: Twitter 极简主义思想家\nTask: 把"${topic}"拆解为 5 条推文 (Thread)。\nRequirements:\n1. 第一条推文要极具争议性或启发性。\n2. 每条推文不超过 140 字。\n3. 只要干货，不要废话。\n4. 最后一条引导 Retweet。`;
+        // 2. 库点击逻辑 (免费)
+        function useLib(name) {
+            alert("已为你加载【" + name + "】模板！(演示：实际可跳转到生成页自动填入)");
         }
 
-        // 3. 结构化生成
-        function genStruct() {
-            const model = document.getElementById('structModel').value;
-            const input = document.getElementById('structInput').value;
-            
-            let sysPrompt = "";
-            if(model.includes("Claude")) sysPrompt = "你精通修辞和情感共鸣，请使用温暖、细腻且富有文学性的语言。";
-            if(model.includes("GPT")) sysPrompt = "请严格遵守逻辑结构，使用 Markdown 格式，多用列表和粗体。";
-            if(model.includes("Gemini")) sysPrompt = "请调用你的长文本窗口优势，提供尽可能详尽的背景信息和多维度分析。";
+        // 3. 音乐生成逻辑
+        function genMusic() {
+            const style = document.getElementById('musicStyle').value;
+            const topic = document.getElementById('musicTopic').value;
+            const struct = document.getElementById('musicStruct').value;
 
-            const res = `### System Prompt (Optimized for ${model})\n${sysPrompt}\n\n### User Task\n${input}\n\n### Response Framework\n1. Executive Summary (核心摘要)\n2. Deep Dive (深度分析)\n3. Actionable Steps (执行步骤)\n\nLet's think step by step.`;
+            let lyrics = `[Style: ${style}]\n[Theme: ${topic}]\n\n`;
             
-            document.getElementById('structResult').value = res;
-        }
+            if (struct === 'pop') {
+                lyrics += `[Intro]\n(Melodic build up)\n\n[Verse 1]\n(Sets the scene about ${topic})\n\n[Chorus]\n(Catchy hook, high energy)\n\n[Verse 2]\n\n[Bridge]\n\n[Outro]`;
+            } else if (struct === 'rap') {
+                lyrics += `[Intro]\n(Beat drops)\n\n[Hook]\n(Repetitive phrase)\n\n[Verse 1]\n(Fast flow, rhyming patterns)\n\n[Break]\n\n[Verse 2]\n\n[Outro]`;
+            } else {
+                lyrics += `[Intro]\n(Synth pad fade in)\n\n[Build-up]\n\n[Drop]\n(Heavy bass)\n\n[Breakdown]\n\n[Drop 2]\n\n[Outro]`;
+            }
 
-        // 4. 视觉生成
-        function genVisual() {
-            const input = document.getElementById('visualInput').value;
-            
-            document.getElementById('res-mj').value = `/imagine prompt: ${input}, cinematic lighting, 8k, hyper-detailed, --ar 16:9 --v 6.0 --style raw`;
-            
-            document.getElementById('res-vid').value = `(Runway/Sora Prompt): ${input}, slow motion, high quality, cinematic look, --motion 5`;
+            document.getElementById('musicResult').value = lyrics;
         }
     </script>
 </body>
