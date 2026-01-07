@@ -3,81 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI CommandOS V10 | 场景化矩阵版</title>
+    <title>AI CommandOS V11 | 行业全参数版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a;
-            --sidebar: #1e293b;
-            --card: #334155;
-            --accent: #38bdf8; /* Sky Blue */
-            --accent-hover: #0ea5e9;
-            --text: #f1f5f9;
-            --text-sub: #94a3b8;
-            --border: #475569;
-            --gold: #facc15;
+            --bg: #0a0a0a;
+            --sidebar: #171717;
+            --card: #262626;
+            --input: #404040;
+            --accent: #3b82f6; /* Pro Blue */
+            --accent-hover: #2563eb;
+            --text: #e5e5e5;
+            --text-sub: #a3a3a3;
+            --border: #404040;
+            --gold: #fbbf24;
         }
 
-        * { box-sizing: border-box; outline: none; }
+        * { box-sizing: border-box; outline: none; scrollbar-width: thin; }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             height: 100vh;
             overflow: hidden;
-            font-size: 14px;
+            font-size: 13px; /* 字体改小，显专业 */
         }
 
-        /* --- 侧边栏 (多级菜单) --- */
+        /* --- 侧边栏 --- */
         .sidebar {
-            width: 250px;
+            width: 240px;
             background: var(--sidebar);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 0;
             flex-shrink: 0;
             overflow-y: auto;
         }
 
         .brand {
             padding: 20px;
-            font-size: 1.2rem;
-            font-weight: 800;
+            font-size: 1.1rem;
+            font-weight: 700;
             color: white;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            letter-spacing: -0.02em;
         }
         .brand span { color: var(--accent); }
 
         .menu-group-title {
-            padding: 15px 20px 5px;
+            padding: 18px 20px 8px;
             font-size: 0.7rem;
             text-transform: uppercase;
             color: var(--text-sub);
             font-weight: 700;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.05em;
         }
 
         .menu-item {
-            padding: 12px 20px;
+            padding: 10px 20px;
             cursor: pointer;
             color: var(--text-sub);
-            transition: 0.2s;
+            transition: 0.1s;
             display: flex;
             align-items: center;
             gap: 12px;
-            border-left: 3px solid transparent;
+            font-weight: 500;
+            border-left: 2px solid transparent;
         }
 
-        .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
-        .menu-item.active { background: rgba(56, 189, 248, 0.1); color: var(--accent); border-left-color: var(--accent); }
-        .menu-item i { width: 18px; text-align: center; }
+        .menu-item:hover { background: #333; color: white; }
+        .menu-item.active { background: rgba(59, 130, 246, 0.15); color: var(--accent); border-left-color: var(--accent); }
+        .menu-item i { width: 16px; text-align: center; font-size: 0.9rem; }
 
         /* --- 主区域 --- */
         .main {
@@ -88,65 +90,74 @@
         }
 
         .topbar {
-            height: 60px;
+            height: 50px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 30px;
+            padding: 0 25px;
             background: var(--bg);
         }
-
-        .tool-title { font-size: 1.2rem; font-weight: bold; }
+        .tool-title { font-weight: 600; font-size: 1rem; }
 
         .content-area {
             flex: 1;
-            padding: 30px;
+            padding: 20px;
             overflow-y: auto;
-            max-width: 1000px;
+            max-width: 1200px; /* 更宽的布局 */
             margin: 0 auto;
             width: 100%;
         }
 
-        /* --- 动态表单区域 --- */
+        /* --- 表单 --- */
         .form-card {
             background: var(--sidebar);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 30px;
+            border-radius: 8px;
+            padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
         }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        /* 响应式 Grid：自动适应宽度，每列最小 220px */
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+            gap: 20px 20px; 
+            margin-bottom: 20px; 
+        }
+
         .form-full { margin-bottom: 20px; }
 
-        label { display: block; margin-bottom: 8px; color: var(--text-sub); font-size: 0.85rem; }
+        label { display: block; margin-bottom: 6px; color: var(--text-sub); font-size: 0.8rem; font-weight: 500;}
         
         input, select, textarea {
             width: 100%;
-            background: var(--bg);
+            background: var(--input);
             border: 1px solid var(--border);
             color: white;
-            padding: 12px;
+            padding: 10px 12px;
             border-radius: 6px;
-            font-size: 0.95rem;
-            transition: 0.2s;
+            font-size: 0.9rem;
+            transition: 0.1s;
+            font-family: inherit;
         }
-        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-        textarea { resize: vertical; min-height: 100px; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #4a4a4a; }
+        
+        /* 优化 Select 下拉体验 */
+        select option { background: var(--bg); color: var(--text); padding: 5px; }
 
         .btn {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             background: var(--accent);
-            color: #0f172a;
+            color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: 0.2s;
+            margin-top: 10px;
         }
         .btn:hover { background: var(--accent-hover); }
 
@@ -154,50 +165,53 @@
             position: relative;
             background: #000;
             border-radius: 8px;
-            padding: 20px;
             border: 1px solid var(--border);
         }
         .result-text {
             width: 100%;
             background: transparent;
             border: none;
-            color: #4ade80;
-            font-family: monospace;
+            color: #10b981; /* Terminal Green */
+            font-family: 'Monaco', 'Consolas', monospace;
             min-height: 150px;
-            resize: none;
+            resize: vertical;
             font-size: 0.9rem;
             line-height: 1.6;
+            padding: 20px;
         }
         .copy-tag {
             position: absolute; top: 10px; right: 10px;
             background: var(--card); border: 1px solid var(--border);
-            color: var(--text-sub); padding: 5px 10px; border-radius: 4px;
-            font-size: 0.8rem; cursor: pointer;
+            color: var(--text-sub); padding: 4px 10px; border-radius: 4px;
+            font-size: 0.75rem; cursor: pointer;
+            z-index: 10;
         }
         .copy-tag:hover { color: white; border-color: white; }
 
-        /* Pro 锁 */
+        /* Pro Lock */
         .locked-item { opacity: 0.5; position: relative; cursor: not-allowed; }
         .locked-item::after {
-            content: "🔒 Pro"; position: absolute; right: 10px; top: 12px;
-            font-size: 0.8rem; color: var(--gold);
+            content: "🔒 Pro"; position: absolute; right: 15px; top: 12px;
+            font-size: 0.75rem; color: var(--gold);
         }
 
         /* 弹窗 */
         .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             display: none; justify-content: center; align-items: center; z-index: 999;
+            backdrop-filter: blur(4px);
         }
         .modal-content {
-            background: var(--sidebar); padding: 40px; border-radius: 16px;
+            background: var(--sidebar); padding: 40px; border-radius: 12px;
             text-align: center; max-width: 400px; border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; border-bottom: 1px solid var(--border); border-right: none;}
+            .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 0; border-bottom: 1px solid var(--border); border-right: none;}
             .menu-group-title { display: none; }
-            .menu-item { white-space: nowrap; padding: 8px 12px; }
+            .menu-item { white-space: nowrap; padding: 12px 15px; }
             .form-grid { grid-template-columns: 1fr; }
             .topbar { display: none; }
         }
@@ -208,163 +222,235 @@
     <div class="modal" id="proModal" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
             <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 20px;"></i>
-            <h2>升级 Pro 商业版</h2>
-            <p style="color: var(--text-sub); margin-bottom: 20px;">解锁“学术润色”、“冷邮件营销”等高价值生产力工具。</p>
-            <button class="btn" style="background: var(--gold); color: black;" onclick="window.open('https://your-link.com')">¥99 立即解锁</button>
+            <h2 style="margin: 0 0 10px 0;">升级 Pro 商业版</h2>
+            <p style="color: var(--text-sub); margin-bottom: 25px; line-height: 1.5;">
+                解锁学术润色、冷邮件营销等高价值工具。<br>获取 GPT-4 专用系统级 Prompt。
+            </p>
+            <button class="btn" style="background: var(--gold); color: black;" onclick="window.open('https://your-link.com')">立即解锁 (¥99/年)</button>
         </div>
     </div>
 
     <div class="sidebar">
-        <div class="brand"><i class="fas fa-th-large"></i> Matrix<span>OS</span></div>
+        <div class="brand"><i class="fas fa-layer-group"></i> Command<span>OS</span> Pro</div>
 
-        <div class="menu-group-title">🎨 视觉设计 (Visual)</div>
-        <div class="menu-item active" onclick="loadTool('logo')"><i class="fas fa-vector-square"></i> Logo / 图标设计</div>
-        <div class="menu-item" onclick="loadTool('product')"><i class="fas fa-camera"></i> 电商产品摄影</div>
-        <div class="menu-item" onclick="loadTool('ui')"><i class="fas fa-mobile-alt"></i> UI / 网页界面</div>
-        <div class="menu-item" onclick="loadTool('anime')"><i class="fas fa-magic"></i> 二次元/IP角色</div>
+        <div class="menu-group-title">🎨 视觉 (Visual)</div>
+        <div class="menu-item active" onclick="loadTool('logo')"><i class="fas fa-bezier-curve"></i> Logo 设计</div>
+        <div class="menu-item" onclick="loadTool('product')"><i class="fas fa-box-open"></i> 产品摄影</div>
+        <div class="menu-item" onclick="loadTool('ui')"><i class="fas fa-columns"></i> UI/UX 界面</div>
+        <div class="menu-item" onclick="loadTool('anime')"><i class="fas fa-ghost"></i> 角色/二次元</div>
 
-        <div class="menu-group-title">✍️ 商业写作 (Copy)</div>
-        <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书爆文</div>
-        <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/Tiktok脚本</div>
-        <div class="menu-item locked-item" onclick="showPro()"><i class="fas fa-envelope-open-text"></i> 外贸冷邮件 (Sales)</div>
-        <div class="menu-item locked-item" onclick="showPro()"><i class="fas fa-graduation-cap"></i> 学术润色 (Academic)</div>
+        <div class="menu-group-title">✍️ 写作 (Copy)</div>
+        <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
+        <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音脚本</div>
+        <div class="menu-item locked-item" onclick="showPro()"><i class="fas fa-paper-plane"></i> 外贸开发信</div>
+        <div class="menu-item locked-item" onclick="showPro()"><i class="fas fa-university"></i> 论文润色</div>
 
-        <div class="menu-group-title">🎵 音频工坊 (Audio)</div>
-        <div class="menu-item" onclick="loadTool('lyrics')"><i class="fas fa-pen-nib"></i> 歌词创作</div>
-        <div class="menu-item" onclick="loadTool('suno')"><i class="fas fa-music"></i> Suno 风格指令</div>
+        <div class="menu-group-title">🎵 音频 (Audio)</div>
+        <div class="menu-item" onclick="loadTool('suno')"><i class="fas fa-music"></i> Suno 大师指令</div>
+        <div class="menu-item" onclick="loadTool('lyrics')"><i class="fas fa-microphone-alt"></i> 歌词创作</div>
     </div>
 
     <div class="main">
         <div class="topbar">
             <div class="tool-title" id="currentToolTitle">Logo / 图标设计</div>
-            <div style="font-size: 0.9rem; color: var(--text-sub); cursor: pointer;" onclick="showPro()">👑 升级会员</div>
+            <div style="font-size: 0.85rem; color: var(--text-sub); cursor: pointer;" onclick="showPro()">👑 Upgrade Plan</div>
         </div>
 
         <div class="content-area">
-            <div class="form-card" id="dynamicForm">
-                </div>
+            <div class="form-card" id="dynamicForm"></div>
 
             <div class="result-area">
-                <div class="copy-tag" onclick="copyResult()">复制指令</div>
-                <textarea class="result-text" id="resultBox" readonly placeholder="点击生成按钮，这里会出现专业的 Prompt..."></textarea>
+                <div class="copy-tag" onclick="copyResult()">Copy Prompt</div>
+                <textarea class="result-text" id="resultBox" readonly placeholder="Waiting for input..."></textarea>
             </div>
         </div>
     </div>
 
     <script>
-        // 工具配置数据 (真正的细分核心)
+        // --- 核心数据库：这是 V11 最值钱的部分 ---
         const tools = {
-            // --- 视觉类 ---
+            // ================= 视觉类 (Visual) =================
             logo: {
-                title: "Logo / 图标设计生成",
+                title: "Logo & Brand Identity Design",
                 inputs: [
-                    { id: 'brand', label: '品牌名称 (Brand Name)', type: 'text', placeholder: 'e.g. NexusAI' },
-                    { id: 'industry', label: '行业属性', type: 'select', options: ['Tech Technology', 'Coffee Shop', 'Beauty Brand', 'Gaming', 'Real Estate'] },
-                    { id: 'style', label: '设计风格', type: 'select', options: ['Minimalist vector line art (极简线条)', 'Gradient tech glassmorphism (科技毛玻璃)', 'Cute mascot character (可爱吉祥物)', 'Vintage badge style (复古徽章)', 'Abstract geometric (抽象几何)'] },
-                    { id: 'color', label: '主色调', type: 'text', placeholder: 'e.g. Neon Blue and White' }
+                    { id: 'brand', label: 'Brand Name (品牌名)', type: 'text', placeholder: 'e.g. Nexus' },
+                    { id: 'industry', label: 'Industry (行业)', type: 'select', options: [
+                        'Technology / SaaS (科技)', 'Coffee & F&B (餐饮)', 'Fashion & Apparel (时尚)', 'Real Estate (房产)', 
+                        'Gaming / Esports (电竞)', 'Crypto / Web3 (区块链)', 'Medical / Health (医疗)', 'Legal / Consulting (咨询)'
+                    ]},
+                    { id: 'style', label: 'Art Style (艺术风格)', type: 'select', options: [
+                        'Minimalist / Swiss Style (极简瑞士风)', 'Bauhaus (包豪斯)', 'Cyberpunk / Futuristic (赛博未来)', 
+                        'Vintage / Retro Badge (复古徽章)', 'Abstract Geometric (抽象几何)', 'Hand-drawn / Organic (手绘有机)', 
+                        'Gradient / Glassmorphism (毛玻璃)', 'Negative Space (负空间)', 'Emblem / Heraldic (纹章)'
+                    ]},
+                    { id: 'type', label: 'Logo Type (类型)', type: 'select', options: [
+                        'Pictorial Mark (图形标)', 'Wordmark (文字标)', 'Monogram (字母组合)', 'Mascot (吉祥物)', 'Abstract Mark (抽象)'
+                    ]},
+                    { id: 'color', label: 'Color Palette (配色)', type: 'select', options: [
+                        'Black & White (黑白)', 'Neon Cyber (霓虹)', 'Pastel Tones (莫兰迪)', 'Earth Tones (大地色)', 'Gradient Blue-Purple (蓝紫渐变)', 'Luxury Gold-Black (黑金)'
+                    ]},
+                    { id: 'render', label: 'Renderer (渲染风格)', type: 'select', options: [
+                        'Flat Vector (扁平矢量)', '3D Render (C4D/Blender)', 'Metallic Texture (金属质感)', 'Sketch (草图)', 'Paper Cutout (剪纸)'
+                    ]}
                 ],
-                template: (d) => `/imagine prompt: a professional logo design for "${d.brand}", industry: ${d.industry}, style: ${d.style}, primary color: ${d.color}, white background, vector graphics, scalable, dribbble trend --v 6.0 --no text realistic photo`
+                template: (d) => `/imagine prompt: a professional logo design for "${d.brand}", industry: ${d.industry}, style: ${d.style}, type: ${d.type}, primary colors: ${d.color}, rendering: ${d.render}, white background, vector graphics, scalable, behance award winner, dribbble trend, masterpiece --v 6.0 --no text realistic photo shadow`
             },
             product: {
-                title: "电商产品摄影 (Commercial)",
+                title: "E-commerce Product Photography",
                 inputs: [
-                    { id: 'product', label: '产品主体', type: 'text', placeholder: 'e.g. A bottle of luxury perfume' },
-                    { id: 'bg', label: '背景环境', type: 'select', options: ['Studio solid color (纯色影棚)', 'Marble podium with water ripples (大理石水波纹)', 'Natural sunlight with plant shadows (自然光植物投影)', 'Cyberpunk neon street (赛博街头)'] },
-                    { id: 'angle', label: '拍摄角度', type: 'select', options: ['Front view', 'Top down view (Knolling)', 'Low angle hero shot', 'Macro close-up details'] },
-                    { id: 'lighting', label: '布光方式', type: 'select', options: ['Softbox lighting (柔光)', 'Hard dramatic lighting (硬光)', 'Backlighting (背光)', 'Natural window light'] }
+                    { id: 'product', label: 'Product Name (产品)', type: 'text', placeholder: 'e.g. Perfume Bottle' },
+                    { id: 'bg', label: 'Background (背景环境)', type: 'select', options: [
+                        'Studio Solid Color (纯色影棚)', 'Marble Podium with Water Ripples (大理石水纹)', 'Natural Sunlight with Shadows (自然光斑)', 
+                        'Tropical Leaves (热带植物)', 'Cyberpunk Neon Street (赛博街头)', 'Luxury Silk Fabric (丝绸)', 'Floating in Space (太空悬浮)'
+                    ]},
+                    { id: 'shot', label: 'Shot Angle (镜头角度)', type: 'select', options: [
+                        'Front View (正视图)', 'Top Down / Knolling (平铺/上帝视角)', 'Low Angle Hero Shot (仰视英雄视角)', 
+                        'Macro Close-up (微距特写)', 'Isometric View (等轴测)', 'Dutch Angle (倾斜)'
+                    ]},
+                    { id: 'lighting', label: 'Lighting (布光)', type: 'select', options: [
+                        'Softbox Studio Lighting (柔光箱)', 'Hard Dramatic Shadows (硬光)', 'Rim Light / Backlight (轮廓光)', 
+                        'God Rays / Volumetric (丁达尔光)', 'Bioluminescent (生物荧光)', 'Golden Hour (黄金时刻)'
+                    ]},
+                    { id: 'material', label: 'Product Texture (材质)', type: 'select', options: [
+                        'Matte Finish (哑光)', 'Glossy / Reflective (高光)', 'Metallic (金属)', 'Translucent / Glass (半透明)', 'Textured / Rough (粗糙)'
+                    ]},
+                    { id: 'camera', label: 'Camera Gear (相机)', type: 'select', options: [
+                        'Canon R5 + 50mm f/1.2', 'Sony A7RIV + 85mm f/1.4', 'Macro Lens 100mm', 'Hasselblad Medium Format'
+                    ]}
                 ],
-                template: (d) => `/imagine prompt: professional product photography of ${d.product}, background: ${d.bg}, shot angle: ${d.angle}, lighting: ${d.lighting}, 8k resolution, highly detailed, commercial advertisement quality --ar 4:5 --v 6.0`
+                template: (d) => `/imagine prompt: commercial product photography of ${d.product}, background: ${d.bg}, shot angle: ${d.shot}, lighting: ${d.lighting}, texture: ${d.material}, shot on ${d.camera}, 8k resolution, highly detailed, advertisement quality, sharp focus --ar 4:5 --v 6.0 --style raw`
             },
             ui: {
-                title: "UI / 网页界面设计",
+                title: "UI / UX Interface Design",
                 inputs: [
-                    { id: 'page', label: '页面类型', type: 'text', placeholder: 'e.g. Mobile App Login Screen' },
-                    { id: 'theme', label: '配色主题', type: 'select', options: ['Dark Mode (暗黑模式)', 'Clean White (极简白)', 'Pastel Colors (马卡龙色)', 'Cyberpunk Neon'] },
-                    { id: 'element', label: '包含元素', type: 'text', placeholder: 'e.g. 3D charts, glass cards' }
+                    { id: 'page', label: 'Page Type (页面)', type: 'text', placeholder: 'e.g. Banking App Dashboard' },
+                    { id: 'theme', label: 'Theme (主题)', type: 'select', options: [
+                        'Dark Mode (暗黑)', 'Clean White / Minimal (极简白)', 'Glassmorphism (毛玻璃)', 'Neumorphism (新拟态)', 
+                        'Cyberpunk / HUD (科幻)', 'Pastel / Cute (可爱)', 'Brutalist (粗野主义)'
+                    ]},
+                    { id: 'platform', label: 'Platform (平台)', type: 'select', options: [
+                        'Mobile App (iOS/Android)', 'Web Dashboard (SaaS)', 'Landing Page (Website)', 'Smart Watch (WearOS)', 'VR/AR Interface'
+                    ]},
+                    { id: 'color', label: 'Primary Color (主色)', type: 'text', placeholder: 'e.g. Electric Blue' },
+                    { id: 'tools', label: 'Tools Style (工具流派)', type: 'select', options: [
+                        'Figma Style', 'Dribbble Top Trend', 'Behance Featured', 'Sketch App'
+                    ]}
                 ],
-                template: (d) => `/imagine prompt: UI design for ${d.page}, theme: ${d.theme}, featuring ${d.element}, clean layout, behance trending, dribbble, high fidelity mockup, vector --ar 9:16 --v 6.0`
+                template: (d) => `/imagine prompt: UI design for ${d.page}, platform: ${d.platform}, style: ${d.theme}, primary color: ${d.color}, aesthetic: ${d.tools}, high fidelity mockup, vector, clean layout, user friendly, UX optimized --ar 9:16 --v 6.0`
             },
             anime: {
-                title: "二次元 / IP 角色设计",
+                title: "Anime & Character Design",
                 inputs: [
-                    { id: 'char', label: '角色特征', type: 'text', placeholder: 'e.g. Silver hair girl with cat ears' },
-                    { id: 'outfit', label: '服装', type: 'text', placeholder: 'e.g. Cyberpunk jacket' },
-                    { id: 'style', label: '画风', type: 'select', options: ['Anime impasto (厚涂)', 'Cel shading (赛璐璐)', 'Kyoto Animation style', 'Genshin Impact style'] },
-                    { id: 'view', label: '视图', type: 'select', options: ['Character sheet (三视图)', 'Full body portrait', 'Dynamic pose'] }
+                    { id: 'char', label: 'Character (角色描述)', type: 'text', placeholder: 'e.g. Silver hair girl' },
+                    { id: 'style', label: 'Art Style (画风)', type: 'select', options: [
+                        'Kyoto Animation (京都动画)', 'Makoto Shinkai (新海诚)', 'Ghibli Studio (吉卜力)', 'Cyberpunk Edgerunners (赛博朋克)', 
+                        'Arcane Style (双城之战)', 'Genshin Impact (原神)', 'Retro 90s Anime (90年代复古)', 'Thick Impasto (厚涂)'
+                    ]},
+                    { id: 'view', label: 'View (构图)', type: 'select', options: [
+                        'Full Body Portrait (全身)', 'Cowboy Shot (七分身)', 'Close-up Face (大头照)', 'Dynamic Action Pose (动态)', 'Character Sheet (三视图)'
+                    ]},
+                    { id: 'bg', label: 'Background (背景)', type: 'text', placeholder: 'e.g. Magic Forest' },
+                    { id: 'aspect', label: 'Aspect Ratio (比例)', type: 'select', options: ['--ar 2:3 (Portrait)', '--ar 16:9 (Wallpaper)', '--ar 1:1 (Avatar)']}
                 ],
-                template: (d) => `/imagine prompt: anime character design, ${d.char}, wearing ${d.outfit}, art style: ${d.style}, view: ${d.view}, white background, high quality illustration, masterpiece --niji 6`
+                template: (d) => `/imagine prompt: anime character, ${d.char}, art style: ${d.style}, view: ${d.view}, background: ${d.bg}, masterpiece, best quality, highly detailed ${d.aspect} --niji 6`
             },
 
-            // --- 写作类 ---
+            // ================= 写作类 (Writing) =================
             xhs: {
-                title: "小红书爆文生成器",
+                title: "小红书爆文矩阵 (XHS)",
                 inputs: [
-                    { id: 'topic', label: '笔记主题', type: 'text', placeholder: 'e.g. 减肥食谱' },
-                    { id: 'vibe', label: '语气风格', type: 'select', options: ['闺蜜吐槽风 (真诚)', '干货专家风 (专业)', '沉浸式治愈风 (温柔)', '标题党 (夸张)'] },
-                    { id: 'hook', label: '开头钩子', type: 'text', placeholder: 'e.g. 后悔没有早点知道...' }
+                    { id: 'topic', label: 'Topic (选题)', type: 'text', placeholder: 'e.g. 居家健身' },
+                    { id: 'audience', label: 'Target Audience (受众)', type: 'select', options: [
+                        'Female Students (女大学生)', 'Office Ladies (精致白领)', 'Moms (宝妈)', 'Tech Geeks (极客)', 'Budget Conscious (省钱党)'
+                    ]},
+                    { id: 'emotion', label: 'Emotional Trigger (情绪)', type: 'select', options: [
+                        'Anxiety/FOMO (焦虑/怕错过)', 'Joy/Healing (治愈)', 'Curiosity (好奇)', 'Anger/Ranting (吐槽)', 'Envy/Aspiration (羡慕)'
+                    ]},
+                    { id: 'vibe', label: 'Tone (语气)', type: 'select', options: [
+                        'Bestie/Gossip (闺蜜聊天)', 'Professional/Expert (专家科普)', 'Gentle/Soft (温柔姐姐)', 'Direct/Sharp (犀利点评)'
+                    ]},
+                    { id: 'emoji', label: 'Emoji Density (表情量)', type: 'select', options: ['Heavy (含量极高)', 'Moderate (适中)', 'Minimal (极简)']}
                 ],
-                template: (d) => `Role: 小红书博主\nTask: 写一篇关于"${d.topic}"的笔记。\nTone: ${d.vibe}\n\nRequirements:\n1. Title: 包含Emoji，极具吸引力，例如"${d.hook}"\n2. Body: 分点陈述，多用Emoji，视觉舒适。\n3. Tags: 包含5个热门标签。\n4. CTA: 引导收藏和评论。`
+                template: (d) => `Role: 小红书爆款博主\nTask: 为"${d.topic}"写一篇笔记\nTarget: ${d.audience}\nEmotion: ${d.emotion}\nTone: ${d.vibe}\nEmoji Level: ${d.emoji}\n\nRequirements:\n1. Title: 必须包含数字、痛点或悬念 (e.g. "后悔没早知道...")\n2. Structure: 痛点引入 -> 干货输出 -> 情绪价值\n3. Tags: 生成 10 个高流量 Tag\n4. CTA: 骗赞骗收藏`
             },
             tiktok: {
-                title: "抖音 / TikTok 短视频脚本",
+                title: "抖音/TikTok 短视频脚本",
                 inputs: [
-                    { id: 'topic', label: '视频主题', type: 'text', placeholder: 'e.g. iPhone 15 评测' },
-                    { id: 'duration', label: '时长', type: 'select', options: ['15秒 (快速种草)', '30秒 (剧情反转)', '60秒 (深度解说)'] },
-                    { id: 'type', label: '类型', type: 'select', options: ['口播 (Talking Head)', 'Vlog (生活记录)', 'ASMR (沉浸式)'] }
+                    { id: 'topic', label: 'Topic (主题)', type: 'text', placeholder: 'e.g. 探店' },
+                    { id: 'duration', label: 'Duration (时长)', type: 'select', options: [
+                        '15s (快速种草/反转)', '30s (剧情/叙事)', '60s (深度解说/教程)'
+                    ]},
+                    { id: 'type', label: 'Format (类型)', type: 'select', options: [
+                        'Talking Head (口播)', 'Vlog (生活记录)', 'ASMR (沉浸式)', 'Skit/Comedy (剧情段子)', 'Tutorial (教程)'
+                    ]},
+                    { id: 'hook', label: 'Hook Strategy (钩子)', type: 'select', options: [
+                        'Visual Shock (视觉冲击)', 'Controversial Statement (暴论)', 'Question (提问)', 'Sound Effect (音效)'
+                    ]}
                 ],
-                template: (d) => `Role: 抖音脚本编剧\nTask: 为"${d.topic}"写一个${d.duration}的脚本。\nType: ${d.type}\n\nStructure:\n1. [0-3s] 黄金3秒: 给出极强的视觉或听觉钩子。\n2. [Middle] 内容核心: 痛点+爽点。\n3. [End] 引导关注。\n请按表格形式输出：画面 | 台词 | 音效`
+                template: (d) => `Role: 抖音金牌编剧\nTask: 为"${d.topic}"写${d.duration}脚本\nType: ${d.type}\nHook: ${d.hook}\n\nOutput Format:\n| 时间 | 画面/运镜 | 台词/文案 | 音效/BGM |\n|---|---|---|---|\n(请确保前3秒完播率极高)`
             },
 
-            // --- 音频类 ---
-            lyrics: {
-                title: "专业歌词创作",
-                inputs: [
-                    { id: 'theme', label: '歌曲主题', type: 'text', placeholder: 'e.g. 失恋的痛苦' },
-                    { id: 'style', label: '曲风', type: 'select', options: ['Mandopop (华语流行)', 'Rap (说唱)', 'Folk (民谣)', 'Rock (摇滚)'] },
-                    { id: 'rhyme', label: '押韵要求', type: 'select', options: ['AABB', 'ABAB', 'Freestyle'] }
-                ],
-                template: (d) => `Role: 专业作词人\nTask: 写一首关于"${d.theme}"的歌词。\nStyle: ${d.style}\nRhyme Scheme: ${d.rhyme}\n\nStructure:\n[Verse 1]\n[Chorus]\n[Verse 2]\n[Chorus]\n[Bridge]\n[Outro]`
-            },
+            // ================= 音频类 (Audio) =================
             suno: {
-                title: "Suno 元标签 / 风格指令",
+                title: "Suno AI Music Generator",
                 inputs: [
-                    { id: 'genre', label: '流派 (Genre)', type: 'select', options: ['K-pop', 'Epic Orchestral', 'Lo-fi Hip Hop', 'Cyberpunk Phonk'] },
-                    { id: 'vocal', label: '人声 (Vocal)', type: 'select', options: ['Female Whisper', 'Male Belting', 'Choir', 'Instrumental'] },
-                    { id: 'mood', label: '情绪 (Mood)', type: 'text', placeholder: 'e.g. Dark, Aggressive' }
+                    { id: 'genre', label: 'Genre (流派)', type: 'select', options: [
+                        'K-pop', 'J-pop', 'City Pop', 'Mandopop', 'Cantopop', 'Cyberpunk Phonk', 'Lo-fi Hip Hop', 'Jazz Hop', 
+                        'EDM House', 'Techno', 'Dubstep', 'DnB', 'Future Bass', 'Synthwave', 
+                        'Heavy Metal', 'Nu-Metal', 'Shoegaze', 'Dream Pop', 'Math Rock', 
+                        'Epic Orchestral', 'Cinematic Ambient', 'Opera'
+                    ]},
+                    { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: [
+                        'Female Whispery (女声耳语)', 'Female Belting (女高音)', 'Male Deep (男低音)', 'Male Rap (男说唱)', 
+                        'Choir (合唱团)', 'Vocaloid (虚拟歌姬)', 'Instrumental (纯音乐)'
+                    ]},
+                    { id: 'bpm', label: 'Speed (速度)', type: 'select', options: [
+                        'Slow (60-80 BPM)', 'Mid-Tempo (90-110 BPM)', 'Upbeat (120-140 BPM)', 'Fast (160+ BPM)'
+                    ]},
+                    { id: 'inst', label: 'Instruments (乐器)', type: 'text', placeholder: 'e.g. Saxophone, 808 Bass, Koto' },
+                    { id: 'mood', label: 'Atmosphere (氛围)', type: 'text', placeholder: 'e.g. Melancholic, Energetic' }
                 ],
-                template: (d) => `[Style: ${d.genre}]\n[Vocals: ${d.vocal}]\n[Mood: ${d.mood}]\n[Tempo: Variable]\n\n(Prompt for Suno description)`
+                template: (d) => `[Style: ${d.genre}]\n[Vocals: ${d.vocal}]\n[Instruments: ${d.inst}]\n[Tempo: ${d.bpm}]\n[Mood: ${d.mood}]\n[Production: High Fidelity, Wide Stereo]\n\n(Prompt for Suno/Udio)`
+            },
+            lyrics: {
+                title: "Songwriting & Lyrics",
+                inputs: [
+                    { id: 'theme', label: 'Theme (主题)', type: 'text', placeholder: 'e.g. Heartbreak' },
+                    { id: 'struct', label: 'Structure (结构)', type: 'select', options: [
+                        'Pop Standard (Verse-Chorus)', 'Rap Flow (Intro-Hook-Verse)', 'Ballad (AABA)', 'Storytelling (Linear)'
+                    ]},
+                    { id: 'lang', label: 'Language (语言)', type: 'select', options: ['Chinese (中文)', 'English (英文)', 'Korean (韩文)', 'Japanese (日文)']},
+                    { id: 'rhyme', label: 'Rhyme Scheme (押韵)', type: 'select', options: ['AABB', 'ABAB', 'Free Verse', 'Internal Rhyme (双押/三押)']}
+                ],
+                template: (d) => `Role: Professional Songwriter\nTask: Write lyrics about "${d.theme}"\nStructure: ${d.struct}\nLanguage: ${d.lang}\nRhyme: ${d.rhyme}\n\nRequirements:\n- Include Metatags like [Verse], [Chorus]\n- Ensure rhythmic flow.`
             }
         };
 
-        // 当前激活的工具ID
         let currentToolId = 'logo';
 
-        // 初始化
-        window.onload = () => {
-            loadTool('logo');
-        };
+        window.onload = () => { loadTool('logo'); };
 
-        // 加载工具函数
         function loadTool(toolId) {
             currentToolId = toolId;
             const tool = tools[toolId];
-            
-            // 更新标题
             document.getElementById('currentToolTitle').innerText = tool.title;
             
-            // 更新侧边栏高亮
+            // Highlight Menu
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
 
-            // 动态生成表单
+            // Render Form
             const formContainer = document.getElementById('dynamicForm');
-            formContainer.innerHTML = ''; // 清空旧表单
+            formContainer.innerHTML = ''; 
 
             let html = '<div class="form-grid">';
             
             tool.inputs.forEach((input, index) => {
-                // 如果是奇数个输入框，最后一个占满一行
-                if (index === tool.inputs.length - 1 && tool.inputs.length % 2 !== 0) {
+                // 如果是奇数，最后一个元素占满整行
+                const isLast = index === tool.inputs.length - 1;
+                const isOddTotal = tool.inputs.length % 2 !== 0;
+                
+                if (isLast && isOddTotal) {
                     html += `</div><div class="form-full">`;
                 }
 
@@ -382,45 +468,31 @@
                 html += `</div>`;
             });
 
-            if (tool.inputs.length % 2 === 0) html += '</div>'; // 关闭grid
-            if (tool.inputs.length % 2 !== 0) html += '</div>'; // 关闭full
+            if (tool.inputs.length % 2 === 0) html += '</div>'; 
+            if (tool.inputs.length % 2 !== 0) html += '</div>'; 
 
-            // 添加生成按钮
-            html += `<button class="btn" onclick="generatePrompt()">⚡️ 生成指令</button>`;
-            
+            html += `<button class="btn" onclick="generatePrompt()">🚀 Generate Prompt</button>`;
             formContainer.innerHTML = html;
-            
-            // 清空结果
             document.getElementById('resultBox').value = '';
         }
 
-        // 生成指令函数
         function generatePrompt() {
             const tool = tools[currentToolId];
             const data = {};
-            
-            // 收集数据
             tool.inputs.forEach(input => {
                 data[input.id] = document.getElementById(`input_${input.id}`).value;
             });
-
-            // 调用模版生成
-            const result = tool.template(data);
-            
-            // 显示结果
-            document.getElementById('resultBox').value = result;
+            document.getElementById('resultBox').value = tool.template(data);
         }
 
-        // 复制功能
         function copyResult() {
             const el = document.getElementById('resultBox');
             if (!el.value) return;
             el.select();
             document.execCommand('copy');
-            alert('已复制！');
+            alert('Prompt Copied!');
         }
 
-        // 弹窗
         function showPro() {
             document.getElementById('proModal').style.display = 'flex';
         }
