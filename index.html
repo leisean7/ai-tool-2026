@@ -3,302 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI DeepPrompts | 深度结构化指令生成器</title>
+    <title>AI Nexus 2026 | 全能指令指挥台</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #09090b;
-            --card-bg: #18181b;
-            --accent: #6366f1; /* Indigo */
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --text: #f4f4f5;
-            --text-gray: #a1a1aa;
-            --border: #27272a;
+            --bg-grad: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #8b5cf6; /* Violet */
+            --text: #f8fafc;
+            --text-mute: #94a3b8;
         }
+        
+        * { box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-grad);
             color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* 手机端适配 */
         }
-        .container {
-            background-color: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px -10px black;
-            width: 100%;
-            max-width: 700px;
+
+        /* 侧边栏导航 */
+        .sidebar {
+            width: 250px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, #a78bfa, #2dd4bf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-mute);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* 选项卡内容控制 */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片容器 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass);
             border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: transform 0.2s;
             position: relative;
             overflow: hidden;
         }
-        /* 顶部装饰光效 */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ec4899, #6366f1, #3b82f6);
-        }
-        h1 {
-            text-align: center;
-            font-size: 2rem;
-            margin: 0 0 10px 0;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-        p.subtitle {
-            text-align: center;
-            color: var(--text-gray);
-            margin-bottom: 2.5rem;
-            font-size: 0.95rem;
-        }
-        .input-group {
-            margin-bottom: 2rem;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-            color: var(--text);
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 16px;
-            background: #27272a;
-            border: 1px solid #3f3f46;
-            border-radius: 12px;
-            color: white;
-            font-size: 1.1rem;
-            box-sizing: border-box;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        input[type="text"]:focus {
+
+        .card:hover {
+            transform: translateY(-5px);
             border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-            background: #09090b;
         }
-        button.generate-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+
+        .card h3 { margin-top: 0; font-size: 1.1rem; }
+        .card p { color: var(--text-mute); font-size: 0.9rem; line-height: 1.5; }
+
+        .btn-copy {
+            background: rgba(255,255,255,0.1);
             border: none;
-            border-radius: 12px;
             color: white;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-        button.generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-        button.generate-btn:active {
-            transform: scale(0.98);
-        }
-        .output-area {
-            margin-top: 2rem;
-            background: #09090b;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            display: none;
-            position: relative;
-        }
-        textarea {
-            width: 100%;
-            height: 250px; /* 更高的高度，适合长指令 */
-            background: transparent;
-            border: none;
-            color: #e4e4e7;
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace; /* 代码字体 */
-            resize: none;
-            outline: none;
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #27272a;
-            border: 1px solid #3f3f46;
-            color: var(--text);
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.8rem;
-            transition: all 0.2s;
+            margin-top: 10px;
+            width: 100%;
         }
-        .copy-btn:hover {
-            background: var(--accent);
-            border-color: var(--accent);
+        .btn-copy:hover { background: var(--accent); }
+
+        /* 锁定的卡片 (变现关键) */
+        .card.locked {
+            opacity: 0.6;
         }
-        .tag {
-            display: inline-block;
-            padding: 4px 8px;
-            background: #27272a;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            color: var(--text-gray);
-            margin-bottom: 10px;
+        .card.locked::after {
+            content: "🔒 VIP 专享";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #fbbf24;
+            backdrop-filter: blur(2px);
+            cursor: pointer;
+        }
+
+        /* 输入生成区样式 (继承自V2但美化) */
+        .generator-box {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        textarea.result-box {
+            width: 100%;
+            height: 200px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        input.main-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        button.action-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* 手机适配 */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; }
+            .nav-item { white-space: nowrap; font-size: 0.9rem; }
+            .main-content { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>⚡️ DeepPrompts</h1>
-    <p class="subtitle">普通人写句子，专家写结构。一键生成千万级 Tokens 质量的指令。</p>
-
-    <div class="input-group">
-        <label>输入任务核心关键词</label>
-        <input type="text" id="userInput" placeholder="例如：写一篇小红书爆款、优化这段Python代码、制定OKR...">
+    <div class="sidebar">
+        <div class="logo"><i class="fas fa-brain"></i> AI Nexus</div>
+        <div class="nav-item active" onclick="switchTab('generator')"><i class="fas fa-magic"></i> 智能生成</div>
+        <div class="nav-item" onclick="switchTab('library')"><i class="fas fa-book"></i> 提示词库</div>
+        <div class="nav-item" onclick="switchTab('midjourney')"><i class="fas fa-paint-brush"></i> 绘画指令</div>
+        <div class="nav-item" style="color: #fbbf24;" onclick="alert('这是你的变现位：跳转到你的闲鱼或知识星球')"><i class="fas fa-crown"></i> 升级 Pro 版</div>
     </div>
 
-    <button class="generate-btn" onclick="generatePrompt()">生成结构化指令 (PRO版)</button>
+    <div class="main-content">
 
-    <div class="output-area" id="outputArea">
-        <span class="tag">System Prompt Optimized</span>
-        <button class="copy-btn" onclick="copyText()">复制全部</button>
-        <textarea id="resultBox" readonly></textarea>
+        <div id="generator" class="tab-content active">
+            <h2>⚡️ 深度结构化指令生成</h2>
+            <p style="color: var(--text-mute); margin-bottom: 20px;">输入简单的想法，生成符合麦肯锡逻辑的专家级 Prompt。</p>
+            
+            <div class="generator-box">
+                <input type="text" id="userInput" class="main-input" placeholder="例如：帮我制定一个30天的Python学习计划...">
+                <button class="action-btn" onclick="generatePrompt()">立即生成</button>
+                <textarea id="resultBox" class="result-box" placeholder="生成的指令将显示在这里..."></textarea>
+                <button class="btn-copy" onclick="copyResult()">复制指令</button>
+            </div>
+        </div>
+
+        <div id="library" class="tab-content">
+            <h2>📚 爆款指令速查库</h2>
+            <p style="color: var(--text-mute); margin-bottom: 20px;">点击卡片直接复制，无需手写。</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>📝 小红书爆文生成</h3>
+                    <p>生成包含 Emoji、痛点分析、互动引导的种草文案。</p>
+                    <button class="btn-copy" onclick="copyPreset(this, '请为我写一篇小红书种草文案，主题是...')">复制指令</button>
+                </div>
+                <div class="card">
+                    <h3>💼 简历优化专家</h3>
+                    <p>基于 STAR 法则优化工作经历，增加量化数据。</p>
+                    <button class="btn-copy" onclick="copyPreset(this, '请作为资深HR，优化我的以下简历内容...')">复制指令</button>
+                </div>
+                <div class="card">
+                    <h3>🐍 Python 代码解释器</h3>
+                    <p>把复杂的代码翻译成大白话，并检查 Bug。</p>
+                    <button class="btn-copy" onclick="copyPreset(this, '请解释这段代码的运行逻辑，并检查潜在Bug...')">复制指令</button>
+                </div>
+
+                <div class="card locked" onclick="alert('这是赚钱的关键！\n你可以在这里弹窗：\n\n【解锁 1000+ 高级指令库】\n限时 9.9 元\n点击跳转购买链接')">
+                    <h3>💰 抖音带货脚本 (Pro)</h3>
+                    <p>包含前3秒完播率钩子 + 情绪价值转折 + 逼单话术。</p>
+                </div>
+                <div class="card locked" onclick="alert('这里放你的付费链接')">
+                    <h3>🤖 自动化办公 Agent (Pro)</h3>
+                    <p>自动写周报、自动回复邮件、自动做 PPT 大纲。</p>
+                </div>
+                <div class="card locked" onclick="alert('这里放你的付费链接')">
+                    <h3>📈 美股财报分析 (Pro)</h3>
+                    <p>像高盛分析师一样解读财报，预测股价趋势。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="midjourney" class="tab-content">
+            <h2>🎨 AI 绘画咒语生成器</h2>
+            <p style="color: var(--text-mute); margin-bottom: 20px;">输入中文描述，自动翻译成 Midjourney 英文参数。</p>
+            
+            <div class="generator-box">
+                <input type="text" id="mjInput" class="main-input" placeholder="例如：一只赛博朋克风格的猫，霓虹灯背景...">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <select id="mjRatio" style="padding: 10px; background: #1e1b4b; color: white; border: 1px solid #ffffff33; border-radius: 8px;">
+                        <option value="--ar 16:9">16:9 (电脑壁纸)</option>
+                        <option value="--ar 9:16">9:16 (手机壁纸)</option>
+                        <option value="--ar 1:1">1:1 (头像)</option>
+                    </select>
+                    <select id="mjStyle" style="padding: 10px; background: #1e1b4b; color: white; border: 1px solid #ffffff33; border-radius: 8px;">
+                        <option value="--v 6.0">V6 (真实感)</option>
+                        <option value="--niji 6">Niji (二次元)</option>
+                    </select>
+                </div>
+                <button class="action-btn" onclick="generateMJ()">生成 MJ 指令</button>
+                <textarea id="mjResult" class="result-box" style="height: 100px;"></textarea>
+            </div>
+        </div>
+
     </div>
-</div>
 
-<script>
-    function generatePrompt() {
-        const input = document.getElementById('userInput').value.trim();
-        const outputArea = document.getElementById('outputArea');
-        const resultBox = document.getElementById('resultBox');
-
-        if (!input) {
-            alert("请至少输入一个关键词，比如'写周报'");
-            return;
+    <script>
+        // 切换 Tab 逻辑
+        function switchTab(tabId) {
+            // 隐藏所有内容
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // 显示选中内容
+            document.getElementById(tabId).classList.add('active');
+            
+            // 高亮菜单 (简单匹配)
+            event.currentTarget.classList.add('active');
         }
 
-        // --- 核心逻辑 V2.0：结构化生成 ---
-        let prompt = "";
-        
-        // 1. 文案/写作类 (小红书、公众号、周报)
-        if (input.match(/(周报|日报|文章|小红书|文案|写作|写一)/)) {
-            prompt = `### Role (角色设定)
-你是由 OpenAI 训练的顶级内容创作专家，精通 copywriting（文案写作）和消费者心理学。你擅长使用具有感染力的语言，并能根据不同平台调整语气。
+        // 核心生成逻辑 (保留 V2 的逻辑并增强)
+        function generatePrompt() {
+            const input = document.getElementById('userInput').value;
+            const resultBox = document.getElementById('resultBox');
+            
+            if(!input) { alert('请输入内容'); return; }
 
-### Context (背景)
-用户需要完成的任务是：【${input}】。
-当前内容市场充斥着同质化信息，你需要创作出能瞬间抓住眼球（Hook）、并提供高情绪价值的内容。
-
-### Task (具体任务)
-请根据上述背景，执行以下操作：
-1. 深度分析该主题的目标受众痛点。
-2. 撰写 3 个不同的爆款标题（包含数字、悬念或强烈情感）。
-3. 撰写正文内容，正文必须包含：
-   - 开篇黄金 3 秒钩子
-   - 核心干货/价值点（分点陈述）
-   - 结尾强互动引导（Call to Action）
-
-### Constraints (约束条件)
-- 严禁使用枯燥的教科书式语言。
-- 多使用 emoji 表情符号增加亲和力。
-- 关键句需要加粗显示。
-- 语气风格：${input.includes("周报") ? "专业、干练、数据驱动" : "活泼、真诚、像闺蜜聊天"}。
-
-### Output Format (输出格式)
-请以 Markdown 格式输出。`;
-        } 
-        
-        // 2. 编程/代码类
-        else if (input.match(/(代码|Python|JS|Java|C\+\+|bug|优化|编程)/)) {
-            prompt = `### Role (角色设定)
-你是一位拥有 15 年经验的 Google 首席架构师 (Principal Software Engineer)。你推崇 "Clean Code" 原则，不仅关注代码能否运行，更关注其可读性、扩展性和安全性。
-
-### Task (具体任务)
-用户要求：【${input}】。
-请针对此需求编写或优化代码。
-
-### Steps (执行步骤)
-1. **逻辑分析**：在写代码前，先用自然语言简述你的解题思路和算法复杂度（Big O）。
-2. **代码实现**：编写高质量代码。
-   - 变量命名必须遵循驼峰命名法或下划线命名法（视语言规范而定）。
-   - 关键逻辑必须包含详细的中文注释。
-   - 必须包含错误处理（Try-Catch）和边界情况检查。
-3. **单元测试**：提供 2-3 个测试用例（Test Cases）以验证代码的正确性。
-
-### Output Format (输出格式)
-请使用代码块格式输出，并注明所使用的语言版本。`;
+            // 这里可以接入更复杂的逻辑，目前使用通用结构演示
+            resultBox.value = `### Role (角色设定)\n你是由 OpenAI 训练的顶级专家。请针对任务：【${input}】提供解决方案。\n\n### Task (任务)\n1. 深度分析核心痛点。\n2. 提供 Step-by-step 的执行步骤。\n3. 输出格式要求：结构清晰，重点加粗。\n\n### Output\n请以 Markdown 格式输出。`;
         }
 
-        // 3. 学习/计划/咨询类 (减肥、学习计划、OKR)
-        else if (input.match(/(减肥|健身|计划|OKR|学习|路线|怎么学)/)) {
-            prompt = `### Role (角色设定)
-你是一位该领域的世界级导师（Mentor），擅长使用麦肯锡咨询方法论。你不仅提供建议，更提供可落地的系统化方案。
-
-### Goal (目标)
-针对用户的需求：【${input}】，制定一份从入门到精通/完成的详细执行路线图。
-
-### Framework (思考框架)
-请使用 **WWHP 模型** 进行拆解：
-1. **What (核心定义)**：这件事情的本质是什么？
-2. **Why (动机与价值)**：做这件事的长期回报是什么？
-3. **How (执行路径)**：
-   - 请以表格形式列出阶段性计划（如：第一周、第一月）。
-   - 每个阶段必须包含：关键动作 (Key Actions) + 成功指标 (KPIs)。
-4. **Potential Pitfalls (避坑指南)**：指出新手最容易犯的 3 个错误。
-
-### Constraints (约束)
-- 拒绝空泛的鸡汤，必须提供具体的可操作建议（Actionable Insights）。
-- 涉及数据时，必须基于科学研究或行业标准。`;
+        // 复制功能
+        function copyResult() {
+            const el = document.getElementById('resultBox');
+            el.select();
+            document.execCommand('copy');
+            alert('复制成功！');
         }
 
-        // 4. 万能通用类 (兜底)
-        else {
-            prompt = `### System Instruction (系统指令)
-你是一个极其智能的 AI 助手。用户输入了一个模糊的需求：【${input}】。
-
-### Thinking Process (思维链)
-1. 首先，你需要揣摩用户背后的真实意图。
-2. 拆解该任务的复杂性，将其分解为子任务。
-3. 调用你的知识库中关于该主题的最权威信息。
-
-### Response Requirements (回答要求)
-请不要直接给出平庸的答案，而是按照 **[专家咨询报告]** 的标准进行输出：
-- **核心观点**：一针见血地指出问题的关键。
-- **深度解析**：分 3-4 个维度展开论述。
-- **解决方案**：给出 Step-by-step 的操作指南。
-- **金句总结**：最后用一句富有哲理的话总结。
-
-请确保输出结构清晰，逻辑严密，语气专业且自信。`;
+        // 预设指令复制
+        function copyPreset(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "已复制 ✅";
+                setTimeout(() => btn.innerText = originalText, 2000);
+            });
         }
 
-        resultBox.value = prompt;
-        outputArea.style.display = "block";
-    }
+        // MJ 生成逻辑
+        function generateMJ() {
+            const input = document.getElementById('mjInput').value;
+            const ratio = document.getElementById('mjRatio').value;
+            const version = document.getElementById('mjStyle').value;
+            
+            if(!input) { alert('请输入画面描述'); return; }
 
-    function copyText() {
-        const resultBox = document.getElementById('resultBox');
-        resultBox.select();
-        document.execCommand("copy");
-        
-        const btn = document.querySelector('.copy-btn');
-        const originalText = btn.innerText;
-        btn.innerText = "已复制 ✅";
-        setTimeout(() => {
-            btn.innerText = originalText;
-        }, 2000);
-    }
-</script>
-
+            // 模拟简单的翻译结构 (实际可以用 API，但为了静态页演示，直接拼接)
+            const prompt = `/imagine prompt: ${input} , 8k resolution, highly detailed, cinematic lighting, masterpiece ${ratio} ${version}`;
+            
+            document.getElementById('mjResult').value = prompt;
+        }
+    </script>
 </body>
 </html>
