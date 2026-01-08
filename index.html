@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V21 | 现成词库超市版</title>
+    <title>AI CommandOS V22 | JSON双模版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -19,6 +19,7 @@
             --gold: #f59e0b;
             --purple: #8b5cf6;
             --green: #10b981;
+            --code-bg: #1e1e1e;
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -89,7 +90,7 @@
         }
 
         .topbar {
-            height: 55px;
+            height: 60px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -98,78 +99,31 @@
             background: var(--bg);
         }
 
-        .model-selector select {
-            background: var(--panel); color: white; border: 1px solid var(--border);
-            padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+        /* JSON Toggle Switch */
+        .mode-switch {
+            display: flex; align-items: center; gap: 8px; background: var(--input);
+            padding: 4px; border-radius: 20px; border: 1px solid var(--border);
         }
+        .mode-btn {
+            padding: 4px 12px; border-radius: 16px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: var(--text-sub);
+            transition: 0.2s;
+        }
+        .mode-btn.active { background: var(--accent); color: white; }
+        .json-active .mode-btn.active { background: var(--gold); color: black; } /* JSON mode color */
 
         .scroll-area {
             flex: 1; overflow-y: auto; padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%;
         }
 
-        /* 上下文面板 */
-        .context-panel {
-            width: 280px;
-            background: var(--sidebar);
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        /* --- 基础组件 --- */
-        .input-group { position: relative; margin-bottom: 15px; }
-        
-        label { display: block; margin-bottom: 6px; color: var(--text-sub); font-size: 0.8rem; }
-        input, select, textarea {
-            width: 100%; background: var(--input); border: 1px solid var(--border);
-            color: white; padding: 10px; border-radius: 6px; font-size: 0.9rem; font-family: inherit; margin-bottom: 0;
-            transition: 0.2s;
-        }
-        input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #3b4050; }
-
-        .magic-btn {
-            position: absolute; right: 8px; top: 28px;
-            background: transparent; border: none; color: var(--gold);
-            cursor: pointer; font-size: 0.9rem; padding: 4px;
-        }
-        .magic-btn:hover { transform: scale(1.1); }
-
-        .action-bar { display: flex; gap: 15px; align-items: center; margin-top: 20px; padding-bottom: 30px; }
-        .btn-main {
-            flex: 1; padding: 12px; background: var(--accent); color: white;
-            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
-        }
-        .btn-main:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        
-        /* 结果展示 */
-        .result-container { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
-        .result-box {
-            background: #000; border: 1px solid var(--border); border-radius: 8px;
-            padding: 15px; font-family: 'Monaco', monospace; color: #10b981;
-            font-size: 0.85rem; line-height: 1.5; min-height: 80px; white-space: pre-wrap; position: relative;
-        }
-        .ab-tag {
-            position: absolute; top: 0; left: 0; background: var(--panel); 
-            padding: 2px 8px; font-size: 0.7rem; border-bottom-right-radius: 6px; color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
-        }
-
-        /* --- 词库超市 (Prompt Store) 样式 --- */
-        .library-search {
-            margin-bottom: 20px; position: sticky; top: 0; z-index: 10; background: var(--bg); padding-bottom: 10px;
-        }
+        /* --- 词库 & 卡片 --- */
+        .library-search { margin-bottom: 20px; position: sticky; top: 0; z-index: 10; background: var(--bg); padding-bottom: 10px; }
         .library-search input {
             padding: 12px; font-size: 1rem; border-radius: 8px; border-color: var(--accent);
             background: rgba(47, 52, 66, 0.8); backdrop-filter: blur(5px);
+            width: 100%; color: white; border: 1px solid var(--border);
         }
 
-        .library-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;
-        }
+        .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
 
         .prompt-card {
             background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 15px;
@@ -180,39 +134,47 @@
         
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .card-title-text { font-weight: bold; color: var(--text); font-size: 0.95rem; }
-        .card-tag { 
-            font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase;
-        }
+        .card-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        
+        /* 标签颜色 */
         .tag-visual { background: rgba(59, 130, 246, 0.2); color: var(--accent); }
         .tag-writing { background: rgba(16, 185, 129, 0.2); color: var(--green); }
         .tag-code { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
-        .tag-office { background: rgba(139, 92, 246, 0.2); color: var(--purple); }
 
         .card-preview {
             font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;
-            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
             font-family: 'Monaco', monospace; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px;
         }
 
-        .copy-overlay {
-            position: absolute; inset: 0; background: rgba(59, 130, 246, 0.9);
-            display: flex; justify-content: center; align-items: center;
-            color: white; font-weight: bold; font-size: 1.1rem;
-            opacity: 0; transition: 0.2s;
+        /* 表单区域 */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; color: var(--text-sub); font-size: 0.8rem; }
+        input, select, textarea {
+            width: 100%; background: var(--input); border: 1px solid var(--border);
+            color: white; padding: 10px; border-radius: 6px; font-size: 0.9rem; font-family: inherit;
         }
-        .prompt-card:active .copy-overlay { opacity: 1; }
+        
+        .action-bar { display: flex; gap: 15px; margin-top: 20px; }
+        .btn-main {
+            flex: 1; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
+        
+        /* 结果框 */
+        .result-box {
+            background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
+            padding: 15px; font-family: 'Monaco', monospace; color: #a78bfa;
+            font-size: 0.85rem; line-height: 1.5; min-height: 80px; white-space: pre-wrap; position: relative; margin-top: 20px;
+        }
+        
+        /* JSON Mode 特效 */
+        .json-active .card-preview, .json-active .result-box { color: var(--gold); }
+        .json-active .btn-main { background: var(--gold); color: black; }
 
-        /* 移动端适配 */
-        .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
-        @media (max-width: 1024px) { .context-panel { display: none; } }
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -100%; height: 100%; transition: 0.3s; box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
-            .mobile-toggle { display: block; }
-            .topbar { padding: 0 15px; }
-            .scroll-area { padding: 15px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .library-grid { grid-template-columns: 1fr; }
+            .form-grid, .library-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -223,205 +185,199 @@
         <div class="sidebar" id="sidebar">
             <div class="brand"><i class="fas fa-terminal"></i> Command<span>OS</span></div>
             
-            <div class="menu-category">Prompt Store (词库)</div>
-            <div class="menu-item active" onclick="loadTool('library')"><i class="fas fa-th-large"></i> 全能词库 (Vault)</div>
+            <div class="menu-category">Quick Library (词库)</div>
+            <div class="menu-item active" onclick="loadTool('library')"><i class="fas fa-th-large"></i> Prompt Vault</div>
 
-            <div class="menu-category">Generators (生成器)</div>
+            <div class="menu-category">Custom Generators (定制)</div>
             <div class="menu-item" onclick="loadTool('visual')"><i class="fas fa-camera"></i> 视觉 (Visual)</div>
-            <div class="menu-item" onclick="loadTool('video')"><i class="fas fa-video"></i> 视频 (Video)</div>
-            <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> 写作 (Copy)</div>
+            <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> 写作 (Writing)</div>
+            <div class="menu-item" onclick="loadTool('code')"><i class="fas fa-code"></i> 代码 (Coding)</div>
             
             <div class="menu-category">Professional</div>
             <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> 外贸开发 (Sales)</div>
-            <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> 学术科研 (Scholar)</div>
             <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
-            
-            <div class="menu-category">Tools</div>
-            <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> 逆向工程 (Reverse)</div>
         </div>
 
         <div class="workspace">
             <div class="topbar">
                 <div style="display:flex; gap:15px; align-items:center;">
-                    <i class="fas fa-bars mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
-                    <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">全能词库 (Prompt Vault)</span>
+                    <i class="fas fa-bars" onclick="document.getElementById('sidebar').classList.toggle('open')" style="color:white; cursor:pointer; font-size:1.2rem; display:none;"></i>
+                    <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">Prompt Vault</span>
                 </div>
-                <div class="model-selector" id="modelSelectContainer" style="display:none;">
-                    <select id="targetModel"></select>
+                
+                <div class="mode-switch" id="modeSwitch">
+                    <div class="mode-btn active" id="btnText" onclick="setMode('text')">Text</div>
+                    <div class="mode-btn" id="btnJson" onclick="setMode('json')">{ JSON }</div>
                 </div>
             </div>
 
-            <div class="scroll-area">
+            <div class="scroll-area" id="mainArea">
                 
                 <div id="libraryView">
                     <div class="library-search">
-                        <input type="text" id="libSearch" placeholder="🔍 搜索词库：Logo, 小红书, Python, 简历..." oninput="filterLibrary()">
+                        <input type="text" id="libSearch" placeholder="🔍 Search prompts..." oninput="filterLibrary()">
                     </div>
-                    <div class="library-grid" id="libraryGrid">
-                        </div>
+                    <div class="library-grid" id="libraryGrid"></div>
                 </div>
 
                 <div id="generatorView" style="display:none;">
-                    <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()" style="display:none;">
-                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                        <div>点击或拖拽上传图片</div>
-                        <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
-                    </div>
-
-                    <div id="dynamicForm" class="form-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;"></div>
-
+                    <div id="dynamicForm"></div>
                     <div class="action-bar">
-                        <div class="switch-group" id="abTestGroup">
-                            <input type="checkbox" id="abTest"> <span>A/B 测试</span>
-                        </div>
-                        <button class="btn-main" onclick="generate()">
-                            <i class="fas fa-bolt"></i> 立即生成
-                        </button>
+                        <button class="btn-main" onclick="generate()">Generate Output</button>
                     </div>
-
-                    <div class="card-title">
-                        <span>Output Terminal</span>
-                        <span style="font-size:0.75rem; cursor:pointer; color:var(--accent);" onclick="document.getElementById('resultContainer').innerHTML=''">Clear</span>
-                    </div>
-                    <div id="resultContainer" class="result-container"></div>
+                    <div id="resultContainer"></div>
                 </div>
             </div>
         </div>
-
-        <div class="context-panel">
-            <div class="card-title">🧬 品牌 DNA (Memory)</div>
-            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">智能注入行业预设。</p>
-            <label>品牌/视觉主色</label> <input type="text" id="dnaColor" placeholder="e.g. #FF5733">
-            <label>目标受众</label> <input type="text" id="dnaTarget" placeholder="e.g. 欧美B端客户">
-            <label>语气基调</label>
-            <select id="dnaTone">
-                <option value="">-- Default --</option>
-                <option value="Professional">Professional (专业)</option>
-                <option value="Friendly">Friendly (亲和)</option>
-            </select>
-        </div>
-
     </div>
 
     <script>
-        // === 1. 现成词库数据 (The Meat) ===
+        // === 全局状态 ===
+        let isJsonMode = false;
+        let currentTool = 'library';
+
+        // === 1. 数据资产 (Prompt Data) ===
         const promptVault = [
-            // --- Visual ---
-            { title: "Midjourney 极简 Logo", category: "visual", tag: "Logo", content: "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details" },
-            { title: "Midjourney 电影感人像", category: "visual", tag: "Portrait", content: "/imagine prompt: extreme close-up portrait of a woman, natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, kodak portra 400 --v 6.0 --style raw" },
-            { title: "Midjourney 赛博朋克城市", category: "visual", tag: "Scene", content: "/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic lighting --v 6.0 --ar 16:9" },
-            { title: "3D 盲盒 IP 角色", category: "visual", tag: "3D", content: "/imagine prompt: cute 3d character design of [Subject], pop mart style, clay material, studio lighting, pastel colors, 3d render, c4d, octane render --v 6.0" },
-            { title: "室内设计 (极简风)", category: "visual", tag: "Interior", content: "/imagine prompt: modern minimalist living room, beige tone, sunlight, indoor plants, architectural photography, high resolution --v 6.0 --ar 16:9" },
-            
-            // --- Writing / Social ---
-            { title: "小红书爆款文案", category: "writing", tag: "Social", content: "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题要包含Emoji，吸引眼球（如：'绝绝子！'，'后悔没早买'）。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。\n4. 添加5个热门Hashtag。" },
-            { title: "SEO 优化博客文章", category: "writing", tag: "SEO", content: "Role: SEO Expert\nTask: Write a blog post about [Topic].\nRequirements:\n- Target keywords: [Keyword1], [Keyword2]\n- Use H1, H2, H3 headers structure.\n- Include a catchy introduction and a FAQ section.\n- Length: 1000 words." },
-            { title: "YouTube 视频脚本", category: "writing", tag: "Video", content: "Role: Scriptwriter\nTask: Write a YouTube video script for [Topic].\nStructure:\n1. Hook (0-15s): Grab attention.\n2. Intro: What we will cover.\n3. Body: 3 key points.\n4. CTA: Like and Subscribe." },
-            
-            // --- Business / Sales ---
-            { title: "外贸开发信 (Cold Email)", category: "office", tag: "Sales", content: "Subject: Question about [Company Name]'s production\n\nHi [Name],\n\nI saw you are leading production at [Company]. We help factories like yours reduce waste by 20% with [Product].\n\nAre you open to a 5-min chat next Tuesday?\n\nBest,\n[Your Name]" },
-            { title: "周报生成器", category: "office", tag: "Work", content: "请根据以下工作内容生成一份周报：\n[输入工作内容]\n\n要求：\n1. 分为'本周进展'、'存在问题'、'下周计划'。\n2. 语言简练，数据量化。\n3. 语气专业。" },
-            { title: "简历润色 (中英文)", category: "office", tag: "Career", content: "请作为资深HR，优化以下简历经历，使其更具成就感和数据驱动，并提供中英文双语版本：\n[粘贴经历]" },
-            
-            // --- Coding ---
-            { title: "Python 代码除错", category: "code", tag: "Python", content: "Role: Python Expert\nTask: Find the bug in this code and explain the fix.\nCode:\n[Paste Code Here]" },
-            { title: "SQL 查询优化", category: "code", tag: "SQL", content: "Role: Database Administrator\nTask: Optimize this SQL query for performance.\nQuery:\n[Paste SQL Here]" },
-            { title: "Excel 复杂公式生成", category: "code", tag: "Excel", content: "I need an Excel formula to: [Describe goal, e.g., sum column A if column B contains 'X']" }
+            { 
+                title: "Midjourney Photorealistic", 
+                category: "visual", 
+                tag: "Visual",
+                params: { model: "Midjourney V6", aspect_ratio: "16:9", style: "raw" },
+                content: "/imagine prompt: extreme close-up portrait of a woman, natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere --v 6.0 --style raw" 
+            },
+            { 
+                title: "Python Debugging Assistant", 
+                category: "code", 
+                tag: "Coding",
+                params: { language: "Python", role: "Senior Engineer" },
+                content: "Role: Python Expert\nTask: Analyze the code below for bugs.\n1. Identify the logical error.\n2. Explain the root cause.\n3. Provide fixed code.\n\n[Paste Code]" 
+            },
+            { 
+                title: "Instagram/小红书 Caption", 
+                category: "writing", 
+                tag: "Social",
+                params: { platform: "Xiaohongshu", tone: "Engaging" },
+                content: "Role: Social Media Manager\nTask: Write a viral caption about [Topic].\nRequirements:\n- Use Emojis.\n- Engaging hook line.\n- Call to action at the end." 
+            },
+            { 
+                title: "SQL Query Optimization", 
+                category: "code", 
+                tag: "Database",
+                params: { dialect: "PostgreSQL", goal: "Performance" },
+                content: "Role: DBA\nTask: Optimize this SQL query for speed. Suggest indexing strategies." 
+            },
+            { 
+                title: "Cold Email Outreach", 
+                category: "writing", 
+                tag: "Sales",
+                params: { framework: "AIDA", target: "B2B" },
+                content: "Subject: Quick question about [Company]\n\nHi [Name],\n\nI noticed you're managing [Department]..." 
+            }
         ];
 
-        // === 2. 工具配置 (生成器) ===
+        // === 2. 工具配置 ===
         const tools = {
-            visual: { title: "Visual Director (视觉)", models: ['Midjourney V6', 'DALL-E 3'], inputs: [{id:'subject',label:'画面主体',type:'text'}, {id:'style',label:'风格',type:'select',options:['Photorealistic','Cyberpunk','Anime']}] },
-            video: { title: "Video Director (视频)", models: ['Runway Gen-2', 'Sora'], inputs: [{id:'prompt',label:'视频描述',type:'text'}, {id:'camera',label:'运镜',type:'select',options:['Pan','Zoom','Orbit']}] },
-            text: { title: "Copywriter (写作)", models: ['GPT-4'], inputs: [{id:'topic',label:'主题',type:'text'}, {id:'tone',label:'语气',type:'select',options:['Professional','Funny']}] },
-            email: { title: "Sales Email (外贸)", models: ['GPT-4 Sales'], inputs: [{id:'product',label:'产品',type:'text'}, {id:'target',label:'客户',type:'text'}] },
-            academic: { title: "Academic (学术)", models: ['Claude 3'], inputs: [{id:'text',label:'原文',type:'textarea'}] },
-            xhs: { title: "小红书矩阵", models: ['Claude 3'], inputs: [{id:'topic',label:'选题',type:'text'}] },
-            reverse: { title: "Reverse Engineering", models: ['GPT-4 Vision'], inputs: [{id:'desc',label:'描述',type:'textarea'}] }
+            visual: { title: "Visual Generator", inputs: [{id:'subject', label:'Subject', type:'text'}, {id:'style', label:'Style', type:'select', options:['Cyberpunk','Photorealistic']}] },
+            text: { title: "Writing Assistant", inputs: [{id:'topic', label:'Topic', type:'text'}, {id:'tone', label:'Tone', type:'select', options:['Professional','Funny']}] },
+            code: { title: "Code Helper", inputs: [{id:'lang', label:'Language', type:'text'}, {id:'task', label:'Task', type:'textarea'}] },
+            email: { title: "Sales Email", inputs: [{id:'product', label:'Product', type:'text'}, {id:'target', label:'Target Audience', type:'text'}] },
+            xhs: { title: "Xiaohongshu Matrix", inputs: [{id:'topic', label:'Topic', type:'text'}] }
         };
 
-        let currentMode = 'library';
-
+        // === 初始化 ===
         window.onload = () => {
-            loadTool('library');
-            renderLibrary(promptVault);
+            renderLibrary();
+            // 响应式处理
+            if(window.innerWidth <= 768) {
+                document.querySelector('.fa-bars').style.display = 'block';
+            }
         };
 
-        // === 渲染词库 (Grid View) ===
-        function renderLibrary(data) {
+        // === 模式切换逻辑 (核心) ===
+        function setMode(mode) {
+            isJsonMode = (mode === 'json');
+            
+            // UI 更新
+            document.getElementById('btnText').className = isJsonMode ? 'mode-btn' : 'mode-btn active';
+            document.getElementById('btnJson').className = isJsonMode ? 'mode-btn active' : 'mode-btn';
+            
+            if(isJsonMode) document.body.classList.add('json-active');
+            else document.body.classList.remove('json-active');
+
+            // 重新渲染当前视图以应用新格式
+            if(currentTool === 'library') renderLibrary();
+            // 如果在生成器页面，清除结果避免混淆
+            if(currentTool !== 'library') document.getElementById('resultContainer').innerHTML = '';
+        }
+
+        // === 词库渲染 ===
+        function renderLibrary(data = promptVault) {
             const grid = document.getElementById('libraryGrid');
             grid.innerHTML = '';
             
             data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'prompt-card';
-                card.onclick = () => copyCardContent(item.content);
                 
-                // 标签颜色逻辑
+                // 决定显示内容：文本还是 JSON
+                let displayContent = item.content;
+                if(isJsonMode) {
+                    // 构建 JSON 对象
+                    const jsonObj = {
+                        name: item.title,
+                        tags: [item.category, item.tag],
+                        parameters: item.params,
+                        prompt_template: item.content
+                    };
+                    displayContent = JSON.stringify(jsonObj, null, 2);
+                }
+
+                card.onclick = () => copyContent(displayContent);
+
+                // 标签样式
                 let tagClass = 'tag-visual';
-                if(item.category === 'writing') tagClass = 'tag-writing';
                 if(item.category === 'code') tagClass = 'tag-code';
-                if(item.category === 'office') tagClass = 'tag-office';
+                if(item.category === 'writing') tagClass = 'tag-writing';
 
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-title-text">${item.title}</div>
                         <div class="card-tag ${tagClass}">${item.tag}</div>
                     </div>
-                    <div class="card-preview">${item.content}</div>
-                    <div class="copy-overlay"><i class="fas fa-check"></i> Copied!</div>
+                    <div class="card-preview">${displayContent}</div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // 搜索过滤
         function filterLibrary() {
-            const query = document.getElementById('libSearch').value.toLowerCase();
-            const filtered = promptVault.filter(item => 
-                item.title.toLowerCase().includes(query) || 
-                item.tag.toLowerCase().includes(query) ||
-                item.content.toLowerCase().includes(query)
-            );
+            const q = document.getElementById('libSearch').value.toLowerCase();
+            const filtered = promptVault.filter(i => i.title.toLowerCase().includes(q) || i.content.toLowerCase().includes(q));
             renderLibrary(filtered);
         }
 
-        // 复制功能
-        function copyCardContent(text) {
-            navigator.clipboard.writeText(text);
-            // 视觉反馈在 CSS 中处理 (active state)
-        }
-
-        // === 切换视图逻辑 ===
+        // === 生成器逻辑 ===
         function loadTool(key) {
-            currentMode = key;
+            currentTool = key;
             
             // 菜单高亮
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
-            items.forEach(item => {
-                if(item.getAttribute('onclick').includes(key)) item.classList.add('active');
-            });
+            items.forEach(i => { if(i.getAttribute('onclick').includes(key)) i.classList.add('active'); });
 
-            const libView = document.getElementById('libraryView');
-            const genView = document.getElementById('generatorView');
-            const modelSelect = document.getElementById('modelSelectContainer');
+            // 视图切换
+            const lib = document.getElementById('libraryView');
+            const gen = document.getElementById('generatorView');
             const title = document.getElementById('toolTitle');
 
-            if (key === 'library') {
-                libView.style.display = 'block';
-                genView.style.display = 'none';
-                modelSelect.style.display = 'none';
-                title.innerText = "全能词库 (Prompt Vault)";
+            if(key === 'library') {
+                lib.style.display = 'block'; gen.style.display = 'none';
+                title.innerText = "Prompt Vault";
+                renderLibrary();
             } else {
-                libView.style.display = 'none';
-                genView.style.display = 'block';
-                modelSelect.style.display = 'block';
-                
-                // 加载生成器配置
+                lib.style.display = 'none'; gen.style.display = 'block';
                 const data = tools[key];
                 title.innerText = data.title;
-                document.getElementById('targetModel').innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
                 
                 // 渲染表单
                 const form = document.getElementById('dynamicForm');
@@ -434,21 +390,51 @@
                     html+=`</div>`;
                     form.innerHTML += html;
                 });
-
-                // 上传框处理
-                document.getElementById('uploadArea').style.display = (key === 'reverse') ? 'block' : 'none';
+                document.getElementById('resultContainer').innerHTML = '';
             }
 
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // 生成器逻辑
         function generate() {
+            const toolData = tools[currentTool];
+            const inputs = {};
+            
+            // 收集数据
+            toolData.inputs.forEach(f => {
+                inputs[f.id] = document.getElementById(`f_${f.id}`).value;
+            });
+
             const container = document.getElementById('resultContainer');
-            container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">Processing...</div>';
-            setTimeout(() => {
-                container.innerHTML = `<div class="result-box"><div class="ab-tag">Result</div>Generated Prompt based on your inputs.<i class="fas fa-copy" style="position:absolute; right:10px; top:10px;" onclick="navigator.clipboard.writeText(this.parentNode.innerText)"></i></div>`;
-            }, 600);
+            let output = "";
+
+            if(isJsonMode) {
+                // JSON 模式输出
+                const jsonOutput = {
+                    tool: tools[currentTool].title,
+                    timestamp: new Date().toISOString(),
+                    parameters: inputs,
+                    generated_prompt: buildTextPrompt(currentTool, inputs) // 包含文本Prompt作为字段
+                };
+                output = JSON.stringify(jsonOutput, null, 2);
+            } else {
+                // 文本模式输出
+                output = buildTextPrompt(currentTool, inputs);
+            }
+
+            container.innerHTML = `<div class="result-box">${output}</div>`;
+        }
+
+        function buildTextPrompt(key, data) {
+            if(key === 'visual') return `/imagine prompt: ${data.subject}, ${data.style} style, 8k resolution, highly detailed --v 6.0`;
+            if(key === 'text') return `Write a ${data.tone} article about ${data.topic}.`;
+            if(key === 'code') return `Language: ${data.lang}\nTask: ${data.task}\n\nPlease provide clean, commented code.`;
+            return `Task: ${tools[key].title}\nContext: ${JSON.stringify(data)}`;
+        }
+
+        function copyContent(text) {
+            navigator.clipboard.writeText(text);
+            alert(isJsonMode ? "JSON Copied!" : "Text Copied!");
         }
     </script>
 </body>
