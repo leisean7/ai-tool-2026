@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V27 | 全网词库收录版</title>
+    <title>AI CommandOS V28 | 文本矩阵增强版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -194,8 +194,8 @@
             <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> 写作 (Copy)</div>
             
             <div class="menu-category">Professional Matrix</div>
-            <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/TikTok</div>
             <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
+            <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/TikTok</div>
             <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> 学术科研 (Scholar)</div>
             <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> 外贸开发 (Sales)</div>
             
@@ -293,98 +293,79 @@
             }
         };
 
-        // 扁平化模版用于查找
         const libraryTemplates = {};
-        Object.values(libraryGroups).forEach(group => {
-            Object.assign(libraryTemplates, group);
-        });
+        Object.values(libraryGroups).forEach(group => Object.assign(libraryTemplates, group));
 
-        // === 2. 工具配置 (全参数) ===
+        // === 2. 工具配置 ===
         const tools = {
+            // === 写作 (Copywriting) 增强版 ===
+            text: {
+                title: "Copywriter (写作)",
+                models: ['GPT-4o', 'Claude 3 Opus', 'Gemini Pro'],
+                inputs: [
+                    { id: 'topic', label: 'Topic (主题)', type: 'text', placeholder: 'e.g. 2026年人工智能发展趋势' },
+                    { id: 'type', label: 'Format (文体类型)', type: 'select', options: [
+                        'Blog Post (博客/公众号)', 'Social Media Post (社媒动态)', 'Press Release (新闻通稿)', 
+                        'Speech/Script (演讲稿/脚本)', 'Cold Email (冷邮件)', 'Twitter/X Thread (推特串推)',
+                        'Product Description (产品文案)', 'Story/Fiction (故事/小说)', 'Poem/Lyric (诗歌/歌词)'
+                    ]},
+                    { id: 'framework', label: 'Framework (思维模型)', type: 'select', options: [
+                        'AIDA (Attention-Interest-Desire-Action)', 'PAS (Problem-Agitation-Solution)', 
+                        'FAB (Features-Advantages-Benefits)', '4Ps (Product-Price-Place-Promotion)', 
+                        'StoryBrand (品牌故事七步法)', 'QUEST (Qualify-Understand-Educate-Stimulate-Transition)',
+                        'First Principles (第一性原理)', 'Golden Circle (Why-How-What)'
+                    ]},
+                    { id: 'tone', label: 'Tone of Voice (语气风格)', type: 'select', options: [
+                        'Professional (专业严谨)', 'Conversational (像朋友聊天)', 'Humorous/Witty (幽默风趣)', 
+                        'Urgent/Hype (紧迫感/营销)', 'Empathetic (共情/治愈)', 'Academic (学术/客观)', 
+                        'Sarcastic (讽刺/毒舌)', 'Luxury (高端/奢华)'
+                    ]},
+                    { id: 'length', label: 'Length (篇幅长度)', type: 'select', options: [
+                        'Short (<100 words / 短文案)', 'Medium (300-500 words / 中篇)', 'Long (>1000 words / 长文)', 
+                        'Twitter Style (280 chars / 推文)', 'Outline Only (仅大纲)'
+                    ]}
+                ]
+            },
+            // === 小红书 (XHS) 增强版 ===
+            xhs: {
+                title: "Xiaohongshu Matrix (小红书矩阵)",
+                models: ['Claude 3 (Best for Vibe)', 'GPT-4'],
+                inputs: [
+                    { id: 'topic', label: 'Topic (选题)', type: 'text', placeholder: 'e.g. 减肥食谱 / 沉浸式护肤' },
+                    { id: 'niche', label: 'Niche (赛道/垂类)', type: 'select', options: [
+                        'Beauty/Skincare (美妆护肤)', 'Fashion/OOTD (时尚穿搭)', 'Food/Cooking (美食烹饪)', 
+                        'Home/Decor (家居装修)', 'Travel/Vlog (旅行攻略)', 'Education (知识干货)', 
+                        'Career/Work (职场经验)', 'Fitness (运动健身)', 'Baby/Parenting (母婴育儿)', 'Tech/Digital (数码科技)'
+                    ]},
+                    { id: 'persona', label: 'Persona (博主人设)', type: 'select', options: [
+                        'Girlfriend/BFF (好闺蜜/种草姬)', 'Professional Coach (专业导师/成分党)', 
+                        'Big Sister (知心大姐姐/情感)', 'Student/Gen Z (学生党/省钱)', 
+                        'Rich/Luxury (贵妇/名媛)', 'Minimalist (极简主义者)', 'Funny/Drama (搞笑女/戏精)'
+                    ]},
+                    { id: 'title_style', label: 'Title Hook (标题风格)', type: 'select', options: [
+                        'Emotional Shock (情绪宣泄: 绝绝子!)', 'Negative Warning (避雷预警: 千万别买!)', 
+                        'Number List (数字盘点: 3个好物...)', 'Tutorial (保姆级教程: 手把手教你)', 
+                        'Curiosity (悬念勾引: 谁懂啊...)', 'Comparison (红黑榜测评)'
+                    ]},
+                    { id: 'emoji', label: 'Emoji Density (Emoji浓度)', type: 'select', options: [
+                        'Standard (标准: 适量点缀)', 'Heavy (氛氛感: 满屏✨💖🔥)', 'Minimal (极简: 几乎没有)', 'Key Points (仅用于列表)'
+                    ]},
+                    { id: 'cta', label: 'Interaction (互动策略)', type: 'select', options: [
+                        'Ask Question (提问引导评论)', 'Collect for Later (引导收藏防走丢)', 
+                        'Tag Friends (艾特闺蜜来看)', 'Follow Series (关注看下集)', 'Get Resources (回复求资料)'
+                    ]}
+                ]
+            },
+            // === 其他原有工具保持完整 (Video, Visual, Audio, Academic, Email, Reverse, Library, TikTok) ===
             visual: {
                 title: "Visual Director (视觉)",
                 models: ['Midjourney V6', 'Niji V6', 'Stable Diffusion XL', 'DALL-E 3'],
                 inputs: [
                     { id: 'subject', label: 'Subject (画面主体)', type: 'text', placeholder: 'e.g. 赛博朋克风格的猫', magic: true },
-                    { id: 'style', label: 'Art Style (艺术风格)', type: 'select', options: [
-                        'Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime/Manga (日系动漫)', '3D Render (3D渲染)', 
-                        'Oil Painting (油画)', 'Watercolor (水彩)', 'Pixel Art (像素艺术)', 'Ukiyo-e (浮世绘)', 
-                        'Vaporwave (蒸汽波)', 'Steampunk (蒸汽朋克)', 'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)',
-                        'Claymation (粘土动画)', 'Gothic (哥特风)', 'Surrealism (超现实主义)', 'Impressionism (印象派)'
-                    ]},
-                    { id: 'shot', label: 'Camera Shot (构图/运镜)', type: 'select', options: [
-                        'Wide Angle (广角)', 'Ultra-Wide (超广角 14mm)', 'Telephoto (长焦 85mm)', 'Macro (微距)', 
-                        'Drone View (上帝视角)', 'Isometric (等轴测)', 'Selfie (自拍)', 'Fisheye (鱼眼)', 
-                        'Over-the-Shoulder (过肩镜头)', 'Low Angle (低角度仰拍)', 'Dutch Angle (荷兰式倾斜)', 'Eye-Level (平视)'
-                    ]},
-                    { id: 'light', label: 'Lighting (布光)', type: 'select', options: [
-                        'Cinematic Lighting (电影光)', 'Natural Light (自然光)', 'Golden Hour (黄金时刻)', 'Blue Hour (蓝调时刻)', 
-                        'Neon Lights (霓虹光)', 'Rembrandt Lighting (伦勃朗光)', 'Butterfly Lighting (蝴蝶光)', 'Split Lighting (侧逆光)',
-                        'Volumetric/God Rays (丁达尔光)', 'Studio Softbox (影棚柔光)', 'Bioluminescent (生物荧光)'
-                    ]},
-                    { id: 'film', label: 'Film Stock (胶片质感)', type: 'select', options: [
-                        'Digital Clean (数码洁净)', 'Kodak Portra 400 (人像胶片)', 'Fujifilm Velvia (高饱和)', 
-                        'Ilford HP5 (黑白胶片)', 'Kodak Gold 200 (暖色怀旧)', 'Polaroid (拍立得)', 'VHS Tape (录像带噪点)'
-                    ]}
-                ]
-            },
-            library: {
-                title: "Prompt Vault (经典词库)",
-                models: ['Universal Format'],
-                inputs: [
-                    // 这里会动态生成分组的 Select
-                    { id: 'template', label: 'Select Template (选择高频模版)', type: 'select', options: [] } 
-                ]
-            },
-            tiktok: {
-                title: "TikTok Director (抖音脚本)",
-                models: ['GPT-4o', 'Claude 3 Opus'],
-                inputs: [
-                    { id: 'topic', label: 'Video Topic (视频主题)', type: 'text', placeholder: 'e.g. 沉浸式开箱 iPhone 15' },
-                    { id: 'hook', label: 'Opening Hook (开头黄金3秒)', type: 'select', options: [
-                        'Visual Shock (视觉奇观/特效)', 'Contrast/Reversal (巨大反差/反转)', 
-                        'Pain Point Question (痛点提问)', 'Controversial Statement (暴论/争议)',
-                        'ASMR Sound (沉浸式音效)', 'Direct Benefit (利益点直给)', 'Storytime (故事引入)'
-                    ]},
-                    { id: 'niche', label: 'Niche (赛道/垂类)', type: 'select', options: [
-                        'Beauty/Skincare (美妆护肤)', 'Tech/Gadgets (数码科技)', 'Food/Cooking (美食烹饪)', 
-                        'Travel/Vlog (旅行生活)', 'Education/Tips (知识干货)', 'Comedy/Skit (剧情搞笑)', 
-                        'Fitness/Health (运动健康)', 'Pet/Animals (萌宠)'
-                    ]},
-                    { id: 'pace', label: 'Editing Pace (剪辑节奏)', type: 'select', options: [
-                        'Fast & Punchy (快节奏/卡点)', 'Slow & Cinematic (慢节奏/电影感)', 
-                        'Sync to Beat (踩点剪辑)', 'Vlog Style (生活流/自然)'
-                    ]},
-                    { id: 'bgm', label: 'BGM Mood (音乐情绪)', type: 'select', options: [
-                        'Trending/Viral (热门榜单)', 'Upbeat/Fun (欢快搞怪)', 'Suspense/Dark (悬疑/吃瓜)',
-                        'Lo-fi/Chill (治愈/放松)', 'Epic/Dramatic (史诗/反转)', 'Phonk/Drift (运动/燃)'
-                    ]},
-                    { id: 'cta', label: 'CTA (互动引导)', type: 'select', options: [
-                        'Follow for More (关注看下集)', 'Comment Below (评论区互动)', 
-                        'Check Link in Bio (主页链接)', 'Save this Video (收藏防走丢)'
-                    ]}
-                ]
-            },
-            academic: {
-                title: "Academic Scholar (学术科研)",
-                models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
-                inputs: [
-                    { id: 'content', label: 'Abstract/Paragraph (段落/摘要)', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '150px' },
-                    { id: 'field', label: 'Research Field (研究领域)', type: 'select', options: [
-                        'Computer Science (计算机科学)', 'Artificial Intelligence (人工智能)', 'Medicine/Clinical (临床医学)', 
-                        'Biology/Life Sciences (生物科学)', 'Business/Management (商科/管理)', 'Economics (经济学)',
-                        'Engineering (工程学)', 'Psychology (心理学)', 'Sociology (社会学)', 'Education (教育学)',
-                        'Physics/Astronomy (物理/天文)', 'Chemistry (化学)', 'Law/Legal (法学)', 'History/Arts (历史/艺术)'
-                    ]},
-                    { id: 'target', label: 'Target Style (投稿目标)', type: 'select', options: [
-                        'IEEE Standard (IEEE标准)', 'Nature/Science (顶级期刊风格)', 'APA Format (APA格式)', 
-                        'MLA Style (MLA格式)', 'Chicago Style (芝加哥格式)', 'Harvard Style (哈佛格式)',
-                        'General Academic (通用学术)', 'Thesis/Dissertation (学位论文)'
-                    ]},
-                    { id: 'goal', label: 'Optimization Goal (优化目标)', type: 'select', options: [
-                        'Polish Grammar (深度润色)', 'Reduce Repetition (降重/去AI味)', 'Enhance Logic (逻辑增强)', 
-                        'Make Concise (精简语句)', 'Fix Chinglish (中式英语矫正)', 'Translate to English (中译英)'
-                    ]}
+                    { id: 'style', label: 'Art Style (艺术风格)', type: 'select', options: ['Photorealistic', 'Cyberpunk', 'Anime/Manga', '3D Render', 'Oil Painting', 'Watercolor', 'Pixel Art', 'Ukiyo-e', 'Vaporwave', 'Steampunk', 'Bauhaus', 'Minimalist Vector', 'Claymation', 'Gothic', 'Surrealism', 'Impressionism']},
+                    { id: 'shot', label: 'Camera Shot (构图/运镜)', type: 'select', options: ['Wide Angle', 'Ultra-Wide', 'Telephoto', 'Macro', 'Drone View', 'Isometric', 'Selfie', 'Fisheye', 'Over-the-Shoulder', 'Low Angle', 'Dutch Angle', 'Eye-Level']},
+                    { id: 'light', label: 'Lighting (布光)', type: 'select', options: ['Cinematic Lighting', 'Natural Light', 'Golden Hour', 'Blue Hour', 'Neon Lights', 'Rembrandt Lighting', 'Butterfly Lighting', 'Split Lighting', 'Volumetric/God Rays', 'Studio Softbox', 'Bioluminescent']},
+                    { id: 'film', label: 'Film Stock (胶片质感)', type: 'select', options: ['Digital Clean', 'Kodak Portra 400', 'Fujifilm Velvia', 'Ilford HP5', 'Kodak Gold 200', 'Polaroid', 'VHS Tape']}
                 ]
             },
             video: {
@@ -392,35 +373,40 @@
                 models: ['Runway Gen-2', 'Pika Labs', 'Sora', 'Stable Video'],
                 inputs: [
                     { id: 'subject', label: 'Subject (视频内容)', type: 'text', placeholder: 'e.g. 海浪拍打礁石' },
-                    { id: 'camera', label: 'Camera Movement (运镜方式)', type: 'select', options: [
-                        'Pan Right (右摇)', 'Pan Left (左摇)', 'Tilt Up (上摇)', 'Tilt Down (下摇)',
-                        'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 'Orbit/Arc (环绕)', 'FPV Drone (穿越机)', 
-                        'Truck Left/Right (左右平移)', 'Dolly In/Out (轨道推拉)', 'Handheld (手持感)'
-                    ]},
-                    { id: 'motion', label: 'Motion Intensity (动态幅度)', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)'] },
-                    { id: 'style', label: 'Visual Style (视觉风格)', type: 'select', options: ['Cinematic (电影感)', '3D Animation (3D动画)', 'Anime (二次元)', 'Vintage VHS (复古录像带)', 'Documentary (纪录片)'] }
+                    { id: 'camera', label: 'Camera Movement (运镜方式)', type: 'select', options: ['Pan Right', 'Pan Left', 'Tilt Up', 'Tilt Down', 'Zoom In', 'Zoom Out', 'Orbit/Arc', 'FPV Drone', 'Truck Left/Right', 'Dolly In/Out', 'Handheld']},
+                    { id: 'motion', label: 'Motion Intensity (动态幅度)', type: 'select', options: ['Low', 'Medium', 'High', 'Speed Ramp']},
+                    { id: 'style', label: 'Visual Style (视觉风格)', type: 'select', options: ['Cinematic', '3D Animation', 'Anime', 'Vintage VHS', 'Documentary']}
                 ]
             },
             audio: {
                 title: "Music Producer (音乐)",
                 models: ['Suno V3', 'Udio'],
                 inputs: [
-                    { id: 'genre', label: 'Genre (流派)', type: 'select', options: [
-                        'Pop (流行)', 'K-pop (韩流)', 'Rock (摇滚)', 'Jazz (爵士)', 'Hip Hop (嘻哈)', 
-                        'EDM (电子舞曲)', 'House (浩室)', 'Techno (科技舞曲)', 'Dubstep (回响贝斯)',
-                        'R&B (节奏蓝调)', 'Country (乡村)', 'Reggae (雷鬼)', 'Classical (古典)',
-                        'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)', 'Phonk (冯克)', 'Synthwave (合成器波)'
-                    ]},
-                    { id: 'mood', label: 'Mood (情绪)', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)', 'Romantic (浪漫)', 'Ethereal (空灵)', 'Aggressive (激昂)'] },
-                    { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)', 'Autotune (电音)'] }
+                    { id: 'genre', label: 'Genre (流派)', type: 'select', options: ['Pop', 'K-pop', 'Rock', 'Jazz', 'Hip Hop', 'EDM', 'House', 'Techno', 'Dubstep', 'R&B', 'Country', 'Reggae', 'Classical', 'Epic Orchestral', 'Lo-fi', 'Phonk', 'Synthwave']},
+                    { id: 'mood', label: 'Mood (情绪)', type: 'select', options: ['Happy', 'Sad', 'Energetic', 'Chill', 'Dark', 'Romantic', 'Ethereal', 'Aggressive']},
+                    { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female', 'Male', 'Duet', 'Instrumental', 'Choir', 'Whisper', 'Autotune']}
                 ]
             },
-            text: { 
-                title: "Copywriter (写作)", 
-                models:['GPT-4'], 
+            tiktok: {
+                title: "TikTok Director (抖音脚本)",
+                models: ['GPT-4o', 'Claude 3 Opus'],
                 inputs: [
-                    {id:'topic',label:'Topic (主题)',type:'text'}, 
-                    {id:'framework',label:'Framework (框架)',type:'select',options:['AIDA (注意-兴趣)', 'PAS (问题-解决)', 'First Principles (第一性原理)']}
+                    { id: 'topic', label: 'Video Topic (视频主题)', type: 'text', placeholder: 'e.g. 沉浸式开箱 iPhone 15' },
+                    { id: 'hook', label: 'Opening Hook (开头黄金3秒)', type: 'select', options: ['Visual Shock', 'Contrast/Reversal', 'Pain Point Question', 'Controversial Statement', 'ASMR Sound', 'Direct Benefit', 'Storytime']},
+                    { id: 'niche', label: 'Niche (赛道/垂类)', type: 'select', options: ['Beauty/Skincare', 'Tech/Gadgets', 'Food/Cooking', 'Travel/Vlog', 'Education/Tips', 'Comedy/Skit', 'Fitness/Health', 'Pet/Animals']},
+                    { id: 'pace', label: 'Editing Pace (剪辑节奏)', type: 'select', options: ['Fast & Punchy', 'Slow & Cinematic', 'Sync to Beat', 'Vlog Style']},
+                    { id: 'bgm', label: 'BGM Mood (音乐情绪)', type: 'select', options: ['Trending/Viral', 'Upbeat/Fun', 'Suspense/Dark', 'Lo-fi/Chill', 'Epic/Dramatic', 'Phonk/Drift']},
+                    { id: 'cta', label: 'CTA (互动引导)', type: 'select', options: ['Follow for More', 'Comment Below', 'Check Link in Bio', 'Save this Video']}
+                ]
+            },
+            academic: {
+                title: "Academic Scholar (学术科研)",
+                models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
+                inputs: [
+                    { id: 'content', label: 'Abstract/Paragraph (段落/摘要)', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '150px' },
+                    { id: 'field', label: 'Research Field (研究领域)', type: 'select', options: ['Computer Science', 'Artificial Intelligence', 'Medicine/Clinical', 'Biology/Life Sciences', 'Business/Management', 'Economics', 'Engineering', 'Psychology', 'Sociology', 'Education', 'Physics/Astronomy', 'Chemistry', 'Law/Legal', 'History/Arts']},
+                    { id: 'target', label: 'Target Style (投稿目标)', type: 'select', options: ['IEEE Standard', 'Nature/Science', 'APA Format', 'MLA Style', 'Chicago Style', 'Harvard Style', 'General Academic', 'Thesis/Dissertation']},
+                    { id: 'goal', label: 'Optimization Goal (优化目标)', type: 'select', options: ['Polish Grammar', 'Reduce Repetition', 'Enhance Logic', 'Make Concise', 'Fix Chinglish', 'Translate to English']}
                 ]
             },
             email: {
@@ -428,30 +414,18 @@
                 models: ['GPT-4o (Sales)', 'Claude 3 Haiku'],
                 inputs: [
                     { id: 'product', label: 'Product (推销产品)', type: 'text', placeholder: 'e.g. Solar Panels' },
-                    { id: 'role', label: 'Recipient (收件人)', type: 'select', options: [
-                        'CEO / Owner (老板)', 'Purchasing Manager (采购经理)', 'Product Manager (产品经理)', 
-                        'Marketing Director (营销总监)', 'CTO (技术总监)', 'General Inquiry (一般咨询)'
-                    ]},
-                    { id: 'stage', label: 'Stage (营销阶段)', type: 'select', options: [
-                        'Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Follow Up 2 (跟进 2)', 
-                        'Proposal (报价/提案)', 'Re-engagement (激活僵尸粉)', 'Break-up Email (最后尝试)'
-                    ]},
-                    { id: 'framework', label: 'Framework (营销框架)', type: 'select', options: [
-                        'AIDA (注意-兴趣-欲望-行动)', 'BAB (前-后-桥梁)', 'PAS (问题-加剧-解决)', 
-                        'Direct Pitch (开门见山)', 'Storytelling (讲故事)', 'Value Proposition (价值主张)'
-                    ]},
-                    { id: 'lang', label: 'Language (目标语言)', type: 'select', options: [
-                        'English US (美式英语)', 'English UK (英式英语)', 'Spanish (西班牙语)', 'French (法语)', 
-                        'German (德语)', 'Japanese (日语)', 'Arabic (阿拉伯语)', 'Chinese (中文)', 'Russian (俄语)'
-                    ]}
+                    { id: 'role', label: 'Recipient (收件人)', type: 'select', options: ['CEO / Owner', 'Purchasing Manager', 'Product Manager', 'Marketing Director', 'CTO', 'General Inquiry']},
+                    { id: 'stage', label: 'Stage (营销阶段)', type: 'select', options: ['Cold Outreach', 'Follow Up 1', 'Follow Up 2', 'Proposal', 'Re-engagement', 'Break-up Email']},
+                    { id: 'framework', label: 'Framework (营销框架)', type: 'select', options: ['AIDA', 'BAB', 'PAS', 'Direct Pitch', 'Storytelling', 'Value Proposition']},
+                    { id: 'cta', label: 'CTA (行动号召)', type: 'select', options: ['Book a Call', 'Reply for Info', 'Request Sample', 'Visit Website']},
+                    { id: 'lang', label: 'Language (目标语言)', type: 'select', options: ['English US', 'English UK', 'Spanish', 'French', 'German', 'Japanese', 'Arabic', 'Chinese', 'Russian']}
                 ]
             },
-            xhs: { 
-                title: "小红书矩阵", 
-                models:['Claude 3'], 
+            library: {
+                title: "Prompt Vault (经典词库)",
+                models: ['Universal Format'],
                 inputs: [
-                    {id:'topic',label:'Topic (选题)',type:'text'}, 
-                    {id:'niche',label:'Niche (赛道)',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Knowledge (知识付费)']}
+                    { id: 'template', label: 'Select Template (选择高频模版)', type: 'select', options: [] }
                 ]
             },
             reverse: {
@@ -459,18 +433,14 @@
                 models: ['GPT-4 Vision', 'Claude 3 Opus'],
                 inputs: [
                     { id: 'desc', label: 'Description (补充描述)', type: 'textarea', placeholder: 'e.g. 模仿这个灯光...', height: '80px' },
-                    { id: 'mode', label: 'Mode (分析模式)', type: 'select', options: [
-                        'Extract Visual Prompts (提取视觉提示词)', 'Analyze Layout (分析构图)', 'Extract Color (提取配色)'
-                    ]}
+                    { id: 'mode', label: 'Mode (分析模式)', type: 'select', options: ['Extract Visual Prompts', 'Analyze Layout', 'Extract Color']}
                 ]
             }
         };
 
         let currentTool = 'visual';
 
-        window.onload = () => {
-            loadTool('visual');
-        };
+        window.onload = () => { loadTool('visual'); };
 
         function loadTool(key) {
             currentTool = key;
@@ -479,7 +449,6 @@
             document.getElementById('toolTitle').innerText = data.title;
             document.getElementById('targetModel').innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
 
-            // UI 状态切换
             const uploadArea = document.getElementById('uploadArea');
             const abTestGroup = document.getElementById('abTestGroup');
             const actionBtn = document.getElementById('actionBtn');
@@ -501,7 +470,6 @@
                 actionBtn.classList.remove('purple');
             }
 
-            // 渲染表单
             const container = document.getElementById('dynamicForm');
             container.innerHTML = '';
             
@@ -511,7 +479,6 @@
                 
                 let inputHtml = '';
                 if(field.type === 'select') {
-                    // 特殊处理 Library 的分组 Select
                     if(key === 'library' && field.id === 'template') {
                         let optsHtml = '';
                         for(const [groupName, groupItems] of Object.entries(libraryGroups)) {
@@ -541,12 +508,11 @@
                 container.appendChild(div);
             });
 
-            // Library 模式下初始化预览
             if (key === 'library') {
                 const firstKey = Object.keys(libraryGroups["🎨 视觉创作 (Visual Art)"])[0];
                 previewTemplate(firstKey);
             } else {
-                document.getElementById('resultContainer').innerHTML = ''; // 清空上一页的结果
+                document.getElementById('resultContainer').innerHTML = '';
             }
 
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
@@ -567,11 +533,9 @@
             }
         }
 
-        // Library 实时预览
         function previewTemplate(key) {
             if(currentTool !== 'library') return;
             const templateContent = libraryTemplates[key] || "";
-            // 不自动清空，等待用户点击生成
         }
 
         function generate() {
@@ -591,13 +555,10 @@
                 return;
             }
 
-            // 词库模式逻辑
             if (currentTool === 'library') {
                 const selectedKey = inputs.template;
-                const templateContent = libraryTemplates[selectedKey] || "Error loading template.";
+                const templateContent = libraryTemplates[selectedKey] || "Prompt not found.";
                 const container = document.getElementById('resultContainer');
-                
-                // 模拟加载
                 container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
                 setTimeout(() => {
                     container.innerHTML = `<div class="result-box"><div class="ab-tag">Template Loaded</div>${templateContent} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i></div>`;
@@ -654,7 +615,11 @@
             }
 
             let res = "";
-            if (toolKey === 'email') {
+            if (toolKey === 'text') {
+                res = `Role: Expert Copywriter\nTask: Write a [${cleanInputs.type}] about [${cleanInputs.topic}].\nTone: ${cleanInputs.tone}\nFramework: ${cleanInputs.framework}\nLength: ${cleanInputs.length}\n\n[Please generate content now]`;
+            } else if (toolKey === 'xhs') {
+                res = `Role: Xiaohongshu Creator (${cleanInputs.persona})\nTopic: ${cleanInputs.topic}\nNiche: ${cleanInputs.niche}\n\nGuidelines:\n1. Title Style: ${cleanInputs.title_style}\n2. Emoji Usage: ${cleanInputs.emoji}\n3. Interaction Goal: ${cleanInputs.cta}\n\n[Generate the Note Content]`;
+            } else if (toolKey === 'email') {
                 res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Context: Sales to ${cleanInputs.role})\n[Body using ${cleanInputs.framework}...]\n\n[CTA: ${cleanInputs.cta}]`;
             } else if (toolKey === 'tiktok') {
                 res = `Title: [${cleanInputs.topic}]\nTarget: TikTok\nLength: ${cleanInputs.duration}\n\n[Hook (${cleanInputs.hook})]: (0-3s script)\n[Content]: (Main script, Pace: ${cleanInputs.pace})\n[BGM]: (${cleanInputs.bgm})\n[CTA]: ${cleanInputs.cta}`;
