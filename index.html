@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V18 | 全能词库版</title>
+    <title>AI CommandOS V19 | 全双语汉化版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -275,10 +275,11 @@
             <label>语气基调</label>
             <select id="dnaTone">
                 <option value="">-- Default --</option>
-                <option value="Professional">专业严谨 (Professional)</option>
-                <option value="Urgent">紧迫感 (Urgent)</option>
-                <option value="Friendly">亲和 (Friendly)</option>
-                <option value="Academic">学术 (Academic)</option>
+                <option value="Professional">Professional (专业严谨)</option>
+                <option value="Urgent">Urgent (紧迫感)</option>
+                <option value="Friendly">Friendly (亲和友好)</option>
+                <option value="Academic">Academic (学术风)</option>
+                <option value="Humorous">Humorous (幽默风趣)</option>
             </select>
 
             <label>负向/禁用词</label>
@@ -288,25 +289,35 @@
     </div>
 
     <script>
-        // === 核心数据配置 ===
+        // === 核心数据配置 (全双语备注版) ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
                 models: ['Midjourney V6', 'Niji V6', 'Stable Diffusion XL', 'DALL-E 3'],
                 inputs: [
                     { id: 'subject', label: '画面主体', type: 'text', placeholder: 'e.g. 赛博朋克风格的猫', magic: true },
-                    { id: 'style', label: '艺术风格', type: 'select', options: ['Photorealistic', 'Cyberpunk', 'Anime', '3D Render', 'UE5', 'Oil Painting', 'Watercolor'] },
-                    { id: 'shot', label: '构图/运镜', type: 'select', options: ['Wide Angle', 'Telephoto', 'Drone View', 'Macro', 'Isometric'] },
-                    { id: 'light', label: '布光', type: 'select', options: ['Cinematic', 'Natural', 'Neon', 'Rembrandt', 'Volumetric'] }
+                    { id: 'style', label: '艺术风格', type: 'select', options: [
+                        'Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime (日系动漫)', '3D Render (3D渲染)', 
+                        'UE5 (虚幻引擎5)', 'Oil Painting (油画)', 'Watercolor (水彩)', 'Pixel Art (像素艺术)', 
+                        'Ukiyo-e (浮世绘)', 'Vaporwave (蒸汽波)', 'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)'
+                    ]},
+                    { id: 'shot', label: '构图/运镜', type: 'select', options: [
+                        'Wide Angle (广角)', 'Telephoto (长焦)', 'Drone View (无人机视角)', 'Macro (微距)', 
+                        'Isometric (等轴测)', 'Selfie (自拍)', 'Fisheye (鱼眼)', 'Over-the-Shoulder (过肩镜头)'
+                    ]},
+                    { id: 'light', label: '布光', type: 'select', options: [
+                        'Cinematic (电影光)', 'Natural (自然光)', 'Neon (霓虹光)', 'Rembrandt (伦勃朗光)', 
+                        'Volumetric (体积光/丁达尔)', 'Golden Hour (黄金时刻)', 'Studio Lighting (影棚光)'
+                    ]}
                 ]
             },
             library: {
                 title: "Prompt Vault (经典词库)",
                 models: ['Universal Format'],
                 inputs: [
-                    { id: 'category', label: '核心分类', type: 'select', options: ['Midjourney (Visual)', 'ChatGPT (Writing)', 'Coding (Development)', 'Productivity (Office)'] },
+                    { id: 'category', label: '核心分类', type: 'select', options: ['Midjourney (Visual/视觉)', 'ChatGPT (Writing/写作)', 'Coding (Development/开发)', 'Productivity (Office/办公)'] },
                     { id: 'scenario', label: '应用场景', type: 'select', options: ['Portrait Photography (人像摄影)', 'Logo Design (标志设计)', 'SEO Blog Post (SEO文章)', 'Python Debugging (除错)', 'Cold Email (开发信)', 'Excel Formula (公式生成)', 'Meeting Summary (会议纪要)'] },
-                    { id: 'level', label: '指令复杂度', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/Chain of Thought)'] }
+                    { id: 'level', label: '指令复杂度', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/思维链)'] }
                 ]
             },
             video: {
@@ -314,18 +325,24 @@
                 models: ['Runway Gen-2', 'Pika Labs', 'Sora', 'Stable Video'],
                 inputs: [
                     { id: 'subject', label: '视频内容', type: 'text', placeholder: 'e.g. 海浪拍打礁石' },
-                    { id: 'camera', label: '运镜方式', type: 'select', options: ['Pan Right', 'Pan Left', 'Zoom In', 'Zoom Out', 'Orbit', 'FPV'] },
-                    { id: 'motion', label: '动态幅度', type: 'select', options: ['Low', 'Medium', 'High', 'Speed Ramp'] },
-                    { id: 'fps', label: '帧率', type: 'select', options: ['24fps (Cinematic)', '30fps', '60fps'] }
+                    { id: 'camera', label: '运镜方式', type: 'select', options: [
+                        'Pan Right (右摇)', 'Pan Left (左摇)', 'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 
+                        'Orbit (环绕)', 'FPV (第一人称)', 'Truck (平移)', 'Tilt (摇摄)'
+                    ]},
+                    { id: 'motion', label: '动态幅度', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)'] },
+                    { id: 'fps', label: '帧率', type: 'select', options: ['24fps (Cinematic/电影感)', '30fps (Standard/标准)', '60fps (Smooth/流畅)'] }
                 ]
             },
             audio: {
                 title: "Music Producer (音乐)",
                 models: ['Suno V3', 'Udio'],
                 inputs: [
-                    { id: 'genre', label: '流派', type: 'select', options: ['Pop', 'K-pop', 'Rock', 'Jazz', 'Hip Hop', 'Phonk', 'EDM', 'Epic Orchestral'] },
-                    { id: 'mood', label: '情绪', type: 'select', options: ['Happy', 'Sad', 'Energetic', 'Chill', 'Dark'] },
-                    { id: 'vocal', label: '人声', type: 'select', options: ['Female', 'Male', 'Duet', 'Instrumental'] }
+                    { id: 'genre', label: '流派', type: 'select', options: [
+                        'Pop (流行)', 'K-pop (韩流)', 'Rock (摇滚)', 'Jazz (爵士)', 'Hip Hop (嘻哈)', 'Phonk (冯克)', 
+                        'EDM (电子舞曲)', 'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)', 'Ambient (氛围音乐)'
+                    ]},
+                    { id: 'mood', label: '情绪', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)', 'Romantic (浪漫)', 'Ethereal (空灵)'] },
+                    { id: 'vocal', label: '人声', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)'] }
                 ]
             },
             email: {
@@ -333,11 +350,24 @@
                 models: ['GPT-4o (Sales)', 'Claude 3 Haiku'],
                 inputs: [
                     { id: 'product', label: '推销产品', type: 'text', placeholder: 'e.g. Solar Panels' },
-                    { id: 'role', label: '收件人职位', type: 'select', options: ['CEO / Owner', 'Purchasing Manager (采购)', 'Product Manager', 'Marketing Director', 'General Inquiry'] },
-                    { id: 'stage', label: '营销阶段', type: 'select', options: ['Cold Outreach (首封开发)', 'Follow Up 1 (初次跟进)', 'Proposal (发送报价)', 'Re-engagement (激活僵尸粉)', 'Last Attempt (最后尝试)'] },
-                    { id: 'framework', label: '营销框架', type: 'select', options: ['AIDA (Attention-Interest)', 'BAB (Before-After-Bridge)', 'PAS (Problem-Solve)', 'Direct Pitch (开门见山)'] },
-                    { id: 'cta', label: '行动号召 (CTA)', type: 'select', options: ['Book a Call (约会议)', 'Reply for Info (回复要资料)', 'Request Sample (索取样品)', 'Visit Website (访问网站)'] },
-                    { id: 'lang', label: '目标语言', type: 'select', options: ['English (US)', 'English (UK)', 'Spanish', 'French', 'German', 'Japanese', 'Arabic'] }
+                    { id: 'role', label: '收件人职位', type: 'select', options: [
+                        'CEO / Owner (老板)', 'Purchasing Manager (采购经理)', 'Product Manager (产品经理)', 
+                        'Marketing Director (营销总监)', 'General Inquiry (一般咨询)'
+                    ]},
+                    { id: 'stage', label: '营销阶段', type: 'select', options: [
+                        'Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Proposal (报价/提案)', 
+                        'Re-engagement (激活)', 'Last Attempt (最后尝试)'
+                    ]},
+                    { id: 'framework', label: '营销框架', type: 'select', options: [
+                        'AIDA (注意-兴趣-欲望-行动)', 'BAB (前-后-桥梁)', 'PAS (问题-加剧-解决)', 'Direct Pitch (直球推销)'
+                    ]},
+                    { id: 'cta', label: '行动号召 (CTA)', type: 'select', options: [
+                        'Book a Call (预约会议)', 'Reply for Info (回复获取信息)', 'Request Sample (索取样品)', 'Visit Website (访问网站)'
+                    ]},
+                    { id: 'lang', label: '目标语言', type: 'select', options: [
+                        'English US (美式英语)', 'English UK (英式英语)', 'Spanish (西班牙语)', 'French (法语)', 
+                        'German (德语)', 'Japanese (日语)', 'Arabic (阿拉伯语)', 'Chinese (中文)'
+                    ]}
                 ]
             },
             academic: {
@@ -346,9 +376,18 @@
                 inputs: [
                     { id: 'content', label: '论文段落/摘要', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '120px' },
                     { id: 'field', label: '研究领域', type: 'text', placeholder: 'e.g. Neuroscience, Machine Learning' },
-                    { id: 'target', label: '投稿目标/风格', type: 'select', options: ['IEEE Standard', 'Nature/Science Style', 'APA Format', 'MLA Style', 'General Academic'] },
-                    { id: 'goal', label: '优化目标', type: 'select', options: ['降重 (Reduce Repetition)', '深度润色 (Polish Grammar)', '逻辑增强 (Enhance Logic)', '学术化 (Make Academic)', '中式英语矫正 (Fix Chinglish)'] },
-                    { id: 'section', label: '所属部分', type: 'select', options: ['Abstract', 'Introduction', 'Methodology', 'Results', 'Discussion', 'Conclusion'] }
+                    { id: 'target', label: '投稿目标/风格', type: 'select', options: [
+                        'IEEE Standard (IEEE标准)', 'Nature/Science Style (Nature风格)', 'APA Format (APA格式)', 
+                        'MLA Style (MLA格式)', 'General Academic (通用学术)'
+                    ]},
+                    { id: 'goal', label: '优化目标', type: 'select', options: [
+                        'Reduce Repetition (降重)', 'Polish Grammar (润色语法)', 'Enhance Logic (增强逻辑)', 
+                        'Make Academic (学术化)', 'Fix Chinglish (中式英语矫正)'
+                    ]},
+                    { id: 'section', label: '所属部分', type: 'select', options: [
+                        'Abstract (摘要)', 'Introduction (引言)', 'Methodology (方法论)', 
+                        'Results (结果)', 'Discussion (讨论)', 'Conclusion (结论)'
+                    ]}
                 ]
             },
             reverse: {
@@ -356,12 +395,36 @@
                 models: ['GPT-4 Vision', 'Claude 3 Opus'],
                 inputs: [
                     { id: 'desc', label: '补充描述 (可选)', type: 'textarea', placeholder: '例如：我想模仿这张图的灯光，但把猫换成狗...', height: '80px' },
-                    { id: 'mode', label: '分析模式', type: 'select', options: ['Extract Visual Prompts (提取画面)', 'Analyze Layout (分析构图)', 'Extract Color Palette (提取配色)', 'Full Analysis (全量分析)'] }
+                    { id: 'mode', label: '分析模式', type: 'select', options: [
+                        'Extract Visual Prompts (提取视觉提示词)', 'Analyze Layout (分析构图)', 
+                        'Extract Color Palette (提取配色)', 'Full Analysis (全量分析)'
+                    ]}
                 ]
             },
-            text: { title: "Copywriter (写作)", models:['GPT-4'], inputs: [{id:'topic',label:'主题',type:'text'}, {id:'framework',label:'框架',type:'select',options:['AIDA','PAS','First Principles']}]},
-            xhs: { title: "小红书矩阵", models:['Claude 3'], inputs: [{id:'topic',label:'选题',type:'text'}, {id:'niche',label:'赛道',type:'select',options:['美妆','数码','穿搭','美食']}]},
-            tiktok: { title: "抖音脚本", models:['GPT-4'], inputs: [{id:'topic',label:'主题',type:'text'}, {id:'hook',label:'开头',type:'select',options:['视觉奇观','反差','提问']}]}
+            text: { 
+                title: "Copywriter (写作)", 
+                models:['GPT-4'], 
+                inputs: [
+                    {id:'topic',label:'主题',type:'text'}, 
+                    {id:'framework',label:'框架',type:'select',options:['AIDA (Attention-Interest/注意-兴趣)', 'PAS (Problem-Solution/问题-解决)', 'First Principles (第一性原理)']}
+                ]
+            },
+            xhs: { 
+                title: "小红书矩阵", 
+                models:['Claude 3'], 
+                inputs: [
+                    {id:'topic',label:'选题',type:'text'}, 
+                    {id:'niche',label:'赛道',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Travel (旅行)', 'Knowledge (知识付费)']}
+                ]
+            },
+            tiktok: { 
+                title: "抖音脚本", 
+                models:['GPT-4'], 
+                inputs: [
+                    {id:'topic',label:'主题',type:'text'}, 
+                    {id:'hook',label:'开头',type:'select',options:['Visual Shock (视觉奇观)', 'Contrast (反差)', 'Question (提问)', 'Pain Point (痛点)']}
+                ]
+            }
         };
 
         let currentTool = 'visual';
@@ -494,7 +557,6 @@
 
             setTimeout(() => {
                 container.innerHTML = '';
-                // 模拟数据库返回，这里可以根据 inputs.category 和 inputs.scenario 返回不同的内容
                 const box = document.createElement('div');
                 box.className = 'result-box';
                 
@@ -539,17 +601,29 @@
         }
 
         function buildPrompt(toolKey, model, inputs, ver) {
-            const dna = { tone: document.getElementById('dnaTone').value, target: document.getElementById('dnaTarget').value };
+            // 清理中文备注，只保留英文参数给AI
+            const cleanInputs = {};
+            for (const key in inputs) {
+                // 如果值包含 "("，则截取 "(" 前面的部分并去除空格
+                const val = inputs[key];
+                if (val && val.includes('(')) {
+                    cleanInputs[key] = val.split('(')[0].trim();
+                } else {
+                    cleanInputs[key] = val;
+                }
+            }
+
+            const dna = { tone: document.getElementById('dnaTone').value.split('(')[0].trim(), target: document.getElementById('dnaTarget').value };
             let res = "";
             
             if (toolKey === 'email') {
-                res = `Subject: [Hook for ${inputs.product}]\n\nHi [Name],\n\n(Writing to ${inputs.role}, Stage: ${inputs.stage})\n\n[Body using ${inputs.framework} model...]\n\n[CTA: ${inputs.cta}]`;
+                res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Writing to ${cleanInputs.role}, Stage: ${cleanInputs.stage})\n\n[Body using ${cleanInputs.framework} model...]\n\n[CTA: ${cleanInputs.cta}]`;
             } else if (toolKey === 'academic') {
-                res = `[Goal: ${inputs.goal}]\n[Style: ${inputs.target}]\n\nRevised Text:\n(Polished version of input...)`;
+                res = `[Goal: ${cleanInputs.goal}]\n[Style: ${cleanInputs.target}]\n\nRevised Text:\n(Polished version of input...)`;
             } else if (toolKey === 'visual') {
-                res = `/imagine prompt: ${Object.values(inputs).join(', ')} --v 6.0`;
+                res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
             } else {
-                res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(inputs)}\n### Model: ${model}`;
+                res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
             }
             return res;
         }
