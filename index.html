@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V34 | 极简纯净版</title>
+    <title>AI CommandOS | 极速 AI 指令生成器</title>
+    <meta name="description" content="AI CommandOS - 你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。内置 50+ 高频模版，免费使用，极速响应。">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AI CommandOS | 极速 AI 指令生成器">
+    <meta property="og:description" content="专为创作者设计的 AI 提示词工作流。支持视觉、写作、编程、办公全场景。一键生成，极速响应。">
+    <meta property="og:image" content="https://placehold.co/1200x630/0b0e14/3b82f6?text=AI+Command+OS&font=roboto">
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -145,6 +152,13 @@
         optgroup { font-style: normal; font-weight: bold; color: var(--gold); background: var(--sidebar); }
         option { color: white; padding: 5px; background: var(--input); }
 
+        .magic-btn {
+            position: absolute; right: 10px; top: 32px;
+            background: transparent; border: none; color: var(--gold);
+            cursor: pointer; font-size: 1rem; padding: 4px;
+        }
+        .magic-btn:hover { transform: scale(1.1); }
+
         .action-bar { display: flex; gap: 20px; align-items: center; margin-top: 10px; padding-bottom: 30px; }
         
         .btn-main {
@@ -185,7 +199,7 @@
         .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
         .file-name { margin-top: 10px; font-size: 0.85rem; color: var(--gold); display: none; font-weight: bold;}
 
-        /* 历史记录 */
+        /* 历史记录卡片 */
         .history-item {
             background: var(--panel); border: 1px solid var(--border); padding: 12px; border-radius: 6px;
             margin-bottom: 10px; cursor: pointer; transition: 0.1s;
@@ -671,6 +685,7 @@
         }
 
         function buildPrompt(toolKey, model, inputs, ver) {
+            // 清理中文备注
             const cleanInputs = {};
             const toolConfig = tools[toolKey];
             
