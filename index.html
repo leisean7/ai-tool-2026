@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V23 | 核心增强版</title>
+    <title>AI CommandOS V24 | 精简增强版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -38,7 +38,7 @@
         
         /* 1. 左侧导航 */
         .sidebar {
-            width: 250px;
+            width: 260px;
             background: var(--sidebar);
             border-right: 1px solid var(--border);
             display: flex;
@@ -63,13 +63,13 @@
         .menu-category { padding: 20px 20px 8px; font-size: 0.7rem; color: var(--text-sub); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
         
         .menu-item {
-            padding: 10px 20px;
+            padding: 12px 20px;
             cursor: pointer;
             color: var(--text-sub);
             transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-weight: 500;
             border-left: 3px solid transparent;
         }
@@ -77,7 +77,7 @@
         .menu-item.active { background: rgba(59, 130, 246, 0.15); color: var(--accent); border-left-color: var(--accent); }
         .menu-item i { width: 18px; text-align: center; }
 
-        /* 2. 中间工作区 */
+        /* 2. 中间工作区 (现在占据剩余空间) */
         .workspace {
             flex: 1;
             display: flex;
@@ -88,114 +88,97 @@
         }
 
         .topbar {
-            height: 55px;
+            height: 60px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 30px;
             background: var(--bg);
         }
 
         .model-selector select {
             background: var(--panel); color: white; border: 1px solid var(--border);
-            padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+            padding: 8px 15px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;
         }
 
         .scroll-area {
-            flex: 1; overflow-y: auto; padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%;
-        }
-
-        /* 3. 右侧上下文面板 (Brand DNA) - 增强版 */
-        .context-panel {
-            width: 300px; /* 稍微加宽一点 */
-            background: var(--sidebar);
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            padding: 20px;
-            overflow-y: auto;
+            flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%;
         }
 
         /* --- 基础组件 --- */
-        .card-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; color: var(--text-sub); display: flex; justify-content: space-between; text-transform: uppercase; align-items: center;}
+        .card-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 20px; color: var(--text-sub); display: flex; justify-content: space-between; text-transform: uppercase; align-items: center;}
         
-        .reset-btn { font-size: 0.7rem; color: var(--accent); cursor: pointer; text-transform: none; }
-        .reset-btn:hover { text-decoration: underline; }
-
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* 更宽的列 */
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
         .input-group { position: relative; }
         
-        label { display: block; margin-bottom: 6px; color: var(--text-sub); font-size: 0.8rem; }
+        label { display: block; margin-bottom: 8px; color: var(--text-sub); font-size: 0.85rem; font-weight: 500; }
         input, select, textarea {
             width: 100%; background: var(--input); border: 1px solid var(--border);
-            color: white; padding: 10px; border-radius: 6px; font-size: 0.9rem; font-family: inherit; margin-bottom: 0;
+            color: white; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-family: inherit; margin-bottom: 0;
             transition: 0.2s;
         }
         input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #3b4050; }
 
         .magic-btn {
-            position: absolute; right: 8px; top: 28px;
+            position: absolute; right: 10px; top: 32px;
             background: transparent; border: none; color: var(--gold);
-            cursor: pointer; font-size: 0.9rem; padding: 4px;
+            cursor: pointer; font-size: 1rem; padding: 4px;
         }
         .magic-btn:hover { transform: scale(1.1); }
 
-        .action-bar { display: flex; gap: 15px; align-items: center; margin-top: 10px; padding-bottom: 30px; }
+        .action-bar { display: flex; gap: 20px; align-items: center; margin-top: 10px; padding-bottom: 30px; }
         .btn-main {
-            flex: 1; padding: 12px; background: var(--accent); color: white;
+            flex: 1; padding: 14px; background: var(--accent); color: white;
             border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
             display: flex; justify-content: center; align-items: center; gap: 8px;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); font-size: 1rem;
         }
         .btn-main:hover { background: var(--accent-hover); transform: translateY(-1px); }
         .btn-main.purple { background: var(--purple); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); }
         .btn-main.purple:hover { background: #7c3aed; }
         
-        .switch-group { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 0.85rem; cursor: pointer; user-select: none; }
-        .switch-group input { margin: 0; accent-color: var(--accent); }
+        .switch-group { display: flex; align-items: center; gap: 10px; color: var(--text); font-size: 0.9rem; cursor: pointer; user-select: none; }
+        .switch-group input { margin: 0; accent-color: var(--accent); width: 16px; height: 16px;}
 
         /* 结果展示 */
-        .result-container { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
+        .result-container { display: flex; flex-direction: column; gap: 20px; margin-top: 10px; }
         .result-box {
             background: #000; border: 1px solid var(--border); border-radius: 8px;
-            padding: 15px; font-family: 'Monaco', monospace; color: #10b981;
-            font-size: 0.85rem; line-height: 1.5; min-height: 80px; white-space: pre-wrap; position: relative;
+            padding: 20px; font-family: 'Monaco', monospace; color: #10b981;
+            font-size: 0.9rem; line-height: 1.6; min-height: 100px; white-space: pre-wrap; position: relative;
         }
         .ab-tag {
             position: absolute; top: 0; left: 0; background: var(--panel); 
-            padding: 2px 8px; font-size: 0.7rem; border-bottom-right-radius: 6px; color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            padding: 4px 10px; font-size: 0.75rem; border-bottom-right-radius: 6px; color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
         }
 
         /* 上传区域 */
         .upload-zone {
-            border: 2px dashed var(--border); border-radius: 8px; padding: 25px;
+            border: 2px dashed var(--border); border-radius: 8px; padding: 30px;
             text-align: center; color: var(--text-sub); cursor: pointer;
             transition: 0.2s; background: rgba(0,0,0,0.2);
-            margin-bottom: 20px; display: none;
+            margin-bottom: 25px; display: none;
         }
         .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
         .file-name { margin-top: 10px; font-size: 0.85rem; color: var(--gold); display: none; font-weight: bold;}
 
-        /* 分隔线 */
-        .hr-line { border-top: 1px solid var(--border); margin: 20px 0; }
-
-        @media (max-width: 1024px) { .context-panel { display: none; } }
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -100%; height: 100%; transition: 0.3s; box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
             .mobile-toggle { display: block; }
             .topbar { padding: 0 15px; }
-            .scroll-area { padding: 15px; }
+            .scroll-area { padding: 20px; }
             .form-grid { grid-template-columns: 1fr; }
         }
+        .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
+
     </style>
 </head>
 <body>
@@ -212,14 +195,14 @@
             <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> 写作 (Copy)</div>
             
             <div class="menu-category">Professional Matrix</div>
-            <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> 外贸开发 (Sales)</div>
-            <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> 学术科研 (Scholar)</div>
-            <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
             <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/TikTok</div>
+            <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
+            <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> 学术科研 (Scholar)</div>
+            <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> 外贸开发 (Sales)</div>
             
             <div class="menu-category">AI Resources</div>
+            <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> 经典词库 (Templates)</div>
             <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> 逆向工程 (Reverse)</div>
-            <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> 经典词库 (Library)</div>
         </div>
 
         <div class="workspace">
@@ -262,95 +245,10 @@
             </div>
         </div>
 
-        <div class="context-panel">
-            <div class="card-title">
-                <span>🧬 品牌 DNA (Memory)</span>
-                <span class="reset-btn" onclick="resetDNA()">Reset</span>
-            </div>
-            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">全局设定，自动注入。</p>
-            
-            <label>Identity Name (品牌/产品名)</label>
-            <input type="text" id="dnaName" placeholder="e.g. Nexus AI / Tesla Model Y">
-
-            <label>Output Language (输出语言)</label>
-            <select id="dnaLang">
-                <option value="">-- Auto (自动) --</option>
-                <option value="English">English (英语)</option>
-                <option value="Chinese">Chinese (简体中文)</option>
-                <option value="Japanese">Japanese (日语)</option>
-                <option value="Spanish">Spanish (西班牙语)</option>
-                <option value="German">German (德语)</option>
-            </select>
-            
-            <label>Role Persona (角色设定)</label>
-            <select id="dnaRole">
-                <option value="">-- Default (默认) --</option>
-                <option value="Senior Expert">Senior Expert (资深专家)</option>
-                <option value="Friendly Assistant">Friendly Assistant (贴心助手)</option>
-                <option value="Strict Critic">Strict Critic (严厉批评家)</option>
-                <option value="Creative Writer">Creative Writer (创意作家)</option>
-            </select>
-
-            <div class="hr-line"></div>
-
-            <label>Brand Color (品牌主色)</label>
-            <input type="text" id="dnaColor" placeholder="e.g. #FF5733, Tech Blue">
-
-            <label>Target Audience (目标受众)</label>
-            <input type="text" id="dnaTarget" placeholder="e.g. Gen Z, 程序员, 宝妈">
-
-            <label>Tone of Voice (语气基调)</label>
-            <select id="dnaTone">
-                <option value="">-- Default --</option>
-                <option value="Professional">Professional (专业严谨)</option>
-                <option value="Urgent">Urgent (紧迫感)</option>
-                <option value="Friendly">Friendly (亲和友好)</option>
-                <option value="Luxurious">Luxurious (高端奢华)</option>
-                <option value="Humorous">Humorous (幽默风趣)</option>
-            </select>
-
-            <label>Negative Prompt (负向/禁用词)</label>
-            <textarea id="dnaNegative" placeholder="e.g. text, watermark, bad quality..." style="height:60px;"></textarea>
-        </div>
-
     </div>
 
     <script>
-        // === 级联词库数据 (Database) ===
-        const libraryDB = {
-            "Visual": {
-                label: "🎨 Visual Art (视觉/绘画)",
-                scenarios: [
-                    "Portrait Photography (人像摄影)", "Logo Design (标志设计)", "UI/UX Interface (界面设计)",
-                    "Cyberpunk City (赛博朋克)", "Product Shot (产品摄影)", "Anime Character (二次元角色)",
-                    "Interior Design (室内设计)", "Game Asset (游戏素材)"
-                ]
-            },
-            "Writing": {
-                label: "✍️ Writing & Copy (写作/文案)",
-                scenarios: [
-                    "SEO Blog Post (SEO博客)", "Instagram Caption (INS文案)", "Twitter Thread (推特串推)",
-                    "Youtube Script (油管脚本)", "Press Release (新闻稿)", "Storytelling (故事创作)",
-                    "Translation (专业翻译)", "Resume Polish (简历润色)"
-                ]
-            },
-            "Coding": {
-                label: "💻 Coding & Dev (编程/开发)",
-                scenarios: [
-                    "Python Debugging (Python除错)", "SQL Query Generator (SQL生成)", "Regex Helper (正则助手)",
-                    "Code Refactoring (代码重构)", "React Component (React组件)", "Explain Code (解释代码)"
-                ]
-            },
-            "Office": {
-                label: "💼 Office & Productivity (办公/效率)",
-                scenarios: [
-                    "Excel Formula (Excel公式)", "Email Reply (邮件回复)", "Meeting Summary (会议纪要)",
-                    "PPT Outline (PPT大纲)", "SWOT Analysis (SWOT分析)", "Mind Map Structure (思维导图)"
-                ]
-            }
-        };
-
-        // === 工具配置 ===
+        // === 工具配置 (增强版) ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
@@ -372,13 +270,75 @@
                     ]}
                 ]
             },
+            // === 增强: 经典词库 (改为单选高频模版) ===
             library: {
                 title: "Prompt Vault (经典词库)",
                 models: ['Universal Format'],
                 inputs: [
-                    { id: 'category', label: 'Category (核心分类)', type: 'select', options: Object.keys(libraryDB) },
-                    { id: 'scenario', label: 'Scenario (应用场景)', type: 'select', options: [] }, 
-                    { id: 'level', label: 'Level (指令复杂度)', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/思维链)'] }
+                    { id: 'template', label: 'Select Template (选择高频模版)', type: 'select', options: [
+                        'Midjourney: Portrait Master (MJ人像摄影大师)',
+                        'Midjourney: Minimalist Logo (MJ极简Logo设计)',
+                        'Midjourney: UI/UX Design (移动端界面设计)',
+                        'Midjourney: Cyberpunk City (赛博朋克场景)',
+                        'Midjourney: 3D Cute IP (3D盲盒公仔)',
+                        'Writing: Xiaohongshu Copy (小红书爆款文案)',
+                        'Writing: YouTube Script (油管视频脚本)',
+                        'Writing: SEO Blog Post (SEO博客文章)',
+                        'Coding: Python Debugger (Python除错专家)',
+                        'Coding: SQL Optimizer (SQL查询优化)',
+                        'Office: Excel Formula (Excel公式生成)',
+                        'Office: Email Polisher (邮件润色)',
+                        'Office: Weekly Report (周报生成器)'
+                    ]}
+                ]
+            },
+            // === 增强: 抖音/TikTok 细分 ===
+            tiktok: {
+                title: "TikTok Director (抖音脚本)",
+                models: ['GPT-4o', 'Claude 3 Opus'],
+                inputs: [
+                    { id: 'topic', label: 'Video Topic (视频主题)', type: 'text', placeholder: 'e.g. 沉浸式开箱 iPhone 15' },
+                    { id: 'hook', label: 'Opening Hook (开头黄金3秒)', type: 'select', options: [
+                        'Visual Shock (视觉奇观/特效)', 'Contrast/Reversal (巨大反差/反转)', 
+                        'Pain Point Question (痛点提问)', 'Controversial Statement (暴论/争议)',
+                        'ASMR Sound (沉浸式音效)', 'Direct Benefit (利益点直给)'
+                    ]},
+                    { id: 'duration', label: 'Duration (视频时长)', type: 'select', options: [
+                        '15s (Short/快速种草)', '30s (Medium/剧情段子)', '60s (Long/知识干货)', '15s Loop (魔性循环)'
+                    ]},
+                    { id: 'pace', label: 'Editing Pace (剪辑节奏)', type: 'select', options: [
+                        'Fast & Punchy (快节奏/卡点)', 'Slow & Cinematic (慢节奏/电影感)', 
+                        'Sync to Beat (踩点剪辑)', 'Vlog Style (生活流/自然)'
+                    ]},
+                    { id: 'bgm', label: 'BGM Mood (音乐情绪)', type: 'select', options: [
+                        'Trending/Viral (热门榜单)', 'Upbeat/Fun (欢快搞怪)', 'Suspense/Dark (悬疑/吃瓜)',
+                        'Lo-fi/Chill (治愈/放松)', 'Epic/Dramatic (史诗/反转)'
+                    ]},
+                    { id: 'cta', label: 'CTA (互动引导)', type: 'select', options: [
+                        'Follow for More (关注看下集)', 'Comment Below (评论区互动)', 
+                        'Check Link in Bio (主页链接)', 'Save this Video (收藏防走丢)'
+                    ]}
+                ]
+            },
+            // === 增强: 学术领域可视化 ===
+            academic: {
+                title: "Academic Scholar (学术科研)",
+                models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
+                inputs: [
+                    { id: 'content', label: 'Abstract/Paragraph (段落/摘要)', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '150px' },
+                    { id: 'field', label: 'Research Field (研究领域)', type: 'select', options: [
+                        'Computer Science (计算机科学)', 'Medicine/Biology (医学/生物)', 'Business/Management (商科/管理)',
+                        'Engineering (工程学)', 'Social Sciences (社会科学)', 'Psychology (心理学)',
+                        'Physics/Math (物理/数学)', 'Art/Humanities (艺术/人文)', 'Law (法学)', 'Education (教育学)'
+                    ]},
+                    { id: 'target', label: 'Target Style (投稿目标)', type: 'select', options: [
+                        'IEEE Standard (IEEE标准)', 'Nature/Science (顶级期刊风格)', 'APA Format (APA格式)', 
+                        'MLA Style (MLA格式)', 'General Academic (通用学术)', 'Thesis/Dissertation (学位论文)'
+                    ]},
+                    { id: 'goal', label: 'Optimization Goal (优化目标)', type: 'select', options: [
+                        'Polish Grammar (深度润色)', 'Reduce Repetition (降重/去AI味)', 'Enhance Logic (逻辑增强)', 
+                        'Make Concise (精简语句)', 'Fix Chinglish (中式英语矫正)', 'Translate to English (中译英)'
+                    ]}
                 ]
             },
             video: {
@@ -406,6 +366,14 @@
                     { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)'] }
                 ]
             },
+            text: { 
+                title: "Copywriter (写作)", 
+                models:['GPT-4'], 
+                inputs: [
+                    {id:'topic',label:'Topic (主题)',type:'text'}, 
+                    {id:'framework',label:'Framework (框架)',type:'select',options:['AIDA (注意-兴趣)', 'PAS (问题-解决)', 'First Principles (第一性原理)']}
+                ]
+            },
             email: {
                 title: "Global Sales (外贸开发)",
                 models: ['GPT-4o (Sales)', 'Claude 3 Haiku'],
@@ -430,20 +398,12 @@
                     ]}
                 ]
             },
-            academic: {
-                title: "Academic Scholar (学术科研)",
-                models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
+            xhs: { 
+                title: "小红书矩阵", 
+                models:['Claude 3'], 
                 inputs: [
-                    { id: 'content', label: 'Content (段落/摘要)', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '120px' },
-                    { id: 'field', label: 'Field (研究领域)', type: 'text', placeholder: 'e.g. Neuroscience' },
-                    { id: 'target', label: 'Style (投稿风格)', type: 'select', options: [
-                        'IEEE Standard (IEEE标准)', 'Nature/Science Style (Nature风格)', 'APA Format (APA格式)', 
-                        'General Academic (通用学术)'
-                    ]},
-                    { id: 'goal', label: 'Goal (优化目标)', type: 'select', options: [
-                        'Reduce Repetition (降重)', 'Polish Grammar (润色语法)', 'Enhance Logic (增强逻辑)', 
-                        'Fix Chinglish (中式英语矫正)'
-                    ]}
+                    {id:'topic',label:'Topic (选题)',type:'text'}, 
+                    {id:'niche',label:'Niche (赛道)',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Knowledge (知识付费)']}
                 ]
             },
             reverse: {
@@ -455,31 +415,24 @@
                         'Extract Visual Prompts (提取视觉提示词)', 'Analyze Layout (分析构图)', 'Extract Color (提取配色)'
                     ]}
                 ]
-            },
-            text: { 
-                title: "Copywriter (写作)", 
-                models:['GPT-4'], 
-                inputs: [
-                    {id:'topic',label:'Topic (主题)',type:'text'}, 
-                    {id:'framework',label:'Framework (框架)',type:'select',options:['AIDA (注意-兴趣)', 'PAS (问题-解决)', 'First Principles (第一性原理)']}
-                ]
-            },
-            xhs: { 
-                title: "小红书矩阵", 
-                models:['Claude 3'], 
-                inputs: [
-                    {id:'topic',label:'Topic (选题)',type:'text'}, 
-                    {id:'niche',label:'Niche (赛道)',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Knowledge (知识付费)']}
-                ]
-            },
-            tiktok: { 
-                title: "抖音脚本", 
-                models:['GPT-4'], 
-                inputs: [
-                    {id:'topic',label:'Topic (主题)',type:'text'}, 
-                    {id:'hook',label:'Hook (开头)',type:'select',options:['Visual Shock (视觉奇观)', 'Contrast (反差)', 'Question (提问)']}
-                ]
             }
+        };
+
+        // === 预设模版数据 (Library) ===
+        const libraryTemplates = {
+            'Midjourney: Portrait Master (MJ人像摄影大师)': "/imagine prompt: extreme close-up portrait of a woman, natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
+            'Midjourney: Minimalist Logo (MJ极简Logo设计)': "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details",
+            'Midjourney: UI/UX Design (移动端界面设计)': "/imagine prompt: mobile app UI design for [App Type], clean layout, neumorphism style, high fidelity, dribbble trend, user friendly, figma --v 6.0 --ar 9:16",
+            'Midjourney: Cyberpunk City (赛博朋克场景)': "/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic lighting --v 6.0 --ar 16:9",
+            'Midjourney: 3D Cute IP (3D盲盒公仔)': "/imagine prompt: cute 3d character design of [Subject], pop mart style, clay material, studio lighting, pastel colors, 3d render, c4d, octane render --v 6.0",
+            'Writing: Xiaohongshu Copy (小红书爆款文案)': "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题要包含Emoji，吸引眼球（如：'绝绝子！'）。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。\n4. 添加5个热门Hashtag。",
+            'Writing: YouTube Script (油管视频脚本)': "Role: Scriptwriter\nTask: Write a YouTube video script for [Topic].\nStructure:\n1. Hook (0-15s): Grab attention.\n2. Intro: What we will cover.\n3. Body: 3 key points.\n4. CTA: Like and Subscribe.",
+            'Writing: SEO Blog Post (SEO博客文章)': "Role: SEO Expert\nTask: Write a blog post about [Topic].\nRequirements:\n- Target keywords: [Keywords]\n- Use H1, H2, H3 headers structure.\n- Include a catchy introduction and a FAQ section.",
+            'Coding: Python Debugger (Python除错专家)': "Role: Python Expert\nTask: Find the bug in this code and explain the fix.\nCode:\n[Paste Code Here]",
+            'Coding: SQL Optimizer (SQL查询优化)': "Role: Database Administrator\nTask: Optimize this SQL query for performance.\nQuery:\n[Paste SQL Here]",
+            'Office: Excel Formula (Excel公式生成)': "I need an Excel formula to: [Describe goal, e.g., sum column A if column B contains 'X']",
+            'Office: Email Polisher (邮件润色)': "Role: Communication Coach\nTask: Polish this email to be more professional and concise.\nDraft:\n[Paste Draft]",
+            'Office: Weekly Report (周报生成器)': "请根据以下工作内容生成一份周报：\n[输入工作内容]\n\n要求：分为'本周进展'、'存在问题'、'下周计划'，语言简练，数据量化。"
         };
 
         let currentTool = 'visual';
@@ -500,6 +453,7 @@
             const abTestGroup = document.getElementById('abTestGroup');
             const actionBtn = document.getElementById('actionBtn');
 
+            // 逆向工程显示上传
             if (key === 'reverse') {
                 uploadArea.style.display = 'block';
                 abTestGroup.style.display = 'none'; 
@@ -508,7 +462,7 @@
             } else if (key === 'library') {
                 uploadArea.style.display = 'none';
                 abTestGroup.style.display = 'none'; 
-                actionBtn.innerHTML = '<i class="fas fa-book-open"></i> 调取词库';
+                actionBtn.innerHTML = '<i class="fas fa-copy"></i> 获取模版';
                 actionBtn.classList.add('purple');
             } else {
                 uploadArea.style.display = 'none';
@@ -527,13 +481,8 @@
                 
                 let inputHtml = '';
                 if(field.type === 'select') {
-                    if (key === 'library' && field.id === 'category') {
-                         const opts = field.options.map(k => `<option value="${k}">${libraryDB[k].label}</option>`).join('');
-                         inputHtml = `<select id="f_${field.id}" onchange="updateScenario(this.value)">${opts}</select>`;
-                    } else {
-                        const opts = field.options.map(o => `<option>${o}</option>`).join('');
-                        inputHtml = `<select id="f_${field.id}">${opts}</select>`;
-                    }
+                    const opts = field.options.map(o => `<option>${o}</option>`).join('');
+                    inputHtml = `<select id="f_${field.id}">${opts}</select>`;
                 } else if (field.type === 'textarea') {
                     inputHtml = `<textarea id="f_${field.id}" placeholder="${field.placeholder || ''}" style="height:${field.height || '100px'}"></textarea>`;
                 } else {
@@ -549,10 +498,6 @@
                 container.appendChild(div);
             });
 
-            if (key === 'library') {
-                updateScenario(Object.keys(libraryDB)[0]);
-            }
-
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
             items.forEach(item => {
@@ -560,14 +505,6 @@
             });
             
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
-        }
-
-        function updateScenario(category) {
-            const scenarioSelect = document.getElementById('f_scenario');
-            if (scenarioSelect && libraryDB[category]) {
-                const scenarios = libraryDB[category].scenarios;
-                scenarioSelect.innerHTML = scenarios.map(s => `<option>${s}</option>`).join('');
-            }
         }
 
         function handleFile(input) {
@@ -596,8 +533,12 @@
                 return;
             }
 
+            // 词库直接获取逻辑
             if (currentTool === 'library') {
-                fetchLibraryPrompts(inputs);
+                const selectedKey = inputs.template;
+                const templateContent = libraryTemplates[selectedKey] || "Prompt not found.";
+                const container = document.getElementById('resultContainer');
+                container.innerHTML = `<div class="result-box"><div class="ab-tag">Template Loaded</div>${templateContent} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i></div>`;
                 return;
             }
 
@@ -616,34 +557,6 @@
                     container.appendChild(box);
                 });
             }, 800);
-        }
-
-        function fetchLibraryPrompts(inputs) {
-            const container = document.getElementById('resultContainer');
-            container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-book"></i> Searching Vault...</div>';
-
-            setTimeout(() => {
-                container.innerHTML = '';
-                const box = document.createElement('div');
-                box.className = 'result-box';
-                
-                // Get DNA
-                const dnaName = document.getElementById('dnaName').value;
-                const dnaLang = document.getElementById('dnaLang').value;
-                let context = "";
-                if(dnaName) context += `Brand: ${dnaName}\n`;
-                if(dnaLang) context += `Output Language: ${dnaLang}\n`;
-
-                let content = `### Category: ${inputs.category}\n### Scenario: ${inputs.scenario}\n${context}\n`;
-                
-                // Logic placeholders (In a real app, this would be a large switch or DB lookup)
-                if (inputs.scenario.includes("Portrait")) content += `/imagine prompt: professional portrait of [Subject]... --v 6.0`;
-                else if (inputs.scenario.includes("Logo")) content += `/imagine prompt: minimalist vector logo for ${dnaName || '[Brand]'}... --v 6.0`;
-                else content += `[Standard prompt template for ${inputs.scenario} loaded...]`;
-
-                box.innerHTML = `<div class="ab-tag">Vault Result</div>${content} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
-                container.appendChild(box);
-            }, 500);
         }
 
         function simulateVisionAnalysis(filename, model, inputs) {
@@ -670,18 +583,7 @@
         }
 
         function buildPrompt(toolKey, model, inputs, ver) {
-            // DNA Injection
-            const dna = {
-                name: document.getElementById('dnaName').value,
-                lang: document.getElementById('dnaLang').value,
-                role: document.getElementById('dnaRole').value,
-                color: document.getElementById('dnaColor').value,
-                target: document.getElementById('dnaTarget').value,
-                tone: document.getElementById('dnaTone').value,
-                neg: document.getElementById('dnaNegative').value
-            };
-
-            // Clean inputs
+            // 清理中文备注
             const cleanInputs = {};
             for (const key in inputs) {
                 const val = inputs[key];
@@ -690,21 +592,16 @@
             }
 
             let res = "";
-            let context = "";
-            if(dna.name) context += `Brand Identity: ${dna.name} | `;
-            if(dna.role && toolKey !== 'visual') context += `Role: ${dna.role} | `;
-            if(dna.lang && toolKey !== 'visual') context += `Output Language: ${dna.lang} | `;
-            if(dna.color) context += `Color Palette: ${dna.color} | `;
-            if(dna.target) context += `Target Audience: ${dna.target} | `;
-            if(dna.tone) context += `Tone: ${dna.tone} | `;
-
             if (toolKey === 'email') {
-                res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n[Context: ${context}]\n[Body using ${cleanInputs.framework}...]\n\n[CTA: ${cleanInputs.cta}]`;
+                res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Context: Sales to ${cleanInputs.role})\n[Body using ${cleanInputs.framework}...]\n\n[CTA: ${cleanInputs.cta}]`;
+            } else if (toolKey === 'tiktok') {
+                res = `Title: [${cleanInputs.topic}]\nTarget: TikTok\nLength: ${cleanInputs.duration}\n\n[Hook (${cleanInputs.hook})]: (0-3s script)\n[Content]: (Main script, Pace: ${cleanInputs.pace})\n[BGM]: (${cleanInputs.bgm})\n[CTA]: ${cleanInputs.cta}`;
+            } else if (toolKey === 'academic') {
+                res = `[Field: ${cleanInputs.field}]\n[Target: ${cleanInputs.target}]\n[Goal: ${cleanInputs.goal}]\n\nRevised Text:\n(AI Polished version of input...)`;
             } else if (toolKey === 'visual') {
-                res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')}, ${context} --v 6.0`;
-                if(dna.neg) res += ` --no ${dna.neg}`;
+                res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
             } else {
-                res = `### Task: ${tools[toolKey].title}\n### Context: ${context}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
+                res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
             }
             return res;
         }
@@ -712,16 +609,6 @@
         function copyText(icon) {
             navigator.clipboard.writeText(icon.parentElement.innerText.replace("Copy", "").trim());
             alert("Copied!");
-        }
-
-        function resetDNA() {
-            document.getElementById('dnaName').value = '';
-            document.getElementById('dnaLang').value = '';
-            document.getElementById('dnaRole').value = '';
-            document.getElementById('dnaColor').value = '';
-            document.getElementById('dnaTarget').value = '';
-            document.getElementById('dnaTone').value = '';
-            document.getElementById('dnaNegative').value = '';
         }
 
         function magicExpand(id) {
