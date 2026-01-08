@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <title>AI CommandOS | 极速 AI 指令生成器</title>
-    <meta name="description" content="AI CommandOS - 你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。内置 50+ 高频模版，免费使用，极速响应。">
+    <meta name="description" content="你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。内置 50+ 高频模版，免费使用。">
     
     <meta property="og:type" content="website">
-    <meta property="og:title" content="AI CommandOS | 极速 AI 指令生成器">
+    <meta property="og:url" content="https://ai-commandos.netlify.app/"> <meta property="og:title" content="AI CommandOS | 极速 AI 指令生成器">
     <meta property="og:description" content="专为创作者设计的 AI 提示词工作流。支持视觉、写作、编程、办公全场景。一键生成，极速响应。">
-    <meta property="og:image" content="https://placehold.co/1200x630/0b0e14/3b82f6?text=AI+Command+OS&font=roboto">
-    
+    <meta property="og:image" content="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI CommandOS | 极速 AI 指令生成器">
+    <meta name="twitter:description" content="你的全能 AI 指令控制台。一键生成 MJ、GPT、小红书 Prompt。">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -152,13 +157,6 @@
         optgroup { font-style: normal; font-weight: bold; color: var(--gold); background: var(--sidebar); }
         option { color: white; padding: 5px; background: var(--input); }
 
-        .magic-btn {
-            position: absolute; right: 10px; top: 32px;
-            background: transparent; border: none; color: var(--gold);
-            cursor: pointer; font-size: 1rem; padding: 4px;
-        }
-        .magic-btn:hover { transform: scale(1.1); }
-
         .action-bar { display: flex; gap: 20px; align-items: center; margin-top: 10px; padding-bottom: 30px; }
         
         .btn-main {
@@ -223,10 +221,8 @@
 <body>
 
     <div class="app-container">
-        
         <div class="sidebar" id="sidebar">
             <div class="brand"><i class="fas fa-terminal"></i> Command<span>OS</span></div>
-            
             <div class="menu-category">Generative Studio (创作工坊)</div>
             <div class="menu-item active" onclick="loadTool('visual')"><i class="fas fa-camera"></i> Visual (视觉)</div>
             <div class="menu-item" onclick="loadTool('video')"><i class="fas fa-video"></i> Video (视频)</div>
@@ -256,13 +252,11 @@
                     <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">Visual Director (视觉)</span>
                 </div>
                 <div class="model-selector" id="modelSelectContainer">
-                    <select id="targetModel">
-                        </select>
+                    <select id="targetModel"></select>
                 </div>
             </div>
 
             <div class="scroll-area">
-                
                 <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()">
                     <i class="fas fa-cloud-upload-alt" style="font-size:2rem; margin-bottom:10px;"></i>
                     <div>Click or Drag to Upload (点击或拖拽上传)</div>
@@ -271,7 +265,6 @@
                 </div>
 
                 <div id="dynamicForm" class="form-grid"></div>
-
                 <div id="historyList" style="display:none;"></div>
 
                 <div class="action-bar" id="actionBar">
@@ -290,7 +283,6 @@
                 <div id="resultContainer" class="result-container"></div>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -474,10 +466,9 @@
                 modelSelect.parentElement.style.display = 'block';
                 modelSelect.innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
             } else {
-                modelSelect.parentElement.style.display = 'none'; // History 模式隐藏
+                modelSelect.parentElement.style.display = 'none'; 
             }
 
-            // 控制 UI 显示状态
             const uploadArea = document.getElementById('uploadArea');
             const abTestGroup = document.getElementById('abTestGroup');
             const actionBtn = document.getElementById('actionBtn');
@@ -495,7 +486,7 @@
                 outputHeader.style.display = 'none';
                 resultContainer.style.display = 'none';
                 historyList.style.display = 'block';
-                renderHistory(); // 渲染历史记录
+                renderHistory(); 
             } 
             // 2. 其他模式
             else {
@@ -504,7 +495,7 @@
                 actionBtn.style.display = 'block';
                 outputHeader.style.display = 'flex';
                 resultContainer.style.display = 'flex';
-                resultContainer.innerHTML = ''; // 清空结果
+                resultContainer.innerHTML = ''; 
 
                 // 按钮和上传框逻辑
                 if (key === 'reverse') {
@@ -685,7 +676,6 @@
         }
 
         function buildPrompt(toolKey, model, inputs, ver) {
-            // 清理中文备注
             const cleanInputs = {};
             const toolConfig = tools[toolKey];
             
