@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V29 | 极速流畅版</title>
+    <title>AI CommandOS V29.1 | 修复版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -46,7 +46,6 @@
             flex-shrink: 0;
             z-index: 20;
             overflow-y: auto;
-            /* GPU 加速 */
             will-change: transform;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -69,7 +68,7 @@
             padding: 12px 20px;
             cursor: pointer;
             color: var(--text-sub);
-            transition: background 0.1s; /* 更快的反馈 */
+            transition: background 0.1s;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -106,7 +105,6 @@
 
         .scroll-area {
             flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%;
-            /* 滚动优化 */
             -webkit-overflow-scrolling: touch; 
         }
 
@@ -123,7 +121,6 @@
         
         label { display: block; margin-bottom: 8px; color: var(--text-sub); font-size: 0.85rem; font-weight: 500; }
         
-        /* 输入框性能优化：移除昂贵的阴影，使用简单的边框变色 */
         input, select, textarea {
             width: 100%; background: var(--input); border: 1px solid var(--border);
             color: white; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-family: inherit; margin-bottom: 0;
@@ -131,7 +128,6 @@
         }
         input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
 
-        /* 特殊：Library 下拉菜单分组样式 */
         optgroup { font-style: normal; font-weight: bold; color: var(--gold); background: var(--sidebar); }
         option { color: white; padding: 5px; background: var(--input); }
 
@@ -149,9 +145,9 @@
             border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
             display: flex; justify-content: center; align-items: center; gap: 8px;
             box-shadow: var(--shadow); font-size: 1rem;
-            transition: transform 0.1s; /* 极简动画 */
+            transition: transform 0.1s;
         }
-        .btn-main:active { transform: scale(0.98); } /* 点击反馈 */
+        .btn-main:active { transform: scale(0.98); } 
         .btn-main.purple { background: var(--purple); }
         .btn-main.purple:active { transform: scale(0.98); }
         
@@ -164,7 +160,7 @@
             background: #000; border: 1px solid var(--border); border-radius: 8px;
             padding: 20px; font-family: 'Monaco', monospace; color: #10b981;
             font-size: 0.9rem; line-height: 1.6; min-height: 100px; white-space: pre-wrap; position: relative;
-            animation: fadeIn 0.2s ease-out; /* 快速淡入 */
+            animation: fadeIn 0.2s ease-out;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -362,7 +358,7 @@
             history: {
                 title: "History (历史记录)",
                 models: [],
-                inputs: [] // 动态生成
+                inputs: []
             },
             tiktok: {
                 title: "TikTok Director (抖音脚本)",
@@ -390,6 +386,36 @@
                     { id: 'cta', label: 'CTA (互动引导)', type: 'select', options: [
                         'Follow for More (关注看下集)', 'Comment Below (评论区互动)', 
                         'Check Link in Bio (主页链接)', 'Save this Video (收藏防走丢)'
+                    ]}
+                ]
+            },
+            // ✅ 小红书功能已修复并汉化
+            xhs: {
+                title: "Xiaohongshu (小红书矩阵)",
+                models: ['Claude 3 (Best for Vibe)', 'GPT-4'],
+                inputs: [
+                    { id: 'topic', label: 'Topic (选题)', type: 'text', placeholder: 'e.g. Diet Plan (例如：减肥食谱)' },
+                    { id: 'niche', label: 'Niche (赛道/垂类)', type: 'select', options: [
+                        'Beauty/Skincare (美妆护肤)', 'Fashion/OOTD (时尚穿搭)', 'Food/Cooking (美食烹饪)', 
+                        'Home/Decor (家居装修)', 'Travel/Vlog (旅行攻略)', 'Education (知识干货)', 
+                        'Career/Work (职场经验)', 'Fitness (运动健身)', 'Baby/Parenting (母婴育儿)', 'Tech/Digital (数码科技)'
+                    ]},
+                    { id: 'persona', label: 'Persona (博主人设)', type: 'select', options: [
+                        'Girlfriend/BFF (好闺蜜/种草姬)', 'Professional Coach (专业导师/成分党)', 
+                        'Big Sister (知心大姐姐/情感)', 'Student/Gen Z (学生党/省钱)', 
+                        'Rich/Luxury (贵妇/名媛)', 'Minimalist (极简主义者)', 'Funny/Drama (搞笑女/戏精)'
+                    ]},
+                    { id: 'title_style', label: 'Title Hook (标题风格)', type: 'select', options: [
+                        'Emotional Shock (情绪宣泄: 绝绝子!)', 'Negative Warning (避雷预警: 千万别买!)', 
+                        'Number List (数字盘点: 3个好物...)', 'Tutorial (保姆级教程: 手把手教你)', 
+                        'Curiosity (悬念勾引: 谁懂啊...)', 'Comparison (红黑榜测评)'
+                    ]},
+                    { id: 'emoji', label: 'Emoji Density (Emoji浓度)', type: 'select', options: [
+                        'Standard (标准: 适量点缀)', 'Heavy (氛氛感: 满屏✨💖🔥)', 'Minimal (极简: 几乎没有)', 'Key Points (仅用于列表)'
+                    ]},
+                    { id: 'cta', label: 'Interaction (互动策略)', type: 'select', options: [
+                        'Ask Question (提问引导评论)', 'Collect for Later (引导收藏防走丢)', 
+                        'Tag Friends (艾特闺蜜来看)', 'Follow Series (关注看下集)', 'Get Resources (回复求资料)'
                     ]}
                 ]
             },
@@ -746,8 +772,8 @@
                 content: content,
                 time: new Date().toLocaleString()
             };
-            history.unshift(newItem); // 加到开头
-            if(history.length > 10) history.pop(); // 只留10条
+            history.unshift(newItem); 
+            if(history.length > 10) history.pop(); 
             localStorage.setItem('ai_command_history', JSON.stringify(history));
         }
 
