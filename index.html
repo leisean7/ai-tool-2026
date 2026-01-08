@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V19 | 全双语汉化版</title>
+    <title>AI CommandOS V20 | 智能级联词库版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -289,7 +289,42 @@
     </div>
 
     <script>
-        // === 核心数据配置 (全双语备注版) ===
+        // === 核心词库数据 (Database) ===
+        const libraryDB = {
+            "Visual": {
+                label: "🎨 Visual Art (视觉/绘画)",
+                scenarios: [
+                    "Portrait Photography (人像摄影)", "Logo Design (标志设计)", "UI/UX Interface (界面设计)",
+                    "Cyberpunk City (赛博朋克)", "Product Shot (产品摄影)", "Anime Character (二次元角色)",
+                    "Interior Design (室内设计)", "Game Asset (游戏素材)"
+                ]
+            },
+            "Writing": {
+                label: "✍️ Writing & Copy (写作/文案)",
+                scenarios: [
+                    "SEO Blog Post (SEO博客)", "Instagram Caption (INS文案)", "Twitter Thread (推特串推)",
+                    "Youtube Script (油管脚本)", "Press Release (新闻稿)", "Storytelling (故事创作)",
+                    "Translation (专业翻译)", "Resume Polish (简历润色)"
+                ]
+            },
+            "Coding": {
+                label: "💻 Coding & Dev (编程/开发)",
+                scenarios: [
+                    "Python Debugging (Python除错)", "SQL Query Generator (SQL生成)", "Regex Helper (正则助手)",
+                    "Code Refactoring (代码重构)", "React Component (React组件)", "Explain Code (解释代码)",
+                    "Git Commands (Git指令)"
+                ]
+            },
+            "Office": {
+                label: "💼 Office & Productivity (办公/效率)",
+                scenarios: [
+                    "Excel Formula (Excel公式)", "Email Reply (邮件回复)", "Meeting Summary (会议纪要)",
+                    "PPT Outline (PPT大纲)", "SWOT Analysis (SWOT分析)", "Mind Map Structure (思维导图)"
+                ]
+            }
+        };
+
+        // === 工具配置 ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
@@ -315,8 +350,9 @@
                 title: "Prompt Vault (经典词库)",
                 models: ['Universal Format'],
                 inputs: [
-                    { id: 'category', label: '核心分类', type: 'select', options: ['Midjourney (Visual/视觉)', 'ChatGPT (Writing/写作)', 'Coding (Development/开发)', 'Productivity (Office/办公)'] },
-                    { id: 'scenario', label: '应用场景', type: 'select', options: ['Portrait Photography (人像摄影)', 'Logo Design (标志设计)', 'SEO Blog Post (SEO文章)', 'Python Debugging (除错)', 'Cold Email (开发信)', 'Excel Formula (公式生成)', 'Meeting Summary (会议纪要)'] },
+                    // 这里的选项将由 JS 动态生成
+                    { id: 'category', label: '核心分类', type: 'select', options: Object.keys(libraryDB) },
+                    { id: 'scenario', label: '应用场景', type: 'select', options: [] }, // 初始为空
                     { id: 'level', label: '指令复杂度', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/思维链)'] }
                 ]
             },
@@ -443,7 +479,6 @@
             const abTestGroup = document.getElementById('abTestGroup');
             const actionBtn = document.getElementById('actionBtn');
 
-            // 仅 Reverse 显示上传
             if (key === 'reverse') {
                 uploadArea.style.display = 'block';
                 abTestGroup.style.display = 'none'; 
@@ -451,7 +486,7 @@
                 actionBtn.classList.remove('purple');
             } else if (key === 'library') {
                 uploadArea.style.display = 'none';
-                abTestGroup.style.display = 'none'; // 词库不需要A/B测试
+                abTestGroup.style.display = 'none'; 
                 actionBtn.innerHTML = '<i class="fas fa-book-open"></i> 调取词库';
                 actionBtn.classList.add('purple');
             } else {
@@ -471,8 +506,14 @@
                 
                 let inputHtml = '';
                 if(field.type === 'select') {
-                    const opts = field.options.map(o => `<option>${o}</option>`).join('');
-                    inputHtml = `<select id="f_${field.id}">${opts}</select>`;
+                    // 特殊处理 library 的 category
+                    if (key === 'library' && field.id === 'category') {
+                         const opts = field.options.map(k => `<option value="${k}">${libraryDB[k].label}</option>`).join('');
+                         inputHtml = `<select id="f_${field.id}" onchange="updateScenario(this.value)">${opts}</select>`;
+                    } else {
+                        const opts = field.options.map(o => `<option>${o}</option>`).join('');
+                        inputHtml = `<select id="f_${field.id}">${opts}</select>`;
+                    }
                 } else if (field.type === 'textarea') {
                     inputHtml = `<textarea id="f_${field.id}" placeholder="${field.placeholder || ''}" style="height:${field.height || '100px'}"></textarea>`;
                 } else {
@@ -488,6 +529,11 @@
                 container.appendChild(div);
             });
 
+            // 只有 library 需要初始化 scenario
+            if (key === 'library') {
+                updateScenario(Object.keys(libraryDB)[0]);
+            }
+
             // 菜单高亮
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
@@ -496,6 +542,15 @@
             });
             
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // 级联菜单逻辑 (核心)
+        function updateScenario(category) {
+            const scenarioSelect = document.getElementById('f_scenario');
+            if (scenarioSelect && libraryDB[category]) {
+                const scenarios = libraryDB[category].scenarios;
+                scenarioSelect.innerHTML = scenarios.map(s => `<option>${s}</option>`).join('');
+            }
         }
 
         // 文件处理
@@ -517,16 +572,17 @@
             
             const inputs = {};
             toolData.inputs.forEach(f => {
-                inputs[f.id] = document.getElementById(`f_${f.id}`).value;
+                const el = document.getElementById(`f_${f.id}`);
+                inputs[f.id] = el ? el.value : '';
             });
 
-            // 1. 逆向工程特殊逻辑
+            // 1. 逆向工程
             if (currentTool === 'reverse' && fileInput.files.length > 0) {
                 simulateVisionAnalysis(fileInput.files[0].name, model, inputs);
                 return;
             }
 
-            // 2. 词库特殊逻辑 (Library)
+            // 2. 词库
             if (currentTool === 'library') {
                 fetchLibraryPrompts(inputs);
                 return;
@@ -560,23 +616,36 @@
                 const box = document.createElement('div');
                 box.className = 'result-box';
                 
-                let content = `### Master Prompt for: ${inputs.scenario}\n### Category: ${inputs.category}\n\n`;
+                let content = `### Category: ${inputs.category}\n### Scenario: ${inputs.scenario}\n\n`;
                 
-                if (inputs.category.includes("Midjourney")) {
-                    content += `/imagine prompt: professional portrait photography of [Subject], shot on Hasselblad X2D, 85mm lens, f/1.8, cinematic lighting, ultra-detailed skin texture, 8k resolution, neutral background --v 6.0 --ar 4:5 --style raw\n\n`;
+                const key = inputs.scenario; 
+
+                if (key.includes("Portrait")) {
+                    content += `/imagine prompt: professional portrait photography of [Subject], shot on Hasselblad X2D, 85mm lens, f/1.8, cinematic lighting, ultra-detailed skin texture, 8k resolution, neutral background --v 6.0 --ar 4:5 --style raw`;
+                } else if (key.includes("Logo")) {
                     content += `/imagine prompt: minimalist vector logo for [Brand Name], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details`;
-                } else if (inputs.category.includes("Coding")) {
-                    content += `Role: Senior Software Engineer\nTask: Debug the following code snippet.\nSteps:\n1. Analyze the code for logical errors and syntax issues.\n2. Explain the root cause of the bug.\n3. Provide the corrected code block.\n4. Suggest optimization for performance.\n\nCode Snippet: [Paste Code Here]`;
+                } else if (key.includes("UI")) {
+                    content += `/imagine prompt: mobile app UI design for [App Type], clean layout, neumorphism style, high fidelity, dribbble trend, user friendly, figama --v 6.0 --ar 9:16`;
+                } else if (key.includes("Cyberpunk")) {
+                    content += `/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic atmosphere, highly detailed --v 6.0 --ar 16:9`;
+                } else if (key.includes("Debugging")) {
+                    content += `Role: Senior Software Engineer\nTask: Debug the following code snippet.\nSteps:\n1. Analyze for logical errors and syntax issues.\n2. Explain the root cause.\n3. Provide the corrected code.\n\nCode Snippet: [Paste Code Here]`;
+                } else if (key.includes("SQL")) {
+                    content += `Role: Database Expert\nTask: Write an optimized SQL query to [Goal].\nRequirements: Use JOINs efficiently, ensure index usage, and format for readability.`;
+                } else if (key.includes("SEO")) {
+                    content += `Role: SEO Specialist\nTask: Write a blog post about [Topic].\nRequirements:\n- Use H1, H2 headers.\n- Include keywords: [Keyword1], [Keyword2].\n- Optimize for readability (Flesch-Kincaid score).`;
+                } else if (key.includes("Excel")) {
+                    content += `Role: Excel Expert\nTask: Generate an Excel formula to [Goal].\nContext: Column A is [Data1], Column B is [Data2].\nRequirement: Handle potential errors with IFERROR.`;
                 } else {
-                    content += `Role: Expert Copywriter\nTask: Write a SEO-optimized blog post about [Topic].\nRequirements:\n- Use H1, H2, H3 headers.\n- Include a catchy hook in the intro.\n- Target keywords: [Keyword1], [Keyword2].\n- Tone: Professional yet engaging.`;
+                    // 通用模版
+                    content += `### Role: Expert AI Assistant\n### Task: Execute ${inputs.scenario}\n### Context: Professional and High Quality output.\n\n[Please insert specific details here]`;
                 }
 
                 box.innerHTML = `<div class="ab-tag">Vault Result</div>${content} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
                 container.appendChild(box);
-            }, 600);
+            }, 500);
         }
 
-        // 模拟 Vision 分析
         function simulateVisionAnalysis(filename, model, inputs) {
             const container = document.getElementById('resultContainer');
             container.innerHTML = '';
@@ -601,30 +670,17 @@
         }
 
         function buildPrompt(toolKey, model, inputs, ver) {
-            // 清理中文备注，只保留英文参数给AI
             const cleanInputs = {};
             for (const key in inputs) {
-                // 如果值包含 "("，则截取 "(" 前面的部分并去除空格
                 const val = inputs[key];
-                if (val && val.includes('(')) {
-                    cleanInputs[key] = val.split('(')[0].trim();
-                } else {
-                    cleanInputs[key] = val;
-                }
+                if (val && val.includes('(')) cleanInputs[key] = val.split('(')[0].trim();
+                else cleanInputs[key] = val;
             }
-
-            const dna = { tone: document.getElementById('dnaTone').value.split('(')[0].trim(), target: document.getElementById('dnaTarget').value };
             let res = "";
-            
-            if (toolKey === 'email') {
-                res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Writing to ${cleanInputs.role}, Stage: ${cleanInputs.stage})\n\n[Body using ${cleanInputs.framework} model...]\n\n[CTA: ${cleanInputs.cta}]`;
-            } else if (toolKey === 'academic') {
-                res = `[Goal: ${cleanInputs.goal}]\n[Style: ${cleanInputs.target}]\n\nRevised Text:\n(Polished version of input...)`;
-            } else if (toolKey === 'visual') {
-                res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
-            } else {
-                res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
-            }
+            if (toolKey === 'email') res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Writing to ${cleanInputs.role}, Stage: ${cleanInputs.stage})\n\n[Body using ${cleanInputs.framework} model...]\n\n[CTA: ${cleanInputs.cta}]`;
+            else if (toolKey === 'academic') res = `[Goal: ${cleanInputs.goal}]\n[Style: ${cleanInputs.target}]\n\nRevised Text:\n(Polished version of input...)`;
+            else if (toolKey === 'visual') res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
+            else res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
             return res;
         }
 
