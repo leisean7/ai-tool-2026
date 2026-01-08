@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V29.1 | 修复版</title>
+    <title>AI CommandOS V30 | 汉化修正版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -389,7 +389,6 @@
                     ]}
                 ]
             },
-            // ✅ 小红书功能已修复并汉化
             xhs: {
                 title: "Xiaohongshu (小红书矩阵)",
                 models: ['Claude 3 (Best for Vibe)', 'GPT-4'],
@@ -469,6 +468,7 @@
                     { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)', 'Autotune (电音)'] }
                 ]
             },
+            // ✅ 修正：Framework 汉化
             text: {
                 title: "Copywriter (写作)",
                 models: ['GPT-4o', 'Claude 3 Opus', 'Gemini Pro'],
@@ -480,10 +480,11 @@
                         'Product Description (产品文案)', 'Story/Fiction (故事/小说)', 'Poem/Lyric (诗歌/歌词)'
                     ]},
                     { id: 'framework', label: 'Framework (思维模型)', type: 'select', options: [
-                        'AIDA (Attention-Interest-Desire-Action)', 'PAS (Problem-Agitation-Solution)', 
-                        'FAB (Features-Advantages-Benefits)', '4Ps (Product-Price-Place-Promotion)', 
-                        'StoryBrand (品牌故事七步法)', 'QUEST (Qualify-Understand-Educate-Stimulate-Transition)',
-                        'First Principles (第一性原理)', 'Golden Circle (Why-How-What)'
+                        'AIDA (注意-兴趣-欲望-行动)', 'PAS (问题-痛点-解决)', 
+                        'FAB (特性-优势-利益)', '4Ps (产品-价格-渠道-推广)', 
+                        'StoryBrand (品牌故事七步法)', 'QUEST (筛选-理解-教育-刺激-转化)',
+                        'First Principles (第一性原理)', 'Golden Circle (黄金圈法则: Why-How-What)',
+                        'SCQA (情境-冲突-问题-答案)'
                     ]},
                     { id: 'tone', label: 'Tone of Voice (语气风格)', type: 'select', options: [
                         'Professional (专业严谨)', 'Conversational (像朋友聊天)', 'Humorous/Witty (幽默风趣)', 
@@ -732,7 +733,7 @@
         }
 
         // 构建 Prompt 字符串
-        function buildPrompt(toolKey, model, inputs) {
+        function buildPrompt(toolKey, model, inputs, ver) {
             // 清理中文备注
             const cleanInputs = {};
             for (const key in inputs) {
