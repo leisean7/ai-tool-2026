@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V25 | 超级词库版</title>
+    <title>AI CommandOS V26 | 现实世界全参数版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -248,57 +248,44 @@
     </div>
 
     <script>
-        // === 预设 S 级模版数据 (High Frequency Library) ===
+        // === 预设 S 级模版数据 ===
         const libraryTemplates = {
-            // --- 🎨 Visual (视觉) ---
             '【🎨 视觉】MJ 摄影大师 (Portrait Master)': "/imagine prompt: extreme close-up portrait of a woman, natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
             '【🎨 视觉】MJ 极简 Logo (Minimalist Logo)': "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details",
             '【🎨 视觉】MJ 泡泡玛特风 (Pop Mart 3D)': "/imagine prompt: cute 3d pop mart character, [Subject], clay material, pastel colors, soft studio lighting, 3d render, c4d, octane render, blind box toy --v 6.0 --niji 6",
             '【🎨 视觉】MJ 苹果风图标 (Apple 3D Icon)': "/imagine prompt: 3d glass icon of [Subject], apple design style, frosted glass, soft gradient, transparent, high gloss, macos big sur style, white background --v 6.0",
-            '【🎨 视觉】MJ 室内设计 (Interior Design)': "/imagine prompt: modern minimalist living room, beige tone, sunlight, indoor plants, architectural photography, high resolution, unspash style --v 6.0 --ar 16:9",
-
-            // --- 📝 Writing (写作) ---
-            '【📝 写作】小红书爆款 (Viral Note)': "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题包含Emoji，吸引眼球（如：'绝绝子！'，'后悔没早买'）。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。\n4. 添加5个热门Hashtag。",
-            '【📝 写作】SEO 博客文章 (SEO Blog)': "Role: SEO Expert\nTask: Write a blog post about [Topic].\nRequirements:\n- Target keywords: [Keywords]\n- Use H1, H2, H3 headers structure.\n- Include a catchy introduction and a FAQ section.",
-            '【📝 写作】油管视频脚本 (YouTube Script)': "Role: Scriptwriter\nTask: Write a YouTube video script for [Topic].\nStructure:\n1. Hook (0-15s): Grab attention.\n2. Intro: What we will cover.\n3. Body: 3 key points.\n4. CTA: Like and Subscribe.",
+            '【📝 写作】小红书爆款 (Viral Note)': "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题包含Emoji，吸引眼球。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。",
             '【📝 写作】学术论文润色 (Academic Polish)': "Role: Academic Editor\nTask: Polish the following text for a top-tier journal.\nRequirements: Enhance clarity, fix grammar, remove repetition, and ensure a formal academic tone.\nText:\n[Paste Text Here]",
-
-            // --- 💻 Coding (编程) ---
             '【💻 编程】Python 除错 (Debugger)': "Role: Python Expert\nTask: Find the bug in this code and explain the fix.\nCode:\n[Paste Code Here]",
-            '【💻 编程】正则生成器 (Regex Generator)': "Role: Regex Expert\nTask: Create a Regular Expression to match: [Describe Requirement]\nOutput: The Regex pattern and a breakdown of how it works.",
-            '【💻 编程】SQL 优化 (SQL Optimizer)': "Role: Database Administrator\nTask: Optimize this SQL query for performance.\nQuery:\n[Paste SQL Here]",
-
-            // --- 🤣 Fun/Creative (趣味/越狱) ---
-            '【🤣 趣味】Linux 终端 (Linux Terminal)': "I want you to act as a linux terminal. I will type commands and you will reply with what the terminal should show. I want you to only reply with the terminal output inside one unique code block, and nothing else. do not write explanations. My first command is pwd",
-            '【🤣 趣味】文字冒险游戏 (Text Adventure)': "I want you to act as a text based adventure game. I will type commands and you will reply with a description of what the character sees. The game is set in a cyberpunk city.",
-            '【🤣 趣味】塔罗牌占卜 (Tarot Reader)': "Role: Tarot Reader\nTask: Draw 3 cards for me regarding [Question].\nOutput: Card names, meanings, and a final interpretation of the spread.",
-            '【🤣 趣味】哄女友模拟器 (Girlfriend Sim)': "Role: Experienced Relationship Coach\nTask: My girlfriend is angry because [Reason]. Provide 3 options for what I should say to comfort her, ranging from 'Sweet' to 'Apologetic'.",
-
-            // --- 🔧 Utility (实用) ---
-            '【🔧 实用】费曼学习法 (Feynman Tech)': "Role: Teacher\nTask: Explain [Complex Topic] to me as if I were a 12-year-old. Use analogies and simple language to ensure I understand the core concept.",
-            '【🔧 实用】Excel 表格伪装 (Excel Sim)': "I want you to act as a text-based Excel. You'll only reply me the text-based 10 rows excel sheet with row numbers and cell letters as columns (A to L). First column A should be empty to include row numbers. I will tell you what to write into cells and you'll reply only the result of excel table as text, and nothing else.",
-            '【🔧 实用】苏格拉底导游 (Socratic Guide)': "Role: Socrates\nTask: Help me solve [Problem] not by giving answers, but by asking me probing questions that lead me to the solution myself."
+            '【🔧 实用】费曼学习法 (Feynman Tech)': "Role: Teacher\nTask: Explain [Complex Topic] to me as if I were a 12-year-old. Use analogies and simple language to ensure I understand the core concept."
         };
 
-        // === 工具配置 ===
+        // === 核心：现实世界全参数配置 ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
                 models: ['Midjourney V6', 'Niji V6', 'Stable Diffusion XL', 'DALL-E 3'],
                 inputs: [
                     { id: 'subject', label: 'Subject (画面主体)', type: 'text', placeholder: 'e.g. 赛博朋克风格的猫', magic: true },
-                    { id: 'style', label: 'Style (艺术风格)', type: 'select', options: [
-                        'Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime (日系动漫)', '3D Render (3D渲染)', 
-                        'UE5 (虚幻引擎5)', 'Oil Painting (油画)', 'Watercolor (水彩)', 'Pixel Art (像素艺术)', 
-                        'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)'
+                    { id: 'style', label: 'Art Style (艺术风格)', type: 'select', options: [
+                        'Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime/Manga (日系动漫)', '3D Render (3D渲染)', 
+                        'Oil Painting (油画)', 'Watercolor (水彩)', 'Pixel Art (像素艺术)', 'Ukiyo-e (浮世绘)', 
+                        'Vaporwave (蒸汽波)', 'Steampunk (蒸汽朋克)', 'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)',
+                        'Claymation (粘土动画)', 'Gothic (哥特风)', 'Surrealism (超现实主义)', 'Impressionism (印象派)'
                     ]},
-                    { id: 'shot', label: 'Shot (构图/运镜)', type: 'select', options: [
-                        'Wide Angle (广角)', 'Telephoto (长焦)', 'Drone View (无人机视角)', 'Macro (微距)', 
-                        'Isometric (等轴测)', 'Selfie (自拍)', 'Fisheye (鱼眼)', 'Over-the-Shoulder (过肩镜头)'
+                    { id: 'shot', label: 'Camera Shot (构图/运镜)', type: 'select', options: [
+                        'Wide Angle (广角)', 'Ultra-Wide (超广角 14mm)', 'Telephoto (长焦 85mm)', 'Macro (微距)', 
+                        'Drone View (上帝视角)', 'Isometric (等轴测)', 'Selfie (自拍)', 'Fisheye (鱼眼)', 
+                        'Over-the-Shoulder (过肩镜头)', 'Low Angle (低角度仰拍)', 'Dutch Angle (荷兰式倾斜)', 'Eye-Level (平视)'
                     ]},
                     { id: 'light', label: 'Lighting (布光)', type: 'select', options: [
-                        'Cinematic (电影光)', 'Natural (自然光)', 'Neon (霓虹光)', 'Rembrandt (伦勃朗光)', 
-                        'Volumetric (体积光/丁达尔)', 'Golden Hour (黄金时刻)', 'Studio Lighting (影棚光)'
+                        'Cinematic Lighting (电影光)', 'Natural Light (自然光)', 'Golden Hour (黄金时刻)', 'Blue Hour (蓝调时刻)', 
+                        'Neon Lights (霓虹光)', 'Rembrandt Lighting (伦勃朗光)', 'Butterfly Lighting (蝴蝶光)', 'Split Lighting (侧逆光)',
+                        'Volumetric/God Rays (丁达尔光)', 'Studio Softbox (影棚柔光)', 'Bioluminescent (生物荧光)'
+                    ]},
+                    { id: 'film', label: 'Film Stock (胶片质感)', type: 'select', options: [
+                        'Digital Clean (数码洁净)', 'Kodak Portra 400 (人像胶片)', 'Fujifilm Velvia (高饱和)', 
+                        'Ilford HP5 (黑白胶片)', 'Kodak Gold 200 (暖色怀旧)', 'Polaroid (拍立得)', 'VHS Tape (录像带噪点)'
                     ]}
                 ]
             },
@@ -317,10 +304,12 @@
                     { id: 'hook', label: 'Opening Hook (开头黄金3秒)', type: 'select', options: [
                         'Visual Shock (视觉奇观/特效)', 'Contrast/Reversal (巨大反差/反转)', 
                         'Pain Point Question (痛点提问)', 'Controversial Statement (暴论/争议)',
-                        'ASMR Sound (沉浸式音效)', 'Direct Benefit (利益点直给)'
+                        'ASMR Sound (沉浸式音效)', 'Direct Benefit (利益点直给)', 'Storytime (故事引入)'
                     ]},
-                    { id: 'duration', label: 'Duration (视频时长)', type: 'select', options: [
-                        '15s (Short/快速种草)', '30s (Medium/剧情段子)', '60s (Long/知识干货)', '15s Loop (魔性循环)'
+                    { id: 'niche', label: 'Niche (赛道/垂类)', type: 'select', options: [
+                        'Beauty/Skincare (美妆护肤)', 'Tech/Gadgets (数码科技)', 'Food/Cooking (美食烹饪)', 
+                        'Travel/Vlog (旅行生活)', 'Education/Tips (知识干货)', 'Comedy/Skit (剧情搞笑)', 
+                        'Fitness/Health (运动健康)', 'Pet/Animals (萌宠)'
                     ]},
                     { id: 'pace', label: 'Editing Pace (剪辑节奏)', type: 'select', options: [
                         'Fast & Punchy (快节奏/卡点)', 'Slow & Cinematic (慢节奏/电影感)', 
@@ -328,7 +317,7 @@
                     ]},
                     { id: 'bgm', label: 'BGM Mood (音乐情绪)', type: 'select', options: [
                         'Trending/Viral (热门榜单)', 'Upbeat/Fun (欢快搞怪)', 'Suspense/Dark (悬疑/吃瓜)',
-                        'Lo-fi/Chill (治愈/放松)', 'Epic/Dramatic (史诗/反转)'
+                        'Lo-fi/Chill (治愈/放松)', 'Epic/Dramatic (史诗/反转)', 'Phonk/Drift (运动/燃)'
                     ]},
                     { id: 'cta', label: 'CTA (互动引导)', type: 'select', options: [
                         'Follow for More (关注看下集)', 'Comment Below (评论区互动)', 
@@ -342,13 +331,15 @@
                 inputs: [
                     { id: 'content', label: 'Abstract/Paragraph (段落/摘要)', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '150px' },
                     { id: 'field', label: 'Research Field (研究领域)', type: 'select', options: [
-                        'Computer Science (计算机科学)', 'Medicine/Biology (医学/生物)', 'Business/Management (商科/管理)',
-                        'Engineering (工程学)', 'Social Sciences (社会科学)', 'Psychology (心理学)',
-                        'Physics/Math (物理/数学)', 'Art/Humanities (艺术/人文)', 'Law (法学)', 'Education (教育学)'
+                        'Computer Science (计算机科学)', 'Artificial Intelligence (人工智能)', 'Medicine/Clinical (临床医学)', 
+                        'Biology/Life Sciences (生物科学)', 'Business/Management (商科/管理)', 'Economics (经济学)',
+                        'Engineering (工程学)', 'Psychology (心理学)', 'Sociology (社会学)', 'Education (教育学)',
+                        'Physics/Astronomy (物理/天文)', 'Chemistry (化学)', 'Law/Legal (法学)', 'History/Arts (历史/艺术)'
                     ]},
                     { id: 'target', label: 'Target Style (投稿目标)', type: 'select', options: [
                         'IEEE Standard (IEEE标准)', 'Nature/Science (顶级期刊风格)', 'APA Format (APA格式)', 
-                        'MLA Style (MLA格式)', 'General Academic (通用学术)', 'Thesis/Dissertation (学位论文)'
+                        'MLA Style (MLA格式)', 'Chicago Style (芝加哥格式)', 'Harvard Style (哈佛格式)',
+                        'General Academic (通用学术)', 'Thesis/Dissertation (学位论文)'
                     ]},
                     { id: 'goal', label: 'Optimization Goal (优化目标)', type: 'select', options: [
                         'Polish Grammar (深度润色)', 'Reduce Repetition (降重/去AI味)', 'Enhance Logic (逻辑增强)', 
@@ -361,12 +352,13 @@
                 models: ['Runway Gen-2', 'Pika Labs', 'Sora', 'Stable Video'],
                 inputs: [
                     { id: 'subject', label: 'Subject (视频内容)', type: 'text', placeholder: 'e.g. 海浪拍打礁石' },
-                    { id: 'camera', label: 'Camera (运镜方式)', type: 'select', options: [
-                        'Pan Right (右摇)', 'Pan Left (左摇)', 'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 
-                        'Orbit (环绕)', 'FPV (第一人称)', 'Truck (平移)'
+                    { id: 'camera', label: 'Camera Movement (运镜方式)', type: 'select', options: [
+                        'Pan Right (右摇)', 'Pan Left (左摇)', 'Tilt Up (上摇)', 'Tilt Down (下摇)',
+                        'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 'Orbit/Arc (环绕)', 'FPV Drone (穿越机)', 
+                        'Truck Left/Right (左右平移)', 'Dolly In/Out (轨道推拉)', 'Handheld (手持感)'
                     ]},
-                    { id: 'motion', label: 'Motion (动态幅度)', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)'] },
-                    { id: 'fps', label: 'FPS (帧率)', type: 'select', options: ['24fps (Cinematic)', '30fps (Standard)', '60fps (Smooth)'] }
+                    { id: 'motion', label: 'Motion Intensity (动态幅度)', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)'] },
+                    { id: 'style', label: 'Visual Style (视觉风格)', type: 'select', options: ['Cinematic (电影感)', '3D Animation (3D动画)', 'Anime (二次元)', 'Vintage VHS (复古录像带)', 'Documentary (纪录片)'] }
                 ]
             },
             audio: {
@@ -375,18 +367,12 @@
                 inputs: [
                     { id: 'genre', label: 'Genre (流派)', type: 'select', options: [
                         'Pop (流行)', 'K-pop (韩流)', 'Rock (摇滚)', 'Jazz (爵士)', 'Hip Hop (嘻哈)', 
-                        'EDM (电子舞曲)', 'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)'
+                        'EDM (电子舞曲)', 'House (浩室)', 'Techno (科技舞曲)', 'Dubstep (回响贝斯)',
+                        'R&B (节奏蓝调)', 'Country (乡村)', 'Reggae (雷鬼)', 'Classical (古典)',
+                        'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)', 'Phonk (冯克)', 'Synthwave (合成器波)'
                     ]},
-                    { id: 'mood', label: 'Mood (情绪)', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)'] },
-                    { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)'] }
-                ]
-            },
-            text: { 
-                title: "Copywriter (写作)", 
-                models:['GPT-4'], 
-                inputs: [
-                    {id:'topic',label:'Topic (主题)',type:'text'}, 
-                    {id:'framework',label:'Framework (框架)',type:'select',options:['AIDA (注意-兴趣)', 'PAS (问题-解决)', 'First Principles (第一性原理)']}
+                    { id: 'mood', label: 'Mood (情绪)', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)', 'Romantic (浪漫)', 'Ethereal (空灵)', 'Aggressive (激昂)'] },
+                    { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)', 'Autotune (电音)'] }
                 ]
             },
             email: {
@@ -396,20 +382,19 @@
                     { id: 'product', label: 'Product (推销产品)', type: 'text', placeholder: 'e.g. Solar Panels' },
                     { id: 'role', label: 'Recipient (收件人)', type: 'select', options: [
                         'CEO / Owner (老板)', 'Purchasing Manager (采购经理)', 'Product Manager (产品经理)', 
-                        'General Inquiry (一般咨询)'
+                        'Marketing Director (营销总监)', 'CTO (技术总监)', 'General Inquiry (一般咨询)'
                     ]},
                     { id: 'stage', label: 'Stage (营销阶段)', type: 'select', options: [
-                        'Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Proposal (报价/提案)', 'Re-engagement (激活)'
+                        'Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Follow Up 2 (跟进 2)', 
+                        'Proposal (报价/提案)', 'Re-engagement (激活僵尸粉)', 'Break-up Email (最后尝试)'
                     ]},
                     { id: 'framework', label: 'Framework (营销框架)', type: 'select', options: [
-                        'AIDA (注意-兴趣-欲望-行动)', 'BAB (前-后-桥梁)', 'PAS (问题-加剧-解决)', 'Direct Pitch (直球推销)'
-                    ]},
-                    { id: 'cta', label: 'CTA (行动号召)', type: 'select', options: [
-                        'Book a Call (预约会议)', 'Reply for Info (回复获取信息)', 'Request Sample (索取样品)', 'Visit Website (访问网站)'
+                        'AIDA (注意-兴趣-欲望-行动)', 'BAB (前-后-桥梁)', 'PAS (问题-加剧-解决)', 
+                        'Direct Pitch (开门见山)', 'Storytelling (讲故事)', 'Value Proposition (价值主张)'
                     ]},
                     { id: 'lang', label: 'Language (目标语言)', type: 'select', options: [
                         'English US (美式英语)', 'English UK (英式英语)', 'Spanish (西班牙语)', 'French (法语)', 
-                        'German (德语)', 'Japanese (日语)', 'Arabic (阿拉伯语)', 'Chinese (中文)'
+                        'German (德语)', 'Japanese (日语)', 'Arabic (阿拉伯语)', 'Chinese (中文)', 'Russian (俄语)'
                     ]}
                 ]
             },
@@ -419,6 +404,14 @@
                 inputs: [
                     {id:'topic',label:'Topic (选题)',type:'text'}, 
                     {id:'niche',label:'Niche (赛道)',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Knowledge (知识付费)']}
+                ]
+            },
+            text: { 
+                title: "Copywriter (写作)", 
+                models:['GPT-4'], 
+                inputs: [
+                    {id:'topic',label:'Topic (主题)',type:'text'}, 
+                    {id:'framework',label:'Framework (框架)',type:'select',options:['AIDA (注意-兴趣)', 'PAS (问题-解决)', 'First Principles (第一性原理)']}
                 ]
             },
             reverse: {
@@ -598,6 +591,8 @@
                 res = `[Field: ${cleanInputs.field}]\n[Target: ${cleanInputs.target}]\n[Goal: ${cleanInputs.goal}]\n\nRevised Text:\n(AI Polished version of input...)`;
             } else if (toolKey === 'visual') {
                 res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
+            } else if (toolKey === 'audio') {
+                res = `[Genre: ${cleanInputs.genre}] [Instruments: ${cleanInputs.genre}] [Mood: ${cleanInputs.mood}] [Vocals: ${cleanInputs.vocal}]`;
             } else {
                 res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
             }
