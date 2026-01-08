@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V24 | 精简增强版</title>
+    <title>AI CommandOS V25 | 超级词库版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -77,7 +77,7 @@
         .menu-item.active { background: rgba(59, 130, 246, 0.15); color: var(--accent); border-left-color: var(--accent); }
         .menu-item i { width: 18px; text-align: center; }
 
-        /* 2. 中间工作区 (现在占据剩余空间) */
+        /* 2. 中间工作区 */
         .workspace {
             flex: 1;
             display: flex;
@@ -111,7 +111,7 @@
         
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* 更宽的列 */
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -248,7 +248,39 @@
     </div>
 
     <script>
-        // === 工具配置 (增强版) ===
+        // === 预设 S 级模版数据 (High Frequency Library) ===
+        const libraryTemplates = {
+            // --- 🎨 Visual (视觉) ---
+            '【🎨 视觉】MJ 摄影大师 (Portrait Master)': "/imagine prompt: extreme close-up portrait of a woman, natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
+            '【🎨 视觉】MJ 极简 Logo (Minimalist Logo)': "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details",
+            '【🎨 视觉】MJ 泡泡玛特风 (Pop Mart 3D)': "/imagine prompt: cute 3d pop mart character, [Subject], clay material, pastel colors, soft studio lighting, 3d render, c4d, octane render, blind box toy --v 6.0 --niji 6",
+            '【🎨 视觉】MJ 苹果风图标 (Apple 3D Icon)': "/imagine prompt: 3d glass icon of [Subject], apple design style, frosted glass, soft gradient, transparent, high gloss, macos big sur style, white background --v 6.0",
+            '【🎨 视觉】MJ 室内设计 (Interior Design)': "/imagine prompt: modern minimalist living room, beige tone, sunlight, indoor plants, architectural photography, high resolution, unspash style --v 6.0 --ar 16:9",
+
+            // --- 📝 Writing (写作) ---
+            '【📝 写作】小红书爆款 (Viral Note)': "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题包含Emoji，吸引眼球（如：'绝绝子！'，'后悔没早买'）。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。\n4. 添加5个热门Hashtag。",
+            '【📝 写作】SEO 博客文章 (SEO Blog)': "Role: SEO Expert\nTask: Write a blog post about [Topic].\nRequirements:\n- Target keywords: [Keywords]\n- Use H1, H2, H3 headers structure.\n- Include a catchy introduction and a FAQ section.",
+            '【📝 写作】油管视频脚本 (YouTube Script)': "Role: Scriptwriter\nTask: Write a YouTube video script for [Topic].\nStructure:\n1. Hook (0-15s): Grab attention.\n2. Intro: What we will cover.\n3. Body: 3 key points.\n4. CTA: Like and Subscribe.",
+            '【📝 写作】学术论文润色 (Academic Polish)': "Role: Academic Editor\nTask: Polish the following text for a top-tier journal.\nRequirements: Enhance clarity, fix grammar, remove repetition, and ensure a formal academic tone.\nText:\n[Paste Text Here]",
+
+            // --- 💻 Coding (编程) ---
+            '【💻 编程】Python 除错 (Debugger)': "Role: Python Expert\nTask: Find the bug in this code and explain the fix.\nCode:\n[Paste Code Here]",
+            '【💻 编程】正则生成器 (Regex Generator)': "Role: Regex Expert\nTask: Create a Regular Expression to match: [Describe Requirement]\nOutput: The Regex pattern and a breakdown of how it works.",
+            '【💻 编程】SQL 优化 (SQL Optimizer)': "Role: Database Administrator\nTask: Optimize this SQL query for performance.\nQuery:\n[Paste SQL Here]",
+
+            // --- 🤣 Fun/Creative (趣味/越狱) ---
+            '【🤣 趣味】Linux 终端 (Linux Terminal)': "I want you to act as a linux terminal. I will type commands and you will reply with what the terminal should show. I want you to only reply with the terminal output inside one unique code block, and nothing else. do not write explanations. My first command is pwd",
+            '【🤣 趣味】文字冒险游戏 (Text Adventure)': "I want you to act as a text based adventure game. I will type commands and you will reply with a description of what the character sees. The game is set in a cyberpunk city.",
+            '【🤣 趣味】塔罗牌占卜 (Tarot Reader)': "Role: Tarot Reader\nTask: Draw 3 cards for me regarding [Question].\nOutput: Card names, meanings, and a final interpretation of the spread.",
+            '【🤣 趣味】哄女友模拟器 (Girlfriend Sim)': "Role: Experienced Relationship Coach\nTask: My girlfriend is angry because [Reason]. Provide 3 options for what I should say to comfort her, ranging from 'Sweet' to 'Apologetic'.",
+
+            // --- 🔧 Utility (实用) ---
+            '【🔧 实用】费曼学习法 (Feynman Tech)': "Role: Teacher\nTask: Explain [Complex Topic] to me as if I were a 12-year-old. Use analogies and simple language to ensure I understand the core concept.",
+            '【🔧 实用】Excel 表格伪装 (Excel Sim)': "I want you to act as a text-based Excel. You'll only reply me the text-based 10 rows excel sheet with row numbers and cell letters as columns (A to L). First column A should be empty to include row numbers. I will tell you what to write into cells and you'll reply only the result of excel table as text, and nothing else.",
+            '【🔧 实用】苏格拉底导游 (Socratic Guide)': "Role: Socrates\nTask: Help me solve [Problem] not by giving answers, but by asking me probing questions that lead me to the solution myself."
+        };
+
+        // === 工具配置 ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
@@ -270,29 +302,13 @@
                     ]}
                 ]
             },
-            // === 增强: 经典词库 (改为单选高频模版) ===
             library: {
                 title: "Prompt Vault (经典词库)",
                 models: ['Universal Format'],
                 inputs: [
-                    { id: 'template', label: 'Select Template (选择高频模版)', type: 'select', options: [
-                        'Midjourney: Portrait Master (MJ人像摄影大师)',
-                        'Midjourney: Minimalist Logo (MJ极简Logo设计)',
-                        'Midjourney: UI/UX Design (移动端界面设计)',
-                        'Midjourney: Cyberpunk City (赛博朋克场景)',
-                        'Midjourney: 3D Cute IP (3D盲盒公仔)',
-                        'Writing: Xiaohongshu Copy (小红书爆款文案)',
-                        'Writing: YouTube Script (油管视频脚本)',
-                        'Writing: SEO Blog Post (SEO博客文章)',
-                        'Coding: Python Debugger (Python除错专家)',
-                        'Coding: SQL Optimizer (SQL查询优化)',
-                        'Office: Excel Formula (Excel公式生成)',
-                        'Office: Email Polisher (邮件润色)',
-                        'Office: Weekly Report (周报生成器)'
-                    ]}
+                    { id: 'template', label: 'Select Template (选择高频模版)', type: 'select', options: Object.keys(libraryTemplates) }
                 ]
             },
-            // === 增强: 抖音/TikTok 细分 ===
             tiktok: {
                 title: "TikTok Director (抖音脚本)",
                 models: ['GPT-4o', 'Claude 3 Opus'],
@@ -320,7 +336,6 @@
                     ]}
                 ]
             },
-            // === 增强: 学术领域可视化 ===
             academic: {
                 title: "Academic Scholar (学术科研)",
                 models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
@@ -416,23 +431,6 @@
                     ]}
                 ]
             }
-        };
-
-        // === 预设模版数据 (Library) ===
-        const libraryTemplates = {
-            'Midjourney: Portrait Master (MJ人像摄影大师)': "/imagine prompt: extreme close-up portrait of a woman, natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
-            'Midjourney: Minimalist Logo (MJ极简Logo设计)': "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details",
-            'Midjourney: UI/UX Design (移动端界面设计)': "/imagine prompt: mobile app UI design for [App Type], clean layout, neumorphism style, high fidelity, dribbble trend, user friendly, figma --v 6.0 --ar 9:16",
-            'Midjourney: Cyberpunk City (赛博朋克场景)': "/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic lighting --v 6.0 --ar 16:9",
-            'Midjourney: 3D Cute IP (3D盲盒公仔)': "/imagine prompt: cute 3d character design of [Subject], pop mart style, clay material, studio lighting, pastel colors, 3d render, c4d, octane render --v 6.0",
-            'Writing: Xiaohongshu Copy (小红书爆款文案)': "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题要包含Emoji，吸引眼球（如：'绝绝子！'）。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。\n4. 添加5个热门Hashtag。",
-            'Writing: YouTube Script (油管视频脚本)': "Role: Scriptwriter\nTask: Write a YouTube video script for [Topic].\nStructure:\n1. Hook (0-15s): Grab attention.\n2. Intro: What we will cover.\n3. Body: 3 key points.\n4. CTA: Like and Subscribe.",
-            'Writing: SEO Blog Post (SEO博客文章)': "Role: SEO Expert\nTask: Write a blog post about [Topic].\nRequirements:\n- Target keywords: [Keywords]\n- Use H1, H2, H3 headers structure.\n- Include a catchy introduction and a FAQ section.",
-            'Coding: Python Debugger (Python除错专家)': "Role: Python Expert\nTask: Find the bug in this code and explain the fix.\nCode:\n[Paste Code Here]",
-            'Coding: SQL Optimizer (SQL查询优化)': "Role: Database Administrator\nTask: Optimize this SQL query for performance.\nQuery:\n[Paste SQL Here]",
-            'Office: Excel Formula (Excel公式生成)': "I need an Excel formula to: [Describe goal, e.g., sum column A if column B contains 'X']",
-            'Office: Email Polisher (邮件润色)': "Role: Communication Coach\nTask: Polish this email to be more professional and concise.\nDraft:\n[Paste Draft]",
-            'Office: Weekly Report (周报生成器)': "请根据以下工作内容生成一份周报：\n[输入工作内容]\n\n要求：分为'本周进展'、'存在问题'、'下周计划'，语言简练，数据量化。"
         };
 
         let currentTool = 'visual';
