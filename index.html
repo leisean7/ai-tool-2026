@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V30 | 汉化修正版</title>
+    <title>AI CommandOS V31 | 完美封包版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -34,8 +34,14 @@
             font-size: 13px;
         }
 
-        /* --- 布局优化 --- */
-        .app-container { display: flex; width: 100%; height: 100%; }
+        /* --- 滚动条美化 (Windows/Chrome) --- */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
+        /* --- 布局 --- */
+        .app-container { display: flex; width: 100%; height: 100%; position: relative; }
         
         .sidebar {
             width: 260px;
@@ -44,7 +50,7 @@
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            z-index: 20;
+            z-index: 30;
             overflow-y: auto;
             will-change: transform;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -86,7 +92,15 @@
             overflow: hidden;
             background: var(--bg);
             position: relative;
+            z-index: 1;
         }
+
+        /* 移动端遮罩层 */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 25;
+            display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .overlay.active { display: block; opacity: 1; }
 
         .topbar {
             height: 60px;
@@ -175,6 +189,7 @@
             transition: 0.2s; background: rgba(0,0,0,0.2);
             margin-bottom: 25px; display: none;
         }
+        .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
         .file-name { margin-top: 10px; font-size: 0.85rem; color: var(--gold); display: none; font-weight: bold;}
 
         /* 历史记录卡片 */
@@ -225,10 +240,12 @@
             <div class="menu-item" onclick="loadTool('history')"><i class="fas fa-history"></i> History (历史记录)</div>
         </div>
 
+        <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
         <div class="workspace">
             <div class="topbar">
                 <div style="display:flex; gap:15px; align-items:center;">
-                    <i class="fas fa-bars mobile-toggle" onclick="toggleSidebar()"></i>
+                    <i class="fas fa-bars mobile-toggle" onclick="openSidebar()"></i>
                     <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">Visual Director (视觉)</span>
                 </div>
                 <div class="model-selector" id="modelSelectContainer">
@@ -468,7 +485,6 @@
                     { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)', 'Autotune (电音)'] }
                 ]
             },
-            // ✅ 修正：Framework 汉化
             text: {
                 title: "Copywriter (写作)",
                 models: ['GPT-4o', 'Claude 3 Opus', 'Gemini Pro'],
@@ -537,30 +553,31 @@
 
         let currentTool = 'visual';
 
-        // 页面加载初始化
         window.onload = () => { loadTool('visual'); };
 
-        // 切换侧边栏 (移动端)
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('overlay').classList.add('active');
         }
 
-        // 核心：切换工具逻辑
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
         function loadTool(key) {
             currentTool = key;
             const data = tools[key];
             
-            // 更新标题和模型
             document.getElementById('toolTitle').innerText = data.title;
             const modelSelect = document.getElementById('targetModel');
             if(data.models.length > 0) {
                 modelSelect.parentElement.style.display = 'block';
                 modelSelect.innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
             } else {
-                modelSelect.parentElement.style.display = 'none'; // History 模式隐藏
+                modelSelect.parentElement.style.display = 'none'; 
             }
 
-            // 控制 UI 显示状态
             const uploadArea = document.getElementById('uploadArea');
             const abTestGroup = document.getElementById('abTestGroup');
             const actionBtn = document.getElementById('actionBtn');
@@ -569,7 +586,6 @@
             const outputHeader = document.getElementById('outputHeader');
             const resultContainer = document.getElementById('resultContainer');
 
-            // 1. History 模式特殊处理
             if (key === 'history') {
                 uploadArea.style.display = 'none';
                 formGrid.style.display = 'none';
@@ -578,18 +594,15 @@
                 outputHeader.style.display = 'none';
                 resultContainer.style.display = 'none';
                 historyList.style.display = 'block';
-                renderHistory(); // 渲染历史记录
-            } 
-            // 2. 其他模式
-            else {
+                renderHistory();
+            } else {
                 historyList.style.display = 'none';
                 formGrid.style.display = 'grid';
                 actionBtn.style.display = 'block';
                 outputHeader.style.display = 'flex';
                 resultContainer.style.display = 'flex';
-                resultContainer.innerHTML = ''; // 清空结果
+                resultContainer.innerHTML = ''; 
 
-                // 按钮和上传框逻辑
                 if (key === 'reverse') {
                     uploadArea.style.display = 'block';
                     abTestGroup.style.display = 'none'; 
@@ -607,7 +620,6 @@
                     actionBtn.classList.remove('purple');
                 }
 
-                // 渲染表单
                 formGrid.innerHTML = '';
                 data.inputs.forEach(field => {
                     const div = document.createElement('div');
@@ -635,7 +647,6 @@
                         inputHtml = `<input type="text" id="f_${field.id}" placeholder="${field.placeholder || ''}">`;
                     }
 
-                    // Magic Button
                     let magicBtn = '';
                     if(field.magic) {
                         magicBtn = `<button class="magic-btn" onclick="magicExpand('f_${field.id}')" title="AI Optimize (AI扩写)"><i class="fas fa-magic"></i></button>`;
@@ -645,25 +656,21 @@
                     formGrid.appendChild(div);
                 });
 
-                // Library 模式下初始化预览
                 if (key === 'library') {
                     const firstKey = Object.keys(libraryGroups["🎨 Visual Art (视觉创作)"])[0];
                     previewTemplate(firstKey);
                 }
             }
 
-            // 菜单高亮
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
             items.forEach(item => {
                 if(item.getAttribute('onclick').includes(key)) item.classList.add('active');
             });
             
-            // 移动端收起侧边栏
-            if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+            if(window.innerWidth <= 768) closeSidebar();
         }
 
-        // 仅处理文件显示
         function handleFile(input) {
             const file = input.files[0];
             if (file) {
@@ -675,16 +682,13 @@
 
         function previewTemplate(key) {
             if(currentTool !== 'library') return;
-            // 不做动作，等待点击
         }
 
-        // 核心：生成逻辑
         function generate() {
             const model = document.getElementById('targetModel').value;
             const isAB = document.getElementById('abTest').checked;
             const toolData = tools[currentTool];
             
-            // 收集数据
             const inputs = {};
             if(toolData.inputs) {
                 toolData.inputs.forEach(f => {
@@ -695,28 +699,26 @@
 
             let resultText = "";
 
-            // 1. Library 模式直接获取
             if (currentTool === 'library') {
                 const selectedKey = inputs.template;
                 resultText = libraryTemplates[selectedKey] || "Prompt not found.";
+                const container = document.getElementById('resultContainer');
+                container.innerHTML = `<div class="result-box"><div class="ab-tag">Template Loaded</div>${resultText} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i></div>`;
+                return;
             } 
-            // 2. Reverse 模式模拟
             else if (currentTool === 'reverse') {
-                resultText = `/imagine prompt: highly detailed shot of uploaded image content, cinematic lighting, 8k resolution --v 6.0`;
+                simulateVisionAnalysis(inputs);
+                return;
             }
-            // 3. 常规生成
             else {
                 resultText = buildPrompt(currentTool, model, inputs);
             }
 
-            // 保存到历史记录
             saveToHistory(tools[currentTool].title, resultText);
 
-            // 显示结果
             const container = document.getElementById('resultContainer');
-            container.innerHTML = ''; // 清空
+            container.innerHTML = ''; 
 
-            // A/B 测试逻辑
             if (isAB && currentTool !== 'library' && currentTool !== 'reverse') {
                 ['Version A (标准版)', 'Version B (创意版)', 'Version C (极简版)'].forEach(ver => {
                     const box = document.createElement('div');
@@ -732,14 +734,57 @@
             }
         }
 
-        // 构建 Prompt 字符串
+        // 增强版逆向工程模拟
+        function simulateVisionAnalysis(inputs) {
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = '';
+            
+            // 随机生成一些看起来很专业的参数
+            const randomStyles = ['Cyberpunk', 'Cinematic', 'Minimalist', 'Vintage'];
+            const randomLight = ['Neon', 'Natural', 'Studio', 'Volumetric'];
+            const style = randomStyles[Math.floor(Math.random() * randomStyles.length)];
+            const light = randomLight[Math.floor(Math.random() * randomLight.length)];
+            
+            const steps = [
+                `🔍 Analyzing Image Pixels...`, 
+                `🧠 Extracting Semantics: ${style} style detected...`, 
+                `✨ Generating Prompt...`
+            ];
+            
+            let stepIndex = 0;
+            const box = document.createElement('div');
+            box.className = 'result-box';
+            box.style.color = 'var(--text-sub)';
+            container.appendChild(box);
+
+            const interval = setInterval(() => {
+                if (stepIndex >= steps.length) {
+                    clearInterval(interval);
+                    box.style.color = '#10b981';
+                    // 生成更仿真的结果
+                    const finalPrompt = `/imagine prompt: highly detailed shot of uploaded content, ${style} aesthetic, ${light} lighting, 8k resolution, trending on artstation --v 6.0`;
+                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>${finalPrompt} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
+                    saveToHistory("Reverse Eng.", finalPrompt);
+                } else {
+                    box.innerText = steps[stepIndex];
+                    stepIndex++;
+                }
+            }, 600);
+        }
+
         function buildPrompt(toolKey, model, inputs, ver) {
-            // 清理中文备注
             const cleanInputs = {};
+            const toolConfig = tools[toolKey];
+            
             for (const key in inputs) {
                 const val = inputs[key];
-                if (val && val.includes('(')) cleanInputs[key] = val.split('(')[0].trim();
-                else cleanInputs[key] = val;
+                // 核心修复：只清洗 Select 类型的输入，防止用户手写的文本被误删
+                const inputConfig = toolConfig.inputs.find(i => i.id === key);
+                if (val && inputConfig && inputConfig.type === 'select' && val.includes('(')) {
+                    cleanInputs[key] = val.split('(')[0].trim();
+                } else {
+                    cleanInputs[key] = val;
+                }
             }
 
             let res = "";
@@ -765,14 +810,9 @@
             return res;
         }
 
-        // === 历史记录功能 ===
         function saveToHistory(type, content) {
             let history = JSON.parse(localStorage.getItem('ai_command_history') || '[]');
-            const newItem = {
-                type: type,
-                content: content,
-                time: new Date().toLocaleString()
-            };
+            const newItem = { type: type, content: content, time: new Date().toLocaleString() };
             history.unshift(newItem); 
             if(history.length > 10) history.pop(); 
             localStorage.setItem('ai_command_history', JSON.stringify(history));
@@ -792,10 +832,7 @@
             history.forEach(item => {
                 html += `
                 <div class="history-item" onclick="copyTextDirect('${item.content.replace(/'/g, "\\'")}')">
-                    <div class="history-time">
-                        <span>${item.type}</span>
-                        <span>${item.time}</span>
-                    </div>
+                    <div class="history-time"><span>${item.type}</span><span>${item.time}</span></div>
                     <div class="history-content">${item.content}</div>
                 </div>`;
             });
@@ -807,7 +844,6 @@
             renderHistory();
         }
 
-        // 辅助功能
         function copyText(icon) {
             navigator.clipboard.writeText(icon.parentElement.innerText.replace("Copy", "").trim());
             alert("Copied (已复制)!");
