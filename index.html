@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V16 | 深度垂直版</title>
+    <title>AI CommandOS V17 | 工具矩阵版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -17,6 +17,7 @@
             --text-sub: #94a3b8;
             --border: #334155;
             --gold: #f59e0b;
+            --red: #ef4444;
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -152,6 +153,8 @@
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
         .btn-main:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-main.red { background: var(--red); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2); }
+        .btn-main.red:hover { background: #dc2626; }
         
         .switch-group { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 0.85rem; cursor: pointer; user-select: none; }
         .switch-group input { margin: 0; accent-color: var(--accent); }
@@ -170,14 +173,14 @@
 
         /* --- 特殊组件：上传区域 --- */
         .upload-zone {
-            border: 2px dashed var(--border); border-radius: 8px; padding: 20px;
+            border: 2px dashed var(--border); border-radius: 8px; padding: 25px;
             text-align: center; color: var(--text-sub); cursor: pointer;
             transition: 0.2s; background: rgba(0,0,0,0.2);
-            margin-bottom: 15px; display: none; /* 默认隐藏 */
+            margin-bottom: 20px; display: none; /* 默认隐藏 */
         }
         .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
         .upload-icon { font-size: 2rem; margin-bottom: 10px; }
-        .file-name { margin-top: 10px; font-size: 0.8rem; color: var(--green); display: none; }
+        .file-name { margin-top: 10px; font-size: 0.85rem; color: var(--gold); display: none; font-weight: bold;}
 
         /* 移动端适配 */
         .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
@@ -211,8 +214,9 @@
             <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
             <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/TikTok</div>
             
-            <div class="menu-category">Tools</div>
+            <div class="menu-category">AI Tools</div>
             <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> 逆向工程 (Reverse)</div>
+            <div class="menu-item" onclick="loadTool('watermark')"><i class="fas fa-eraser"></i> 智能去水印 (Eraser)</div>
         </div>
 
         <div class="workspace">
@@ -230,9 +234,11 @@
             <div class="scroll-area">
                 
                 <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()">
-                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                    <div>点击或拖拽上传图片</div>
-                    <div style="font-size:0.75rem; opacity:0.7; margin-top:5px;">支持 JPG, PNG, WEBP</div>
+                    <div id="uploadTextDefault">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div>点击或拖拽上传文件</div>
+                        <div style="font-size:0.75rem; opacity:0.7; margin-top:5px;">支持 JPG, PNG, MP4</div>
+                    </div>
                     <div id="fileNameDisplay" class="file-name"></div>
                     <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
                 </div>
@@ -240,10 +246,10 @@
                 <div id="dynamicForm" class="form-grid"></div>
 
                 <div class="action-bar">
-                    <div class="switch-group">
+                    <div class="switch-group" id="abTestGroup">
                         <input type="checkbox" id="abTest"> <span>A/B 测试 (3版)</span>
                     </div>
-                    <button class="btn-main" onclick="generate()">
+                    <button class="btn-main" id="actionBtn" onclick="generate()">
                         <i class="fas fa-bolt"></i> 立即生成
                     </button>
                 </div>
@@ -258,7 +264,7 @@
 
         <div class="context-panel">
             <div class="card-title">🧬 品牌 DNA (Memory)</div>
-            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">垂直行业预设已加载。</p>
+            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">智能注入行业预设。</p>
             
             <label>品牌/视觉主色</label>
             <input type="text" id="dnaColor" placeholder="e.g. #FF5733, Tech Blue">
@@ -292,6 +298,15 @@
                     { id: 'style', label: '艺术风格', type: 'select', options: ['Photorealistic', 'Cyberpunk', 'Anime', '3D Render', 'UE5', 'Oil Painting', 'Watercolor'] },
                     { id: 'shot', label: '构图/运镜', type: 'select', options: ['Wide Angle', 'Telephoto', 'Drone View', 'Macro', 'Isometric'] },
                     { id: 'light', label: '布光', type: 'select', options: ['Cinematic', 'Natural', 'Neon', 'Rembrandt', 'Volumetric'] }
+                ]
+            },
+            watermark: {
+                title: "AI Eraser (智能去水印)",
+                models: ['Inpaint Pro V2', 'Cleanup.pictures Model', 'Stable Inpainting'],
+                inputs: [
+                    { id: 'mode', label: '消除模式', type: 'select', options: ['Auto Detect (自动检测)', 'Brush Selection (涂抹选择)', 'Box Selection (框选)'] },
+                    { id: 'target', label: '消除对象', type: 'select', options: ['Watermark/Logo (水印/Logo)', 'Text/Subtitles (文字/字幕)', 'Unwanted Object (路人/杂物)'] },
+                    { id: 'strength', label: '修复强度', type: 'select', options: ['Standard (标准)', 'Aggressive (强力)', 'Delicate (精细)'] }
                 ]
             },
             video: {
@@ -360,12 +375,26 @@
             document.getElementById('toolTitle').innerText = data.title;
             document.getElementById('targetModel').innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
 
-            // 处理上传区域显示
+            // UI 状态切换
             const uploadArea = document.getElementById('uploadArea');
-            if (key === 'reverse') {
+            const abTestGroup = document.getElementById('abTestGroup');
+            const actionBtn = document.getElementById('actionBtn');
+
+            if (key === 'reverse' || key === 'watermark') {
                 uploadArea.style.display = 'block';
+                abTestGroup.style.display = 'none'; // 这些工具不需要 A/B 测试
+                if (key === 'watermark') {
+                    actionBtn.innerHTML = '<i class="fas fa-eraser"></i> 开始消除';
+                    actionBtn.classList.add('red');
+                } else {
+                    actionBtn.innerHTML = '<i class="fas fa-search"></i> 开始分析';
+                    actionBtn.classList.remove('red');
+                }
             } else {
                 uploadArea.style.display = 'none';
+                abTestGroup.style.display = 'flex';
+                actionBtn.innerHTML = '<i class="fas fa-bolt"></i> 立即生成';
+                actionBtn.classList.remove('red');
             }
 
             // 渲染表单
@@ -405,14 +434,13 @@
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // 文件处理 (模拟)
+        // 文件处理
         function handleFile(input) {
             const file = input.files[0];
             if (file) {
                 const display = document.getElementById('fileNameDisplay');
                 display.style.display = 'block';
-                display.innerText = `✅ 已加载: ${file.name} (Ready for Analysis)`;
-                // 这里可以添加真实的图片预览逻辑，如果需要的话
+                display.innerText = `✅ 文件已就绪: ${file.name} (${(file.size/1024/1024).toFixed(2)}MB)`;
             }
         }
 
@@ -428,13 +456,23 @@
                 inputs[f.id] = document.getElementById(`f_${f.id}`).value;
             });
 
-            // 逆向工程特殊逻辑
+            // 1. 去水印特殊逻辑 (Simulation)
+            if (currentTool === 'watermark') {
+                if (fileInput.files.length === 0) {
+                    alert("请先上传需要去水印的图片/视频！");
+                    return;
+                }
+                simulateWatermarkRemoval(fileInput.files[0].name, model, inputs);
+                return;
+            }
+
+            // 2. 逆向工程特殊逻辑
             if (currentTool === 'reverse' && fileInput.files.length > 0) {
                 simulateVisionAnalysis(fileInput.files[0].name, model, inputs);
                 return;
             }
 
-            // 常规生成
+            // 3. 常规生成
             const container = document.getElementById('resultContainer');
             container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-spinner fa-spin"></i> Generating...</div>';
 
@@ -452,17 +490,17 @@
             }, 800);
         }
 
-        // 模拟 Vision 分析过程
-        function simulateVisionAnalysis(filename, model, inputs) {
+        // 模拟去水印过程
+        function simulateWatermarkRemoval(filename, model, inputs) {
             const container = document.getElementById('resultContainer');
             container.innerHTML = '';
             
             const steps = [
-                `🔍 Uploading ${filename} to ${model}...`,
-                `🧠 Analyzing pixel data...`,
-                `🎨 Detecting style: Cyberpunk / Neon...`,
-                `📐 Extracting composition vectors...`,
-                `✨ Generating prompt structure...`
+                `📡 Uploading ${filename} to secure server...`,
+                `🔍 Analyzing ${inputs.target} features...`,
+                `🧠 Generating high-frequency texture mask...`,
+                `🖌️ Inpainting with ${model}...`,
+                `✨ Blending background pixels...`
             ];
 
             let stepIndex = 0;
@@ -475,7 +513,36 @@
                 if (stepIndex >= steps.length) {
                     clearInterval(interval);
                     box.style.color = '#10b981';
-                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>/imagine prompt: highly detailed photograph of a futuristic street, neon blue and pink lighting, wet pavement reflection, cinematic atmosphere, shot on 35mm lens, f/1.8, high contrast --v 6.0 --ar 16:9\n\n(Derived from: ${filename})`;
+                    box.innerHTML = `<div class="ab-tag">Processing Complete</div>
+                    <strong>✅ Successfully Removed:</strong> ${inputs.target}<br>
+                    <strong>🔧 Method:</strong> ${inputs.mode} / ${inputs.strength}<br><br>
+                    <div style="background:#222630; padding:10px; border-radius:6px; margin-top:10px; text-align:center; color:white;">
+                       <i class="fas fa-download"></i> <span style="text-decoration:underline; cursor:pointer;">Download Result (Original Quality)</span>
+                    </div>`;
+                } else {
+                    box.innerHTML += `<div><i class="fas fa-check" style="font-size:0.8rem;"></i> ${steps[stepIndex]}</div>`;
+                    stepIndex++;
+                }
+            }, 800);
+        }
+
+        // 模拟 Vision 分析
+        function simulateVisionAnalysis(filename, model, inputs) {
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = '';
+            const steps = [`🔍 Reading ${filename}...`, `🧠 Extracting semantics...`, `🎨 Detecting style...`, `✨ Generating prompt...`];
+            
+            let stepIndex = 0;
+            const box = document.createElement('div');
+            box.className = 'result-box';
+            box.style.color = 'var(--text-sub)';
+            container.appendChild(box);
+
+            const interval = setInterval(() => {
+                if (stepIndex >= steps.length) {
+                    clearInterval(interval);
+                    box.style.color = '#10b981';
+                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>/imagine prompt: highly detailed shot of ${filename} content, cinematic lighting, 8k --v 6.0`;
                     box.innerHTML += ` <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
                 } else {
                     box.innerText = steps[stepIndex];
@@ -485,18 +552,13 @@
         }
 
         function buildPrompt(toolKey, model, inputs, ver) {
-            // 获取 DNA
-            const dna = {
-                tone: document.getElementById('dnaTone').value,
-                target: document.getElementById('dnaTarget').value
-            };
-
+            const dna = { tone: document.getElementById('dnaTone').value, target: document.getElementById('dnaTarget').value };
             let res = "";
             
             if (toolKey === 'email') {
-                res = `Subject: [Relevant Hook regarding ${inputs.product}]\n\nHi [Name],\n\n(Context: Writing to ${inputs.role}, Stage: ${inputs.stage})\n\n[Opening using ${inputs.framework} framework...]\n\n[Value Proposition: ${inputs.product} benefits for ${dna.target || 'your company'}]\n\n[CTA: ${inputs.cta}]\n\nBest,\n[Your Name]`;
+                res = `Subject: [Hook for ${inputs.product}]\n\nHi [Name],\n\n(Writing to ${inputs.role}, Stage: ${inputs.stage})\n\n[Body using ${inputs.framework} model...]\n\n[CTA: ${inputs.cta}]`;
             } else if (toolKey === 'academic') {
-                res = `[Task: ${inputs.goal} for ${inputs.section}]\n[Style: ${inputs.target}]\n[Field: ${inputs.field}]\n\nRevised Text:\n(Here AI will output the polished version of: "${inputs.content.substring(0, 20)}..." with improved academic tone and ${inputs.target} formatting.)`;
+                res = `[Goal: ${inputs.goal}]\n[Style: ${inputs.target}]\n\nRevised Text:\n(Polished version of input...)`;
             } else if (toolKey === 'visual') {
                 res = `/imagine prompt: ${Object.values(inputs).join(', ')} --v 6.0`;
             } else {
@@ -506,7 +568,7 @@
         }
 
         function copyText(icon) {
-            navigator.clipboard.writeText(icon.parentElement.innerText.replace(icon.previousElementSibling?.innerText || "", "").trim());
+            navigator.clipboard.writeText(icon.parentElement.innerText.replace("Copy", "").trim());
             alert("Copied!");
         }
 
