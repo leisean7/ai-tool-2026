@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V17 | 工具矩阵版</title>
+    <title>AI CommandOS V18 | 全能词库版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -17,7 +17,7 @@
             --text-sub: #94a3b8;
             --border: #334155;
             --gold: #f59e0b;
-            --red: #ef4444;
+            --purple: #8b5cf6;
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -75,7 +75,7 @@
         }
         .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
         .menu-item.active { background: rgba(59, 130, 246, 0.15); color: var(--accent); border-left-color: var(--accent); }
-        .menu-item i { width: 16px; text-align: center; }
+        .menu-item i { width: 18px; text-align: center; }
 
         /* 工作区 */
         .workspace {
@@ -153,8 +153,8 @@
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
         .btn-main:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-main.red { background: var(--red); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2); }
-        .btn-main.red:hover { background: #dc2626; }
+        .btn-main.purple { background: var(--purple); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); }
+        .btn-main.purple:hover { background: #7c3aed; }
         
         .switch-group { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 0.85rem; cursor: pointer; user-select: none; }
         .switch-group input { margin: 0; accent-color: var(--accent); }
@@ -214,9 +214,9 @@
             <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
             <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/TikTok</div>
             
-            <div class="menu-category">AI Tools</div>
+            <div class="menu-category">AI Resources</div>
             <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> 逆向工程 (Reverse)</div>
-            <div class="menu-item" onclick="loadTool('watermark')"><i class="fas fa-eraser"></i> 智能去水印 (Eraser)</div>
+            <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> 经典词库 (Library)</div>
         </div>
 
         <div class="workspace">
@@ -236,8 +236,8 @@
                 <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()">
                     <div id="uploadTextDefault">
                         <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                        <div>点击或拖拽上传文件</div>
-                        <div style="font-size:0.75rem; opacity:0.7; margin-top:5px;">支持 JPG, PNG, MP4</div>
+                        <div>点击或拖拽上传图片</div>
+                        <div style="font-size:0.75rem; opacity:0.7; margin-top:5px;">支持 JPG, PNG, WEBP</div>
                     </div>
                     <div id="fileNameDisplay" class="file-name"></div>
                     <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
@@ -300,13 +300,13 @@
                     { id: 'light', label: '布光', type: 'select', options: ['Cinematic', 'Natural', 'Neon', 'Rembrandt', 'Volumetric'] }
                 ]
             },
-            watermark: {
-                title: "AI Eraser (智能去水印)",
-                models: ['Inpaint Pro V2', 'Cleanup.pictures Model', 'Stable Inpainting'],
+            library: {
+                title: "Prompt Vault (经典词库)",
+                models: ['Universal Format'],
                 inputs: [
-                    { id: 'mode', label: '消除模式', type: 'select', options: ['Auto Detect (自动检测)', 'Brush Selection (涂抹选择)', 'Box Selection (框选)'] },
-                    { id: 'target', label: '消除对象', type: 'select', options: ['Watermark/Logo (水印/Logo)', 'Text/Subtitles (文字/字幕)', 'Unwanted Object (路人/杂物)'] },
-                    { id: 'strength', label: '修复强度', type: 'select', options: ['Standard (标准)', 'Aggressive (强力)', 'Delicate (精细)'] }
+                    { id: 'category', label: '核心分类', type: 'select', options: ['Midjourney (Visual)', 'ChatGPT (Writing)', 'Coding (Development)', 'Productivity (Office)'] },
+                    { id: 'scenario', label: '应用场景', type: 'select', options: ['Portrait Photography (人像摄影)', 'Logo Design (标志设计)', 'SEO Blog Post (SEO文章)', 'Python Debugging (除错)', 'Cold Email (开发信)', 'Excel Formula (公式生成)', 'Meeting Summary (会议纪要)'] },
+                    { id: 'level', label: '指令复杂度', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/Chain of Thought)'] }
                 ]
             },
             video: {
@@ -380,21 +380,22 @@
             const abTestGroup = document.getElementById('abTestGroup');
             const actionBtn = document.getElementById('actionBtn');
 
-            if (key === 'reverse' || key === 'watermark') {
+            // 仅 Reverse 显示上传
+            if (key === 'reverse') {
                 uploadArea.style.display = 'block';
-                abTestGroup.style.display = 'none'; // 这些工具不需要 A/B 测试
-                if (key === 'watermark') {
-                    actionBtn.innerHTML = '<i class="fas fa-eraser"></i> 开始消除';
-                    actionBtn.classList.add('red');
-                } else {
-                    actionBtn.innerHTML = '<i class="fas fa-search"></i> 开始分析';
-                    actionBtn.classList.remove('red');
-                }
+                abTestGroup.style.display = 'none'; 
+                actionBtn.innerHTML = '<i class="fas fa-search"></i> 开始分析';
+                actionBtn.classList.remove('purple');
+            } else if (key === 'library') {
+                uploadArea.style.display = 'none';
+                abTestGroup.style.display = 'none'; // 词库不需要A/B测试
+                actionBtn.innerHTML = '<i class="fas fa-book-open"></i> 调取词库';
+                actionBtn.classList.add('purple');
             } else {
                 uploadArea.style.display = 'none';
                 abTestGroup.style.display = 'flex';
                 actionBtn.innerHTML = '<i class="fas fa-bolt"></i> 立即生成';
-                actionBtn.classList.remove('red');
+                actionBtn.classList.remove('purple');
             }
 
             // 渲染表单
@@ -424,7 +425,7 @@
                 container.appendChild(div);
             });
 
-            // 菜单状态
+            // 菜单高亮
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
             items.forEach(item => {
@@ -456,19 +457,15 @@
                 inputs[f.id] = document.getElementById(`f_${f.id}`).value;
             });
 
-            // 1. 去水印特殊逻辑 (Simulation)
-            if (currentTool === 'watermark') {
-                if (fileInput.files.length === 0) {
-                    alert("请先上传需要去水印的图片/视频！");
-                    return;
-                }
-                simulateWatermarkRemoval(fileInput.files[0].name, model, inputs);
+            // 1. 逆向工程特殊逻辑
+            if (currentTool === 'reverse' && fileInput.files.length > 0) {
+                simulateVisionAnalysis(fileInput.files[0].name, model, inputs);
                 return;
             }
 
-            // 2. 逆向工程特殊逻辑
-            if (currentTool === 'reverse' && fileInput.files.length > 0) {
-                simulateVisionAnalysis(fileInput.files[0].name, model, inputs);
+            // 2. 词库特殊逻辑 (Library)
+            if (currentTool === 'library') {
+                fetchLibraryPrompts(inputs);
                 return;
             }
 
@@ -490,40 +487,31 @@
             }, 800);
         }
 
-        // 模拟去水印过程
-        function simulateWatermarkRemoval(filename, model, inputs) {
+        // 词库调取逻辑
+        function fetchLibraryPrompts(inputs) {
             const container = document.getElementById('resultContainer');
-            container.innerHTML = '';
-            
-            const steps = [
-                `📡 Uploading ${filename} to secure server...`,
-                `🔍 Analyzing ${inputs.target} features...`,
-                `🧠 Generating high-frequency texture mask...`,
-                `🖌️ Inpainting with ${model}...`,
-                `✨ Blending background pixels...`
-            ];
+            container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-book"></i> Searching Vault...</div>';
 
-            let stepIndex = 0;
-            const box = document.createElement('div');
-            box.className = 'result-box';
-            box.style.color = 'var(--text-sub)';
-            container.appendChild(box);
-
-            const interval = setInterval(() => {
-                if (stepIndex >= steps.length) {
-                    clearInterval(interval);
-                    box.style.color = '#10b981';
-                    box.innerHTML = `<div class="ab-tag">Processing Complete</div>
-                    <strong>✅ Successfully Removed:</strong> ${inputs.target}<br>
-                    <strong>🔧 Method:</strong> ${inputs.mode} / ${inputs.strength}<br><br>
-                    <div style="background:#222630; padding:10px; border-radius:6px; margin-top:10px; text-align:center; color:white;">
-                       <i class="fas fa-download"></i> <span style="text-decoration:underline; cursor:pointer;">Download Result (Original Quality)</span>
-                    </div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+                // 模拟数据库返回，这里可以根据 inputs.category 和 inputs.scenario 返回不同的内容
+                const box = document.createElement('div');
+                box.className = 'result-box';
+                
+                let content = `### Master Prompt for: ${inputs.scenario}\n### Category: ${inputs.category}\n\n`;
+                
+                if (inputs.category.includes("Midjourney")) {
+                    content += `/imagine prompt: professional portrait photography of [Subject], shot on Hasselblad X2D, 85mm lens, f/1.8, cinematic lighting, ultra-detailed skin texture, 8k resolution, neutral background --v 6.0 --ar 4:5 --style raw\n\n`;
+                    content += `/imagine prompt: minimalist vector logo for [Brand Name], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details`;
+                } else if (inputs.category.includes("Coding")) {
+                    content += `Role: Senior Software Engineer\nTask: Debug the following code snippet.\nSteps:\n1. Analyze the code for logical errors and syntax issues.\n2. Explain the root cause of the bug.\n3. Provide the corrected code block.\n4. Suggest optimization for performance.\n\nCode Snippet: [Paste Code Here]`;
                 } else {
-                    box.innerHTML += `<div><i class="fas fa-check" style="font-size:0.8rem;"></i> ${steps[stepIndex]}</div>`;
-                    stepIndex++;
+                    content += `Role: Expert Copywriter\nTask: Write a SEO-optimized blog post about [Topic].\nRequirements:\n- Use H1, H2, H3 headers.\n- Include a catchy hook in the intro.\n- Target keywords: [Keyword1], [Keyword2].\n- Tone: Professional yet engaging.`;
                 }
-            }, 800);
+
+                box.innerHTML = `<div class="ab-tag">Vault Result</div>${content} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
+                container.appendChild(box);
+            }, 600);
         }
 
         // 模拟 Vision 分析
@@ -531,7 +519,6 @@
             const container = document.getElementById('resultContainer');
             container.innerHTML = '';
             const steps = [`🔍 Reading ${filename}...`, `🧠 Extracting semantics...`, `🎨 Detecting style...`, `✨ Generating prompt...`];
-            
             let stepIndex = 0;
             const box = document.createElement('div');
             box.className = 'result-box';
