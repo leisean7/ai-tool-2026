@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V15 | 全栈全参数版</title>
+    <title>AI CommandOS V16 | 深度垂直版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -17,7 +17,6 @@
             --text-sub: #94a3b8;
             --border: #334155;
             --gold: #f59e0b;
-            --green: #10b981;
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -169,6 +168,17 @@
             padding: 2px 8px; font-size: 0.7rem; border-bottom-right-radius: 6px; color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
         }
 
+        /* --- 特殊组件：上传区域 --- */
+        .upload-zone {
+            border: 2px dashed var(--border); border-radius: 8px; padding: 20px;
+            text-align: center; color: var(--text-sub); cursor: pointer;
+            transition: 0.2s; background: rgba(0,0,0,0.2);
+            margin-bottom: 15px; display: none; /* 默认隐藏 */
+        }
+        .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
+        .upload-icon { font-size: 2rem; margin-bottom: 10px; }
+        .file-name { margin-top: 10px; font-size: 0.8rem; color: var(--green); display: none; }
+
         /* 移动端适配 */
         .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
         @media (max-width: 1024px) { .context-panel { display: none; } }
@@ -195,14 +205,14 @@
             <div class="menu-item" onclick="loadTool('audio')"><i class="fas fa-music"></i> 音乐 (Audio)</div>
             <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> 写作 (Copy)</div>
             
-            <div class="menu-category">Vertical Matrix</div>
+            <div class="menu-category">Professional Matrix</div>
+            <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> 外贸开发 (Sales)</div>
+            <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> 学术科研 (Scholar)</div>
             <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
             <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/TikTok</div>
-            <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope"></i> 外贸开发信</div>
-            <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> 学术/论文</div>
             
             <div class="menu-category">Tools</div>
-            <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-code-branch"></i> 提示词反推</div>
+            <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> 逆向工程 (Reverse)</div>
         </div>
 
         <div class="workspace">
@@ -218,6 +228,15 @@
             </div>
 
             <div class="scroll-area">
+                
+                <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div>点击或拖拽上传图片</div>
+                    <div style="font-size:0.75rem; opacity:0.7; margin-top:5px;">支持 JPG, PNG, WEBP</div>
+                    <div id="fileNameDisplay" class="file-name"></div>
+                    <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
+                </div>
+
                 <div id="dynamicForm" class="form-grid"></div>
 
                 <div class="action-bar">
@@ -225,7 +244,7 @@
                         <input type="checkbox" id="abTest"> <span>A/B 测试 (3版)</span>
                     </div>
                     <button class="btn-main" onclick="generate()">
-                        <i class="fas fa-bolt"></i> 生成指令
+                        <i class="fas fa-bolt"></i> 立即生成
                     </button>
                 </div>
 
@@ -239,128 +258,99 @@
 
         <div class="context-panel">
             <div class="card-title">🧬 品牌 DNA (Memory)</div>
-            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">全自动注入品牌信息。</p>
+            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">垂直行业预设已加载。</p>
             
             <label>品牌/视觉主色</label>
-            <input type="text" id="dnaColor" placeholder="e.g. #FF5733, Neon Blue">
+            <input type="text" id="dnaColor" placeholder="e.g. #FF5733, Tech Blue">
 
             <label>目标受众</label>
-            <input type="text" id="dnaTarget" placeholder="e.g. 25岁 极客男性">
+            <input type="text" id="dnaTarget" placeholder="e.g. 欧美B端客户">
 
             <label>语气基调</label>
             <select id="dnaTone">
                 <option value="">-- Default --</option>
-                <option value="Professional">专业严谨</option>
-                <option value="Witty">幽默风趣</option>
-                <option value="Empathetic">治愈共情</option>
-                <option value="Luxury">高端奢华</option>
+                <option value="Professional">专业严谨 (Professional)</option>
+                <option value="Urgent">紧迫感 (Urgent)</option>
+                <option value="Friendly">亲和 (Friendly)</option>
+                <option value="Academic">学术 (Academic)</option>
             </select>
 
             <label>负向/禁用词</label>
-            <textarea id="dnaNegative" placeholder="e.g. text, watermark, low quality..." style="height:60px;"></textarea>
+            <textarea id="dnaNegative" placeholder="e.g. text, watermark..." style="height:60px;"></textarea>
         </div>
 
     </div>
 
     <script>
-        // === 核心数据配置 (超全参数) ===
+        // === 核心数据配置 ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
                 models: ['Midjourney V6', 'Niji V6', 'Stable Diffusion XL', 'DALL-E 3'],
                 inputs: [
-                    { id: 'subject', label: '画面主体 (Subject)', type: 'text', placeholder: 'e.g. 一只赛博朋克风格的猫', magic: true },
-                    { id: 'style', label: '艺术风格 (Style)', type: 'select', options: [
-                        'Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime (日系二次元)', 'Ghibli Studio (吉卜力)', 
-                        '3D Render (C4D/Blender)', 'Unreal Engine 5 (UE5)', 'Oil Painting (油画)', 'Watercolor (水彩)',
-                        'Pixel Art (像素风)', 'Ukiyo-e (浮世绘)', 'Vaporwave (蒸汽波)', 'Steampunk (蒸汽朋克)',
-                        'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)', 'Claymation (粘土动画)', 'Gothic (哥特)'
-                    ]},
-                    { id: 'shot', label: '构图/运镜 (Shot)', type: 'select', options: [
-                        'Wide Angle (广角)', 'Ultra-Wide (超广角)', 'Telephoto (长焦)', 'Macro (微距)',
-                        'Drone View (上帝视角)', 'Isometric (等轴测)', 'Low Angle (低角度)', 'Dutch Angle (荷兰式倾斜)',
-                        'Over-the-Shoulder (过肩镜头)', 'Selfie (自拍)', 'Fisheye (鱼眼)'
-                    ]},
-                    { id: 'light', label: '布光 (Lighting)', type: 'select', options: [
-                        'Cinematic Lighting (电影光)', 'Natural Light (自然光)', 'Golden Hour (黄金时刻)', 'Blue Hour (蓝调时刻)',
-                        'Neon Lights (霓虹光)', 'Rembrandt (伦勃朗光)', 'Volumetric/God Rays (丁达尔光)', 'Studio Softbox (影棚柔光)',
-                        'Bioluminescent (生物荧光)', 'Rim Light (轮廓光)'
-                    ]},
-                    { id: 'render', label: '渲染质感 (Render)', type: 'select', options: [
-                        '8k Resolution', '4k', 'High Fidelity', 'Octane Render', 'Ray Tracing', 'HDR', 'Matte Finish'
-                    ]}
+                    { id: 'subject', label: '画面主体', type: 'text', placeholder: 'e.g. 赛博朋克风格的猫', magic: true },
+                    { id: 'style', label: '艺术风格', type: 'select', options: ['Photorealistic', 'Cyberpunk', 'Anime', '3D Render', 'UE5', 'Oil Painting', 'Watercolor'] },
+                    { id: 'shot', label: '构图/运镜', type: 'select', options: ['Wide Angle', 'Telephoto', 'Drone View', 'Macro', 'Isometric'] },
+                    { id: 'light', label: '布光', type: 'select', options: ['Cinematic', 'Natural', 'Neon', 'Rembrandt', 'Volumetric'] }
                 ]
             },
             video: {
                 title: "Video Director (视频)",
-                models: ['Runway Gen-2', 'Pika Labs', 'Sora (OpenAI)', 'Stable Video'],
+                models: ['Runway Gen-2', 'Pika Labs', 'Sora', 'Stable Video'],
                 inputs: [
-                    { id: 'subject', label: '视频内容 (Subject)', type: 'text', placeholder: 'e.g. 海浪拍打礁石', magic: true },
-                    { id: 'motion', label: '动态幅度 (Motion)', type: 'select', options: ['Low (微动)', 'Medium (正常)', 'High (剧烈)', 'Speed Ramp (变速)'] },
-                    { id: 'camera', label: '运镜方式 (Camera)', type: 'select', options: [
-                        'Pan Right (右摇)', 'Pan Left (左摇)', 'Tilt Up (上摇)', 'Tilt Down (下摇)', 
-                        'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 'Truck Left (左移)', 'Truck Right (右移)',
-                        'Orbit/Arc (环绕)', 'Handheld (手持感)', 'FPV Drone (穿越机)'
-                    ]},
-                    { id: 'fps', label: '帧率 (FPS)', type: 'select', options: ['24fps (电影感)', '30fps (标准)', '60fps (流畅)', '12fps (定格动画)'] },
-                    { id: 'style', label: '风格 (Style)', type: 'select', options: ['Cinematic', 'Anime', '3D Animation', 'VHS Glitch', 'Black & White']}
+                    { id: 'subject', label: '视频内容', type: 'text', placeholder: 'e.g. 海浪拍打礁石' },
+                    { id: 'camera', label: '运镜方式', type: 'select', options: ['Pan Right', 'Pan Left', 'Zoom In', 'Zoom Out', 'Orbit', 'FPV'] },
+                    { id: 'motion', label: '动态幅度', type: 'select', options: ['Low', 'Medium', 'High', 'Speed Ramp'] },
+                    { id: 'fps', label: '帧率', type: 'select', options: ['24fps (Cinematic)', '30fps', '60fps'] }
                 ]
             },
             audio: {
                 title: "Music Producer (音乐)",
-                models: ['Suno V3', 'Udio', 'Stable Audio'],
+                models: ['Suno V3', 'Udio'],
                 inputs: [
-                    { id: 'genre', label: '流派 (Genre)', type: 'select', options: [
-                        'Pop', 'K-pop', 'J-pop', 'Mandopop', 'Rock', 'Heavy Metal', 'Jazz', 'Blues',
-                        'Hip Hop', 'Trap', 'Lo-fi Hip Hop', 'Phonk', 'Drill',
-                        'EDM', 'House', 'Techno', 'Dubstep', 'Synthwave',
-                        'Classical', 'Epic Orchestral', 'Ambient', 'New Age'
-                    ]},
-                    { id: 'mood', label: '情绪 (Mood)', type: 'select', options: ['Happy', 'Sad', 'Energetic', 'Chill', 'Dark', 'Romantic', 'Aggressive', 'Ethereal'] },
-                    { id: 'instrument', label: '主乐器 (Instrument)', type: 'select', options: ['Piano', 'Guitar', 'Synthesizer', 'Violin', 'Drums', 'Bass', 'Saxophone', 'Full Orchestra'] },
-                    { id: 'vocal', label: '人声 (Vocals)', type: 'select', options: ['Female', 'Male', 'Duet', 'Choir', 'Instrumental (无人声)', 'Whisper', 'Autotune'] },
-                    { id: 'struct', label: '结构 (Structure)', type: 'select', options: ['Verse-Chorus', 'Intro-Hook-Verse', 'Loop (30s)', 'Soundtrack']}
+                    { id: 'genre', label: '流派', type: 'select', options: ['Pop', 'K-pop', 'Rock', 'Jazz', 'Hip Hop', 'Phonk', 'EDM', 'Epic Orchestral'] },
+                    { id: 'mood', label: '情绪', type: 'select', options: ['Happy', 'Sad', 'Energetic', 'Chill', 'Dark'] },
+                    { id: 'vocal', label: '人声', type: 'select', options: ['Female', 'Male', 'Duet', 'Instrumental'] }
                 ]
             },
-            text: {
-                title: "Copywriter (写作)",
-                models: ['GPT-4o', 'Claude 3.5', 'Gemini Pro'],
+            email: {
+                title: "Global Sales (外贸开发)",
+                models: ['GPT-4o (Sales)', 'Claude 3 Haiku'],
                 inputs: [
-                    { id: 'topic', label: '主题', type: 'text', placeholder: 'e.g. 2026年AI趋势', magic: true },
-                    { id: 'framework', label: '思维框架', type: 'select', options: [
-                        'AIDA (注意-兴趣-欲望-行动)', 'PAS (痛点-加剧-解法)', 'SCQA (情境-冲突-问题-答案)', 
-                        'First Principles (第一性原理)', 'Golden Circle (Why-How-What)', '6 Thinking Hats (六顶思考帽)'
-                    ]},
-                    { id: 'tone', label: '语气', type: 'select', options: ['Professional', 'Humorous', 'Storytelling', 'Direct', 'Academic', 'Persuasive'] },
-                    { id: 'format', label: '格式', type: 'select', options: ['Blog Post', 'Twitter Thread', 'Email', 'Essay', 'Bullet Points']}
+                    { id: 'product', label: '推销产品', type: 'text', placeholder: 'e.g. Solar Panels' },
+                    { id: 'role', label: '收件人职位', type: 'select', options: ['CEO / Owner', 'Purchasing Manager (采购)', 'Product Manager', 'Marketing Director', 'General Inquiry'] },
+                    { id: 'stage', label: '营销阶段', type: 'select', options: ['Cold Outreach (首封开发)', 'Follow Up 1 (初次跟进)', 'Proposal (发送报价)', 'Re-engagement (激活僵尸粉)', 'Last Attempt (最后尝试)'] },
+                    { id: 'framework', label: '营销框架', type: 'select', options: ['AIDA (Attention-Interest)', 'BAB (Before-After-Bridge)', 'PAS (Problem-Solve)', 'Direct Pitch (开门见山)'] },
+                    { id: 'cta', label: '行动号召 (CTA)', type: 'select', options: ['Book a Call (约会议)', 'Reply for Info (回复要资料)', 'Request Sample (索取样品)', 'Visit Website (访问网站)'] },
+                    { id: 'lang', label: '目标语言', type: 'select', options: ['English (US)', 'English (UK)', 'Spanish', 'French', 'German', 'Japanese', 'Arabic'] }
                 ]
             },
-            xhs: {
-                title: "小红书矩阵",
-                models: ['Claude 3 (推荐)', 'GPT-4'],
+            academic: {
+                title: "Academic Scholar (学术科研)",
+                models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
                 inputs: [
-                    { id: 'topic', label: '选题', type: 'text', placeholder: 'e.g. 减肥食谱' },
-                    { id: 'niche', label: '赛道', type: 'select', options: ['美妆护肤', '数码科技', '穿搭', '美食', '家居', '情感', '知识付费'] },
-                    { id: 'vibe', label: '人设', type: 'select', options: ['好闺蜜', '专业导师', '毒舌点评', '温柔学姐'] }
+                    { id: 'content', label: '论文段落/摘要', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '120px' },
+                    { id: 'field', label: '研究领域', type: 'text', placeholder: 'e.g. Neuroscience, Machine Learning' },
+                    { id: 'target', label: '投稿目标/风格', type: 'select', options: ['IEEE Standard', 'Nature/Science Style', 'APA Format', 'MLA Style', 'General Academic'] },
+                    { id: 'goal', label: '优化目标', type: 'select', options: ['降重 (Reduce Repetition)', '深度润色 (Polish Grammar)', '逻辑增强 (Enhance Logic)', '学术化 (Make Academic)', '中式英语矫正 (Fix Chinglish)'] },
+                    { id: 'section', label: '所属部分', type: 'select', options: ['Abstract', 'Introduction', 'Methodology', 'Results', 'Discussion', 'Conclusion'] }
                 ]
             },
-            tiktok: {
-                title: "抖音/TikTok脚本",
-                models: ['GPT-4'],
+            reverse: {
+                title: "Reverse Engineering (逆向工程)",
+                models: ['GPT-4 Vision', 'Claude 3 Opus'],
                 inputs: [
-                    { id: 'topic', label: '视频主题', type: 'text' },
-                    { id: 'hook', label: '黄金3秒', type: 'select', options: ['视觉奇观', '认知反差', '提问互动', '痛点直击'] },
-                    { id: 'type', label: '类型', type: 'select', options: ['口播', '剧情', 'Vlog', '开箱', 'ASMR'] }
+                    { id: 'desc', label: '补充描述 (可选)', type: 'textarea', placeholder: '例如：我想模仿这张图的灯光，但把猫换成狗...', height: '80px' },
+                    { id: 'mode', label: '分析模式', type: 'select', options: ['Extract Visual Prompts (提取画面)', 'Analyze Layout (分析构图)', 'Extract Color Palette (提取配色)', 'Full Analysis (全量分析)'] }
                 ]
             },
-            email: { title: "外贸开发信", models: ['GPT-4'], inputs: [{id:'product',label:'产品',type:'text'}, {id:'target',label:'客户类型',type:'text'}]},
-            academic: { title: "学术润色", models: ['GPT-4 (Academic)'], inputs: [{id:'content',label:'原文',type:'textarea'}, {id:'goal',label:'目标',type:'select',options:['降重', '润色', '翻译']}]},
-            reverse: { title: "提示词反推", models: ['GPT-4 Vision'], inputs: [{id:'desc',label:'描述图片/文案',type:'textarea', placeholder:'粘贴你要模仿的内容...'}]}
+            text: { title: "Copywriter (写作)", models:['GPT-4'], inputs: [{id:'topic',label:'主题',type:'text'}, {id:'framework',label:'框架',type:'select',options:['AIDA','PAS','First Principles']}]},
+            xhs: { title: "小红书矩阵", models:['Claude 3'], inputs: [{id:'topic',label:'选题',type:'text'}, {id:'niche',label:'赛道',type:'select',options:['美妆','数码','穿搭','美食']}]},
+            tiktok: { title: "抖音脚本", models:['GPT-4'], inputs: [{id:'topic',label:'主题',type:'text'}, {id:'hook',label:'开头',type:'select',options:['视觉奇观','反差','提问']}]}
         };
 
         let currentTool = 'visual';
 
-        // === 初始化 ===
         window.onload = () => loadTool('visual');
 
         function loadTool(key) {
@@ -368,10 +358,15 @@
             const data = tools[key];
             
             document.getElementById('toolTitle').innerText = data.title;
-            
-            // 更新模型下拉框
-            const modelSelect = document.getElementById('targetModel');
-            modelSelect.innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
+            document.getElementById('targetModel').innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
+
+            // 处理上传区域显示
+            const uploadArea = document.getElementById('uploadArea');
+            if (key === 'reverse') {
+                uploadArea.style.display = 'block';
+            } else {
+                uploadArea.style.display = 'none';
+            }
 
             // 渲染表单
             const container = document.getElementById('dynamicForm');
@@ -386,7 +381,7 @@
                     const opts = field.options.map(o => `<option>${o}</option>`).join('');
                     inputHtml = `<select id="f_${field.id}">${opts}</select>`;
                 } else if (field.type === 'textarea') {
-                    inputHtml = `<textarea id="f_${field.id}" placeholder="${field.placeholder || ''}" style="height:100px;"></textarea>`;
+                    inputHtml = `<textarea id="f_${field.id}" placeholder="${field.placeholder || ''}" style="height:${field.height || '100px'}"></textarea>`;
                 } else {
                     inputHtml = `<input type="text" id="f_${field.id}" placeholder="${field.placeholder || ''}">`;
                 }
@@ -400,7 +395,7 @@
                 container.appendChild(div);
             });
 
-            // 菜单高亮
+            // 菜单状态
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
             items.forEach(item => {
@@ -410,83 +405,113 @@
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // 魔法扩写
-        function magicExpand(inputId) {
-            const input = document.getElementById(inputId);
-            const val = input.value;
-            const context = tools[currentTool].title;
-            if(!val) { 
-                if(context.includes("Visual")) input.value = "Cyberpunk street, neon rain, reflection";
-                else input.value = "Generate a viral post about AI trends";
-                return; 
+        // 文件处理 (模拟)
+        function handleFile(input) {
+            const file = input.files[0];
+            if (file) {
+                const display = document.getElementById('fileNameDisplay');
+                display.style.display = 'block';
+                display.innerText = `✅ 已加载: ${file.name} (Ready for Analysis)`;
+                // 这里可以添加真实的图片预览逻辑，如果需要的话
             }
-            // 简单模拟
-            input.value = `${val} [AI Optimized: detailed, trending, professional quality]`;
         }
 
-        // 核心生成
+        // 核心生成逻辑
         function generate() {
             const model = document.getElementById('targetModel').value;
             const isAB = document.getElementById('abTest').checked;
             const toolData = tools[currentTool];
+            const fileInput = document.getElementById('fileInput');
             
-            const dna = {
-                color: document.getElementById('dnaColor').value,
-                target: document.getElementById('dnaTarget').value,
-                tone: document.getElementById('dnaTone').value,
-                negative: document.getElementById('dnaNegative').value
-            };
-
             const inputs = {};
             toolData.inputs.forEach(f => {
                 inputs[f.id] = document.getElementById(`f_${f.id}`).value;
             });
 
+            // 逆向工程特殊逻辑
+            if (currentTool === 'reverse' && fileInput.files.length > 0) {
+                simulateVisionAnalysis(fileInput.files[0].name, model, inputs);
+                return;
+            }
+
+            // 常规生成
             const container = document.getElementById('resultContainer');
             container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-spinner fa-spin"></i> Generating...</div>';
 
             setTimeout(() => {
                 container.innerHTML = ''; 
-                const versions = isAB ? ['Standard', 'Creative', 'Minimalist'] : ['Result'];
+                const versions = isAB ? ['Version A', 'Version B', 'Version C'] : ['Result'];
                 
                 versions.forEach(ver => {
-                    const prompt = buildPrompt(currentTool, model, inputs, dna, ver);
+                    const prompt = buildPrompt(currentTool, model, inputs, ver);
                     const box = document.createElement('div');
                     box.className = 'result-box';
                     box.innerHTML = `<div class="ab-tag">${ver}</div>${prompt} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
                     container.appendChild(box);
                 });
+            }, 800);
+        }
+
+        // 模拟 Vision 分析过程
+        function simulateVisionAnalysis(filename, model, inputs) {
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = '';
+            
+            const steps = [
+                `🔍 Uploading ${filename} to ${model}...`,
+                `🧠 Analyzing pixel data...`,
+                `🎨 Detecting style: Cyberpunk / Neon...`,
+                `📐 Extracting composition vectors...`,
+                `✨ Generating prompt structure...`
+            ];
+
+            let stepIndex = 0;
+            const box = document.createElement('div');
+            box.className = 'result-box';
+            box.style.color = 'var(--text-sub)';
+            container.appendChild(box);
+
+            const interval = setInterval(() => {
+                if (stepIndex >= steps.length) {
+                    clearInterval(interval);
+                    box.style.color = '#10b981';
+                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>/imagine prompt: highly detailed photograph of a futuristic street, neon blue and pink lighting, wet pavement reflection, cinematic atmosphere, shot on 35mm lens, f/1.8, high contrast --v 6.0 --ar 16:9\n\n(Derived from: ${filename})`;
+                    box.innerHTML += ` <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
+                } else {
+                    box.innerText = steps[stepIndex];
+                    stepIndex++;
+                }
             }, 600);
         }
 
-        function buildPrompt(toolKey, model, inputs, dna, ver) {
-            let res = "";
-            let context = "";
-            if(dna.color) context += `Brand Color: ${dna.color} | `;
-            if(dna.target) context += `Audience: ${dna.target} | `;
-            if(dna.tone) context += `Tone: ${dna.tone} | `;
+        function buildPrompt(toolKey, model, inputs, ver) {
+            // 获取 DNA
+            const dna = {
+                tone: document.getElementById('dnaTone').value,
+                target: document.getElementById('dnaTarget').value
+            };
 
-            if (toolKey === 'visual') {
-                const base = Object.values(inputs).join(', ');
-                if(model.includes('Midjourney')) {
-                    res = `/imagine prompt: ${base}, ${context} --v 6.0 --ar 16:9`;
-                    if(dna.negative) res += ` --no ${dna.negative}`;
-                } else {
-                    res = `(Masterpiece), ${base}, ${context}`;
-                }
-            } else if (toolKey === 'video') {
-                res = `/animate prompt: ${inputs.subject}, Camera: ${inputs.camera}, Motion: ${inputs.motion}, FPS: ${inputs.fps}, Style: ${inputs.style}`;
-            } else if (toolKey === 'audio') {
-                res = `[Genre: ${inputs.genre}] [Instruments: ${inputs.instrument}] [Mood: ${inputs.mood}] [Vocals: ${inputs.vocal}]`;
+            let res = "";
+            
+            if (toolKey === 'email') {
+                res = `Subject: [Relevant Hook regarding ${inputs.product}]\n\nHi [Name],\n\n(Context: Writing to ${inputs.role}, Stage: ${inputs.stage})\n\n[Opening using ${inputs.framework} framework...]\n\n[Value Proposition: ${inputs.product} benefits for ${dna.target || 'your company'}]\n\n[CTA: ${inputs.cta}]\n\nBest,\n[Your Name]`;
+            } else if (toolKey === 'academic') {
+                res = `[Task: ${inputs.goal} for ${inputs.section}]\n[Style: ${inputs.target}]\n[Field: ${inputs.field}]\n\nRevised Text:\n(Here AI will output the polished version of: "${inputs.content.substring(0, 20)}..." with improved academic tone and ${inputs.target} formatting.)`;
+            } else if (toolKey === 'visual') {
+                res = `/imagine prompt: ${Object.values(inputs).join(', ')} --v 6.0`;
             } else {
-                res = `### Role: Expert\n### Task: ${tools[toolKey].title}\n### Context: ${context}\n### Inputs: ${JSON.stringify(inputs)}\n### Variant: ${ver}\n\n[Generate content for ${model}]`;
+                res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(inputs)}\n### Model: ${model}`;
             }
             return res;
         }
 
         function copyText(icon) {
-            navigator.clipboard.writeText(icon.parentElement.innerText.replace(icon.previousElementSibling.innerText, "").trim());
+            navigator.clipboard.writeText(icon.parentElement.innerText.replace(icon.previousElementSibling?.innerText || "", "").trim());
             alert("Copied!");
+        }
+
+        function magicExpand(id) {
+            document.getElementById(id).value += " (AI Optimized)";
         }
     </script>
 </body>
