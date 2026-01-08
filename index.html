@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V20 | 智能级联词库版</title>
+    <title>AI CommandOS V23 | 核心增强版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -33,10 +33,10 @@
             font-size: 13px;
         }
 
-        /* --- 布局 --- */
+        /* --- 布局结构 --- */
         .app-container { display: flex; width: 100%; height: 100%; }
         
-        /* 侧边栏 */
+        /* 1. 左侧导航 */
         .sidebar {
             width: 250px;
             background: var(--sidebar);
@@ -77,7 +77,7 @@
         .menu-item.active { background: rgba(59, 130, 246, 0.15); color: var(--accent); border-left-color: var(--accent); }
         .menu-item i { width: 18px; text-align: center; }
 
-        /* 工作区 */
+        /* 2. 中间工作区 */
         .workspace {
             flex: 1;
             display: flex;
@@ -106,9 +106,9 @@
             flex: 1; overflow-y: auto; padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%;
         }
 
-        /* 上下文面板 */
+        /* 3. 右侧上下文面板 (Brand DNA) - 增强版 */
         .context-panel {
-            width: 280px;
+            width: 300px; /* 稍微加宽一点 */
             background: var(--sidebar);
             border-left: 1px solid var(--border);
             display: flex;
@@ -118,8 +118,11 @@
             overflow-y: auto;
         }
 
-        /* --- 组件 --- */
-        .card-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; color: var(--text-sub); display: flex; justify-content: space-between; text-transform: uppercase; }
+        /* --- 基础组件 --- */
+        .card-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; color: var(--text-sub); display: flex; justify-content: space-between; text-transform: uppercase; align-items: center;}
+        
+        .reset-btn { font-size: 0.7rem; color: var(--accent); cursor: pointer; text-transform: none; }
+        .reset-btn:hover { text-decoration: underline; }
 
         .form-grid {
             display: grid;
@@ -171,19 +174,19 @@
             padding: 2px 8px; font-size: 0.7rem; border-bottom-right-radius: 6px; color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
         }
 
-        /* --- 特殊组件：上传区域 --- */
+        /* 上传区域 */
         .upload-zone {
             border: 2px dashed var(--border); border-radius: 8px; padding: 25px;
             text-align: center; color: var(--text-sub); cursor: pointer;
             transition: 0.2s; background: rgba(0,0,0,0.2);
-            margin-bottom: 20px; display: none; /* 默认隐藏 */
+            margin-bottom: 20px; display: none;
         }
         .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
-        .upload-icon { font-size: 2rem; margin-bottom: 10px; }
         .file-name { margin-top: 10px; font-size: 0.85rem; color: var(--gold); display: none; font-weight: bold;}
 
-        /* 移动端适配 */
-        .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
+        /* 分隔线 */
+        .hr-line { border-top: 1px solid var(--border); margin: 20px 0; }
+
         @media (max-width: 1024px) { .context-panel { display: none; } }
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -100%; height: 100%; transition: 0.3s; box-shadow: 5px 0 20px rgba(0,0,0,0.5); }
@@ -234,11 +237,8 @@
             <div class="scroll-area">
                 
                 <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()">
-                    <div id="uploadTextDefault">
-                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                        <div>点击或拖拽上传图片</div>
-                        <div style="font-size:0.75rem; opacity:0.7; margin-top:5px;">支持 JPG, PNG, WEBP</div>
-                    </div>
+                    <i class="fas fa-cloud-upload-alt" style="font-size:2rem; margin-bottom:10px;"></i>
+                    <div>点击或拖拽上传图片</div>
                     <div id="fileNameDisplay" class="file-name"></div>
                     <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
                 </div>
@@ -263,33 +263,60 @@
         </div>
 
         <div class="context-panel">
-            <div class="card-title">🧬 品牌 DNA (Memory)</div>
-            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">智能注入行业预设。</p>
+            <div class="card-title">
+                <span>🧬 品牌 DNA (Memory)</span>
+                <span class="reset-btn" onclick="resetDNA()">Reset</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">全局设定，自动注入。</p>
             
-            <label>品牌/视觉主色</label>
+            <label>Identity Name (品牌/产品名)</label>
+            <input type="text" id="dnaName" placeholder="e.g. Nexus AI / Tesla Model Y">
+
+            <label>Output Language (输出语言)</label>
+            <select id="dnaLang">
+                <option value="">-- Auto (自动) --</option>
+                <option value="English">English (英语)</option>
+                <option value="Chinese">Chinese (简体中文)</option>
+                <option value="Japanese">Japanese (日语)</option>
+                <option value="Spanish">Spanish (西班牙语)</option>
+                <option value="German">German (德语)</option>
+            </select>
+            
+            <label>Role Persona (角色设定)</label>
+            <select id="dnaRole">
+                <option value="">-- Default (默认) --</option>
+                <option value="Senior Expert">Senior Expert (资深专家)</option>
+                <option value="Friendly Assistant">Friendly Assistant (贴心助手)</option>
+                <option value="Strict Critic">Strict Critic (严厉批评家)</option>
+                <option value="Creative Writer">Creative Writer (创意作家)</option>
+            </select>
+
+            <div class="hr-line"></div>
+
+            <label>Brand Color (品牌主色)</label>
             <input type="text" id="dnaColor" placeholder="e.g. #FF5733, Tech Blue">
 
-            <label>目标受众</label>
-            <input type="text" id="dnaTarget" placeholder="e.g. 欧美B端客户">
+            <label>Target Audience (目标受众)</label>
+            <input type="text" id="dnaTarget" placeholder="e.g. Gen Z, 程序员, 宝妈">
 
-            <label>语气基调</label>
+            <label>Tone of Voice (语气基调)</label>
             <select id="dnaTone">
                 <option value="">-- Default --</option>
                 <option value="Professional">Professional (专业严谨)</option>
                 <option value="Urgent">Urgent (紧迫感)</option>
                 <option value="Friendly">Friendly (亲和友好)</option>
-                <option value="Academic">Academic (学术风)</option>
+                <option value="Luxurious">Luxurious (高端奢华)</option>
                 <option value="Humorous">Humorous (幽默风趣)</option>
             </select>
 
-            <label>负向/禁用词</label>
-            <textarea id="dnaNegative" placeholder="e.g. text, watermark..." style="height:60px;"></textarea>
+            <label>Negative Prompt (负向/禁用词)</label>
+            <textarea id="dnaNegative" placeholder="e.g. text, watermark, bad quality..." style="height:60px;"></textarea>
         </div>
 
     </div>
 
     <script>
-        // === 核心词库数据 (Database) ===
+        // === 级联词库数据 (Database) ===
         const libraryDB = {
             "Visual": {
                 label: "🎨 Visual Art (视觉/绘画)",
@@ -311,8 +338,7 @@
                 label: "💻 Coding & Dev (编程/开发)",
                 scenarios: [
                     "Python Debugging (Python除错)", "SQL Query Generator (SQL生成)", "Regex Helper (正则助手)",
-                    "Code Refactoring (代码重构)", "React Component (React组件)", "Explain Code (解释代码)",
-                    "Git Commands (Git指令)"
+                    "Code Refactoring (代码重构)", "React Component (React组件)", "Explain Code (解释代码)"
                 ]
             },
             "Office": {
@@ -330,17 +356,17 @@
                 title: "Visual Director (视觉)",
                 models: ['Midjourney V6', 'Niji V6', 'Stable Diffusion XL', 'DALL-E 3'],
                 inputs: [
-                    { id: 'subject', label: '画面主体', type: 'text', placeholder: 'e.g. 赛博朋克风格的猫', magic: true },
-                    { id: 'style', label: '艺术风格', type: 'select', options: [
+                    { id: 'subject', label: 'Subject (画面主体)', type: 'text', placeholder: 'e.g. 赛博朋克风格的猫', magic: true },
+                    { id: 'style', label: 'Style (艺术风格)', type: 'select', options: [
                         'Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime (日系动漫)', '3D Render (3D渲染)', 
                         'UE5 (虚幻引擎5)', 'Oil Painting (油画)', 'Watercolor (水彩)', 'Pixel Art (像素艺术)', 
-                        'Ukiyo-e (浮世绘)', 'Vaporwave (蒸汽波)', 'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)'
+                        'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)'
                     ]},
-                    { id: 'shot', label: '构图/运镜', type: 'select', options: [
+                    { id: 'shot', label: 'Shot (构图/运镜)', type: 'select', options: [
                         'Wide Angle (广角)', 'Telephoto (长焦)', 'Drone View (无人机视角)', 'Macro (微距)', 
                         'Isometric (等轴测)', 'Selfie (自拍)', 'Fisheye (鱼眼)', 'Over-the-Shoulder (过肩镜头)'
                     ]},
-                    { id: 'light', label: '布光', type: 'select', options: [
+                    { id: 'light', label: 'Lighting (布光)', type: 'select', options: [
                         'Cinematic (电影光)', 'Natural (自然光)', 'Neon (霓虹光)', 'Rembrandt (伦勃朗光)', 
                         'Volumetric (体积光/丁达尔)', 'Golden Hour (黄金时刻)', 'Studio Lighting (影棚光)'
                     ]}
@@ -350,57 +376,55 @@
                 title: "Prompt Vault (经典词库)",
                 models: ['Universal Format'],
                 inputs: [
-                    // 这里的选项将由 JS 动态生成
-                    { id: 'category', label: '核心分类', type: 'select', options: Object.keys(libraryDB) },
-                    { id: 'scenario', label: '应用场景', type: 'select', options: [] }, // 初始为空
-                    { id: 'level', label: '指令复杂度', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/思维链)'] }
+                    { id: 'category', label: 'Category (核心分类)', type: 'select', options: Object.keys(libraryDB) },
+                    { id: 'scenario', label: 'Scenario (应用场景)', type: 'select', options: [] }, 
+                    { id: 'level', label: 'Level (指令复杂度)', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/思维链)'] }
                 ]
             },
             video: {
                 title: "Video Director (视频)",
                 models: ['Runway Gen-2', 'Pika Labs', 'Sora', 'Stable Video'],
                 inputs: [
-                    { id: 'subject', label: '视频内容', type: 'text', placeholder: 'e.g. 海浪拍打礁石' },
-                    { id: 'camera', label: '运镜方式', type: 'select', options: [
+                    { id: 'subject', label: 'Subject (视频内容)', type: 'text', placeholder: 'e.g. 海浪拍打礁石' },
+                    { id: 'camera', label: 'Camera (运镜方式)', type: 'select', options: [
                         'Pan Right (右摇)', 'Pan Left (左摇)', 'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 
-                        'Orbit (环绕)', 'FPV (第一人称)', 'Truck (平移)', 'Tilt (摇摄)'
+                        'Orbit (环绕)', 'FPV (第一人称)', 'Truck (平移)'
                     ]},
-                    { id: 'motion', label: '动态幅度', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)'] },
-                    { id: 'fps', label: '帧率', type: 'select', options: ['24fps (Cinematic/电影感)', '30fps (Standard/标准)', '60fps (Smooth/流畅)'] }
+                    { id: 'motion', label: 'Motion (动态幅度)', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)'] },
+                    { id: 'fps', label: 'FPS (帧率)', type: 'select', options: ['24fps (Cinematic)', '30fps (Standard)', '60fps (Smooth)'] }
                 ]
             },
             audio: {
                 title: "Music Producer (音乐)",
                 models: ['Suno V3', 'Udio'],
                 inputs: [
-                    { id: 'genre', label: '流派', type: 'select', options: [
-                        'Pop (流行)', 'K-pop (韩流)', 'Rock (摇滚)', 'Jazz (爵士)', 'Hip Hop (嘻哈)', 'Phonk (冯克)', 
-                        'EDM (电子舞曲)', 'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)', 'Ambient (氛围音乐)'
+                    { id: 'genre', label: 'Genre (流派)', type: 'select', options: [
+                        'Pop (流行)', 'K-pop (韩流)', 'Rock (摇滚)', 'Jazz (爵士)', 'Hip Hop (嘻哈)', 
+                        'EDM (电子舞曲)', 'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)'
                     ]},
-                    { id: 'mood', label: '情绪', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)', 'Romantic (浪漫)', 'Ethereal (空灵)'] },
-                    { id: 'vocal', label: '人声', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)'] }
+                    { id: 'mood', label: 'Mood (情绪)', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)'] },
+                    { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)'] }
                 ]
             },
             email: {
                 title: "Global Sales (外贸开发)",
                 models: ['GPT-4o (Sales)', 'Claude 3 Haiku'],
                 inputs: [
-                    { id: 'product', label: '推销产品', type: 'text', placeholder: 'e.g. Solar Panels' },
-                    { id: 'role', label: '收件人职位', type: 'select', options: [
+                    { id: 'product', label: 'Product (推销产品)', type: 'text', placeholder: 'e.g. Solar Panels' },
+                    { id: 'role', label: 'Recipient (收件人)', type: 'select', options: [
                         'CEO / Owner (老板)', 'Purchasing Manager (采购经理)', 'Product Manager (产品经理)', 
-                        'Marketing Director (营销总监)', 'General Inquiry (一般咨询)'
+                        'General Inquiry (一般咨询)'
                     ]},
-                    { id: 'stage', label: '营销阶段', type: 'select', options: [
-                        'Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Proposal (报价/提案)', 
-                        'Re-engagement (激活)', 'Last Attempt (最后尝试)'
+                    { id: 'stage', label: 'Stage (营销阶段)', type: 'select', options: [
+                        'Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Proposal (报价/提案)', 'Re-engagement (激活)'
                     ]},
-                    { id: 'framework', label: '营销框架', type: 'select', options: [
+                    { id: 'framework', label: 'Framework (营销框架)', type: 'select', options: [
                         'AIDA (注意-兴趣-欲望-行动)', 'BAB (前-后-桥梁)', 'PAS (问题-加剧-解决)', 'Direct Pitch (直球推销)'
                     ]},
-                    { id: 'cta', label: '行动号召 (CTA)', type: 'select', options: [
+                    { id: 'cta', label: 'CTA (行动号召)', type: 'select', options: [
                         'Book a Call (预约会议)', 'Reply for Info (回复获取信息)', 'Request Sample (索取样品)', 'Visit Website (访问网站)'
                     ]},
-                    { id: 'lang', label: '目标语言', type: 'select', options: [
+                    { id: 'lang', label: 'Language (目标语言)', type: 'select', options: [
                         'English US (美式英语)', 'English UK (英式英语)', 'Spanish (西班牙语)', 'French (法语)', 
                         'German (德语)', 'Japanese (日语)', 'Arabic (阿拉伯语)', 'Chinese (中文)'
                     ]}
@@ -410,19 +434,15 @@
                 title: "Academic Scholar (学术科研)",
                 models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
                 inputs: [
-                    { id: 'content', label: '论文段落/摘要', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '120px' },
-                    { id: 'field', label: '研究领域', type: 'text', placeholder: 'e.g. Neuroscience, Machine Learning' },
-                    { id: 'target', label: '投稿目标/风格', type: 'select', options: [
+                    { id: 'content', label: 'Content (段落/摘要)', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '120px' },
+                    { id: 'field', label: 'Field (研究领域)', type: 'text', placeholder: 'e.g. Neuroscience' },
+                    { id: 'target', label: 'Style (投稿风格)', type: 'select', options: [
                         'IEEE Standard (IEEE标准)', 'Nature/Science Style (Nature风格)', 'APA Format (APA格式)', 
-                        'MLA Style (MLA格式)', 'General Academic (通用学术)'
+                        'General Academic (通用学术)'
                     ]},
-                    { id: 'goal', label: '优化目标', type: 'select', options: [
+                    { id: 'goal', label: 'Goal (优化目标)', type: 'select', options: [
                         'Reduce Repetition (降重)', 'Polish Grammar (润色语法)', 'Enhance Logic (增强逻辑)', 
-                        'Make Academic (学术化)', 'Fix Chinglish (中式英语矫正)'
-                    ]},
-                    { id: 'section', label: '所属部分', type: 'select', options: [
-                        'Abstract (摘要)', 'Introduction (引言)', 'Methodology (方法论)', 
-                        'Results (结果)', 'Discussion (讨论)', 'Conclusion (结论)'
+                        'Fix Chinglish (中式英语矫正)'
                     ]}
                 ]
             },
@@ -430,10 +450,9 @@
                 title: "Reverse Engineering (逆向工程)",
                 models: ['GPT-4 Vision', 'Claude 3 Opus'],
                 inputs: [
-                    { id: 'desc', label: '补充描述 (可选)', type: 'textarea', placeholder: '例如：我想模仿这张图的灯光，但把猫换成狗...', height: '80px' },
-                    { id: 'mode', label: '分析模式', type: 'select', options: [
-                        'Extract Visual Prompts (提取视觉提示词)', 'Analyze Layout (分析构图)', 
-                        'Extract Color Palette (提取配色)', 'Full Analysis (全量分析)'
+                    { id: 'desc', label: 'Description (补充描述)', type: 'textarea', placeholder: 'e.g. 模仿这个灯光...', height: '80px' },
+                    { id: 'mode', label: 'Mode (分析模式)', type: 'select', options: [
+                        'Extract Visual Prompts (提取视觉提示词)', 'Analyze Layout (分析构图)', 'Extract Color (提取配色)'
                     ]}
                 ]
             },
@@ -441,31 +460,33 @@
                 title: "Copywriter (写作)", 
                 models:['GPT-4'], 
                 inputs: [
-                    {id:'topic',label:'主题',type:'text'}, 
-                    {id:'framework',label:'框架',type:'select',options:['AIDA (Attention-Interest/注意-兴趣)', 'PAS (Problem-Solution/问题-解决)', 'First Principles (第一性原理)']}
+                    {id:'topic',label:'Topic (主题)',type:'text'}, 
+                    {id:'framework',label:'Framework (框架)',type:'select',options:['AIDA (注意-兴趣)', 'PAS (问题-解决)', 'First Principles (第一性原理)']}
                 ]
             },
             xhs: { 
                 title: "小红书矩阵", 
                 models:['Claude 3'], 
                 inputs: [
-                    {id:'topic',label:'选题',type:'text'}, 
-                    {id:'niche',label:'赛道',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Travel (旅行)', 'Knowledge (知识付费)']}
+                    {id:'topic',label:'Topic (选题)',type:'text'}, 
+                    {id:'niche',label:'Niche (赛道)',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Knowledge (知识付费)']}
                 ]
             },
             tiktok: { 
                 title: "抖音脚本", 
                 models:['GPT-4'], 
                 inputs: [
-                    {id:'topic',label:'主题',type:'text'}, 
-                    {id:'hook',label:'开头',type:'select',options:['Visual Shock (视觉奇观)', 'Contrast (反差)', 'Question (提问)', 'Pain Point (痛点)']}
+                    {id:'topic',label:'Topic (主题)',type:'text'}, 
+                    {id:'hook',label:'Hook (开头)',type:'select',options:['Visual Shock (视觉奇观)', 'Contrast (反差)', 'Question (提问)']}
                 ]
             }
         };
 
         let currentTool = 'visual';
 
-        window.onload = () => loadTool('visual');
+        window.onload = () => {
+            loadTool('visual');
+        };
 
         function loadTool(key) {
             currentTool = key;
@@ -506,7 +527,6 @@
                 
                 let inputHtml = '';
                 if(field.type === 'select') {
-                    // 特殊处理 library 的 category
                     if (key === 'library' && field.id === 'category') {
                          const opts = field.options.map(k => `<option value="${k}">${libraryDB[k].label}</option>`).join('');
                          inputHtml = `<select id="f_${field.id}" onchange="updateScenario(this.value)">${opts}</select>`;
@@ -529,12 +549,10 @@
                 container.appendChild(div);
             });
 
-            // 只有 library 需要初始化 scenario
             if (key === 'library') {
                 updateScenario(Object.keys(libraryDB)[0]);
             }
 
-            // 菜单高亮
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
             items.forEach(item => {
@@ -544,7 +562,6 @@
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // 级联菜单逻辑 (核心)
         function updateScenario(category) {
             const scenarioSelect = document.getElementById('f_scenario');
             if (scenarioSelect && libraryDB[category]) {
@@ -553,7 +570,6 @@
             }
         }
 
-        // 文件处理
         function handleFile(input) {
             const file = input.files[0];
             if (file) {
@@ -563,7 +579,6 @@
             }
         }
 
-        // 核心生成逻辑
         function generate() {
             const model = document.getElementById('targetModel').value;
             const isAB = document.getElementById('abTest').checked;
@@ -576,19 +591,16 @@
                 inputs[f.id] = el ? el.value : '';
             });
 
-            // 1. 逆向工程
             if (currentTool === 'reverse' && fileInput.files.length > 0) {
                 simulateVisionAnalysis(fileInput.files[0].name, model, inputs);
                 return;
             }
 
-            // 2. 词库
             if (currentTool === 'library') {
                 fetchLibraryPrompts(inputs);
                 return;
             }
 
-            // 3. 常规生成
             const container = document.getElementById('resultContainer');
             container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-spinner fa-spin"></i> Generating...</div>';
 
@@ -606,7 +618,6 @@
             }, 800);
         }
 
-        // 词库调取逻辑
         function fetchLibraryPrompts(inputs) {
             const container = document.getElementById('resultContainer');
             container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-book"></i> Searching Vault...</div>';
@@ -616,30 +627,19 @@
                 const box = document.createElement('div');
                 box.className = 'result-box';
                 
-                let content = `### Category: ${inputs.category}\n### Scenario: ${inputs.scenario}\n\n`;
-                
-                const key = inputs.scenario; 
+                // Get DNA
+                const dnaName = document.getElementById('dnaName').value;
+                const dnaLang = document.getElementById('dnaLang').value;
+                let context = "";
+                if(dnaName) context += `Brand: ${dnaName}\n`;
+                if(dnaLang) context += `Output Language: ${dnaLang}\n`;
 
-                if (key.includes("Portrait")) {
-                    content += `/imagine prompt: professional portrait photography of [Subject], shot on Hasselblad X2D, 85mm lens, f/1.8, cinematic lighting, ultra-detailed skin texture, 8k resolution, neutral background --v 6.0 --ar 4:5 --style raw`;
-                } else if (key.includes("Logo")) {
-                    content += `/imagine prompt: minimalist vector logo for [Brand Name], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details`;
-                } else if (key.includes("UI")) {
-                    content += `/imagine prompt: mobile app UI design for [App Type], clean layout, neumorphism style, high fidelity, dribbble trend, user friendly, figama --v 6.0 --ar 9:16`;
-                } else if (key.includes("Cyberpunk")) {
-                    content += `/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic atmosphere, highly detailed --v 6.0 --ar 16:9`;
-                } else if (key.includes("Debugging")) {
-                    content += `Role: Senior Software Engineer\nTask: Debug the following code snippet.\nSteps:\n1. Analyze for logical errors and syntax issues.\n2. Explain the root cause.\n3. Provide the corrected code.\n\nCode Snippet: [Paste Code Here]`;
-                } else if (key.includes("SQL")) {
-                    content += `Role: Database Expert\nTask: Write an optimized SQL query to [Goal].\nRequirements: Use JOINs efficiently, ensure index usage, and format for readability.`;
-                } else if (key.includes("SEO")) {
-                    content += `Role: SEO Specialist\nTask: Write a blog post about [Topic].\nRequirements:\n- Use H1, H2 headers.\n- Include keywords: [Keyword1], [Keyword2].\n- Optimize for readability (Flesch-Kincaid score).`;
-                } else if (key.includes("Excel")) {
-                    content += `Role: Excel Expert\nTask: Generate an Excel formula to [Goal].\nContext: Column A is [Data1], Column B is [Data2].\nRequirement: Handle potential errors with IFERROR.`;
-                } else {
-                    // 通用模版
-                    content += `### Role: Expert AI Assistant\n### Task: Execute ${inputs.scenario}\n### Context: Professional and High Quality output.\n\n[Please insert specific details here]`;
-                }
+                let content = `### Category: ${inputs.category}\n### Scenario: ${inputs.scenario}\n${context}\n`;
+                
+                // Logic placeholders (In a real app, this would be a large switch or DB lookup)
+                if (inputs.scenario.includes("Portrait")) content += `/imagine prompt: professional portrait of [Subject]... --v 6.0`;
+                else if (inputs.scenario.includes("Logo")) content += `/imagine prompt: minimalist vector logo for ${dnaName || '[Brand]'}... --v 6.0`;
+                else content += `[Standard prompt template for ${inputs.scenario} loaded...]`;
 
                 box.innerHTML = `<div class="ab-tag">Vault Result</div>${content} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
                 container.appendChild(box);
@@ -649,7 +649,7 @@
         function simulateVisionAnalysis(filename, model, inputs) {
             const container = document.getElementById('resultContainer');
             container.innerHTML = '';
-            const steps = [`🔍 Reading ${filename}...`, `🧠 Extracting semantics...`, `🎨 Detecting style...`, `✨ Generating prompt...`];
+            const steps = [`🔍 Reading ${filename}...`, `🧠 Extracting semantics...`, `✨ Generating prompt...`];
             let stepIndex = 0;
             const box = document.createElement('div');
             box.className = 'result-box';
@@ -660,7 +660,7 @@
                 if (stepIndex >= steps.length) {
                     clearInterval(interval);
                     box.style.color = '#10b981';
-                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>/imagine prompt: highly detailed shot of ${filename} content, cinematic lighting, 8k --v 6.0`;
+                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>/imagine prompt: highly detailed shot of ${filename} content...`;
                     box.innerHTML += ` <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
                 } else {
                     box.innerText = steps[stepIndex];
@@ -670,23 +670,58 @@
         }
 
         function buildPrompt(toolKey, model, inputs, ver) {
+            // DNA Injection
+            const dna = {
+                name: document.getElementById('dnaName').value,
+                lang: document.getElementById('dnaLang').value,
+                role: document.getElementById('dnaRole').value,
+                color: document.getElementById('dnaColor').value,
+                target: document.getElementById('dnaTarget').value,
+                tone: document.getElementById('dnaTone').value,
+                neg: document.getElementById('dnaNegative').value
+            };
+
+            // Clean inputs
             const cleanInputs = {};
             for (const key in inputs) {
                 const val = inputs[key];
                 if (val && val.includes('(')) cleanInputs[key] = val.split('(')[0].trim();
                 else cleanInputs[key] = val;
             }
+
             let res = "";
-            if (toolKey === 'email') res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Writing to ${cleanInputs.role}, Stage: ${cleanInputs.stage})\n\n[Body using ${cleanInputs.framework} model...]\n\n[CTA: ${cleanInputs.cta}]`;
-            else if (toolKey === 'academic') res = `[Goal: ${cleanInputs.goal}]\n[Style: ${cleanInputs.target}]\n\nRevised Text:\n(Polished version of input...)`;
-            else if (toolKey === 'visual') res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
-            else res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
+            let context = "";
+            if(dna.name) context += `Brand Identity: ${dna.name} | `;
+            if(dna.role && toolKey !== 'visual') context += `Role: ${dna.role} | `;
+            if(dna.lang && toolKey !== 'visual') context += `Output Language: ${dna.lang} | `;
+            if(dna.color) context += `Color Palette: ${dna.color} | `;
+            if(dna.target) context += `Target Audience: ${dna.target} | `;
+            if(dna.tone) context += `Tone: ${dna.tone} | `;
+
+            if (toolKey === 'email') {
+                res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n[Context: ${context}]\n[Body using ${cleanInputs.framework}...]\n\n[CTA: ${cleanInputs.cta}]`;
+            } else if (toolKey === 'visual') {
+                res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')}, ${context} --v 6.0`;
+                if(dna.neg) res += ` --no ${dna.neg}`;
+            } else {
+                res = `### Task: ${tools[toolKey].title}\n### Context: ${context}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
+            }
             return res;
         }
 
         function copyText(icon) {
             navigator.clipboard.writeText(icon.parentElement.innerText.replace("Copy", "").trim());
             alert("Copied!");
+        }
+
+        function resetDNA() {
+            document.getElementById('dnaName').value = '';
+            document.getElementById('dnaLang').value = '';
+            document.getElementById('dnaRole').value = '';
+            document.getElementById('dnaColor').value = '';
+            document.getElementById('dnaTarget').value = '';
+            document.getElementById('dnaTone').value = '';
+            document.getElementById('dnaNegative').value = '';
         }
 
         function magicExpand(id) {
