@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI CommandOS V20 | 智能级联词库版</title>
+    <title>AI CommandOS V21 | 现成词库超市版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -18,6 +18,7 @@
             --border: #334155;
             --gold: #f59e0b;
             --purple: #8b5cf6;
+            --green: #10b981;
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -103,7 +104,7 @@
         }
 
         .scroll-area {
-            flex: 1; overflow-y: auto; padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%;
+            flex: 1; overflow-y: auto; padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%;
         }
 
         /* 上下文面板 */
@@ -118,17 +119,8 @@
             overflow-y: auto;
         }
 
-        /* --- 组件 --- */
-        .card-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 15px; color: var(--text-sub); display: flex; justify-content: space-between; text-transform: uppercase; }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .input-group { position: relative; }
+        /* --- 基础组件 --- */
+        .input-group { position: relative; margin-bottom: 15px; }
         
         label { display: block; margin-bottom: 6px; color: var(--text-sub); font-size: 0.8rem; }
         input, select, textarea {
@@ -145,7 +137,7 @@
         }
         .magic-btn:hover { transform: scale(1.1); }
 
-        .action-bar { display: flex; gap: 15px; align-items: center; margin-top: 10px; padding-bottom: 30px; }
+        .action-bar { display: flex; gap: 15px; align-items: center; margin-top: 20px; padding-bottom: 30px; }
         .btn-main {
             flex: 1; padding: 12px; background: var(--accent); color: white;
             border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
@@ -153,12 +145,7 @@
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
         .btn-main:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-main.purple { background: var(--purple); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); }
-        .btn-main.purple:hover { background: #7c3aed; }
         
-        .switch-group { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 0.85rem; cursor: pointer; user-select: none; }
-        .switch-group input { margin: 0; accent-color: var(--accent); }
-
         /* 结果展示 */
         .result-container { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
         .result-box {
@@ -171,16 +158,49 @@
             padding: 2px 8px; font-size: 0.7rem; border-bottom-right-radius: 6px; color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
         }
 
-        /* --- 特殊组件：上传区域 --- */
-        .upload-zone {
-            border: 2px dashed var(--border); border-radius: 8px; padding: 25px;
-            text-align: center; color: var(--text-sub); cursor: pointer;
-            transition: 0.2s; background: rgba(0,0,0,0.2);
-            margin-bottom: 20px; display: none; /* 默认隐藏 */
+        /* --- 词库超市 (Prompt Store) 样式 --- */
+        .library-search {
+            margin-bottom: 20px; position: sticky; top: 0; z-index: 10; background: var(--bg); padding-bottom: 10px;
         }
-        .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
-        .upload-icon { font-size: 2rem; margin-bottom: 10px; }
-        .file-name { margin-top: 10px; font-size: 0.85rem; color: var(--gold); display: none; font-weight: bold;}
+        .library-search input {
+            padding: 12px; font-size: 1rem; border-radius: 8px; border-color: var(--accent);
+            background: rgba(47, 52, 66, 0.8); backdrop-filter: blur(5px);
+        }
+
+        .library-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;
+        }
+
+        .prompt-card {
+            background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 15px;
+            cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; gap: 10px;
+            position: relative; overflow: hidden;
+        }
+        .prompt-card:hover { border-color: var(--accent); transform: translateY(-2px); background: #2a2f3a; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .card-title-text { font-weight: bold; color: var(--text); font-size: 0.95rem; }
+        .card-tag { 
+            font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase;
+        }
+        .tag-visual { background: rgba(59, 130, 246, 0.2); color: var(--accent); }
+        .tag-writing { background: rgba(16, 185, 129, 0.2); color: var(--green); }
+        .tag-code { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+        .tag-office { background: rgba(139, 92, 246, 0.2); color: var(--purple); }
+
+        .card-preview {
+            font-size: 0.8rem; color: var(--text-sub); line-height: 1.4;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+            font-family: 'Monaco', monospace; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px;
+        }
+
+        .copy-overlay {
+            position: absolute; inset: 0; background: rgba(59, 130, 246, 0.9);
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-weight: bold; font-size: 1.1rem;
+            opacity: 0; transition: 0.2s;
+        }
+        .prompt-card:active .copy-overlay { opacity: 1; }
 
         /* 移动端适配 */
         .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
@@ -192,6 +212,7 @@
             .topbar { padding: 0 15px; }
             .scroll-area { padding: 15px; }
             .form-grid { grid-template-columns: 1fr; }
+            .library-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -202,495 +223,232 @@
         <div class="sidebar" id="sidebar">
             <div class="brand"><i class="fas fa-terminal"></i> Command<span>OS</span></div>
             
-            <div class="menu-category">Generative Studio</div>
-            <div class="menu-item active" onclick="loadTool('visual')"><i class="fas fa-camera"></i> 视觉 (Visual)</div>
+            <div class="menu-category">Prompt Store (词库)</div>
+            <div class="menu-item active" onclick="loadTool('library')"><i class="fas fa-th-large"></i> 全能词库 (Vault)</div>
+
+            <div class="menu-category">Generators (生成器)</div>
+            <div class="menu-item" onclick="loadTool('visual')"><i class="fas fa-camera"></i> 视觉 (Visual)</div>
             <div class="menu-item" onclick="loadTool('video')"><i class="fas fa-video"></i> 视频 (Video)</div>
-            <div class="menu-item" onclick="loadTool('audio')"><i class="fas fa-music"></i> 音乐 (Audio)</div>
             <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> 写作 (Copy)</div>
             
-            <div class="menu-category">Professional Matrix</div>
+            <div class="menu-category">Professional</div>
             <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> 外贸开发 (Sales)</div>
             <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> 学术科研 (Scholar)</div>
             <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> 小红书矩阵</div>
-            <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> 抖音/TikTok</div>
             
-            <div class="menu-category">AI Resources</div>
+            <div class="menu-category">Tools</div>
             <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> 逆向工程 (Reverse)</div>
-            <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> 经典词库 (Library)</div>
         </div>
 
         <div class="workspace">
             <div class="topbar">
                 <div style="display:flex; gap:15px; align-items:center;">
                     <i class="fas fa-bars mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
-                    <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">视觉指令台</span>
+                    <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">全能词库 (Prompt Vault)</span>
                 </div>
-                <div class="model-selector">
-                    <select id="targetModel">
-                        </select>
+                <div class="model-selector" id="modelSelectContainer" style="display:none;">
+                    <select id="targetModel"></select>
                 </div>
             </div>
 
             <div class="scroll-area">
                 
-                <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()">
-                    <div id="uploadTextDefault">
+                <div id="libraryView">
+                    <div class="library-search">
+                        <input type="text" id="libSearch" placeholder="🔍 搜索词库：Logo, 小红书, Python, 简历..." oninput="filterLibrary()">
+                    </div>
+                    <div class="library-grid" id="libraryGrid">
+                        </div>
+                </div>
+
+                <div id="generatorView" style="display:none;">
+                    <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()" style="display:none;">
                         <i class="fas fa-cloud-upload-alt upload-icon"></i>
                         <div>点击或拖拽上传图片</div>
-                        <div style="font-size:0.75rem; opacity:0.7; margin-top:5px;">支持 JPG, PNG, WEBP</div>
+                        <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
                     </div>
-                    <div id="fileNameDisplay" class="file-name"></div>
-                    <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
-                </div>
 
-                <div id="dynamicForm" class="form-grid"></div>
+                    <div id="dynamicForm" class="form-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;"></div>
 
-                <div class="action-bar">
-                    <div class="switch-group" id="abTestGroup">
-                        <input type="checkbox" id="abTest"> <span>A/B 测试 (3版)</span>
+                    <div class="action-bar">
+                        <div class="switch-group" id="abTestGroup">
+                            <input type="checkbox" id="abTest"> <span>A/B 测试</span>
+                        </div>
+                        <button class="btn-main" onclick="generate()">
+                            <i class="fas fa-bolt"></i> 立即生成
+                        </button>
                     </div>
-                    <button class="btn-main" id="actionBtn" onclick="generate()">
-                        <i class="fas fa-bolt"></i> 立即生成
-                    </button>
-                </div>
 
-                <div class="card-title">
-                    <span>Output Terminal</span>
-                    <span style="font-size:0.75rem; cursor:pointer; color:var(--accent);" onclick="document.getElementById('resultContainer').innerHTML=''">Clear</span>
+                    <div class="card-title">
+                        <span>Output Terminal</span>
+                        <span style="font-size:0.75rem; cursor:pointer; color:var(--accent);" onclick="document.getElementById('resultContainer').innerHTML=''">Clear</span>
+                    </div>
+                    <div id="resultContainer" class="result-container"></div>
                 </div>
-                <div id="resultContainer" class="result-container"></div>
             </div>
         </div>
 
         <div class="context-panel">
             <div class="card-title">🧬 品牌 DNA (Memory)</div>
             <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:15px;">智能注入行业预设。</p>
-            
-            <label>品牌/视觉主色</label>
-            <input type="text" id="dnaColor" placeholder="e.g. #FF5733, Tech Blue">
-
-            <label>目标受众</label>
-            <input type="text" id="dnaTarget" placeholder="e.g. 欧美B端客户">
-
+            <label>品牌/视觉主色</label> <input type="text" id="dnaColor" placeholder="e.g. #FF5733">
+            <label>目标受众</label> <input type="text" id="dnaTarget" placeholder="e.g. 欧美B端客户">
             <label>语气基调</label>
             <select id="dnaTone">
                 <option value="">-- Default --</option>
-                <option value="Professional">Professional (专业严谨)</option>
-                <option value="Urgent">Urgent (紧迫感)</option>
-                <option value="Friendly">Friendly (亲和友好)</option>
-                <option value="Academic">Academic (学术风)</option>
-                <option value="Humorous">Humorous (幽默风趣)</option>
+                <option value="Professional">Professional (专业)</option>
+                <option value="Friendly">Friendly (亲和)</option>
             </select>
-
-            <label>负向/禁用词</label>
-            <textarea id="dnaNegative" placeholder="e.g. text, watermark..." style="height:60px;"></textarea>
         </div>
 
     </div>
 
     <script>
-        // === 核心词库数据 (Database) ===
-        const libraryDB = {
-            "Visual": {
-                label: "🎨 Visual Art (视觉/绘画)",
-                scenarios: [
-                    "Portrait Photography (人像摄影)", "Logo Design (标志设计)", "UI/UX Interface (界面设计)",
-                    "Cyberpunk City (赛博朋克)", "Product Shot (产品摄影)", "Anime Character (二次元角色)",
-                    "Interior Design (室内设计)", "Game Asset (游戏素材)"
-                ]
-            },
-            "Writing": {
-                label: "✍️ Writing & Copy (写作/文案)",
-                scenarios: [
-                    "SEO Blog Post (SEO博客)", "Instagram Caption (INS文案)", "Twitter Thread (推特串推)",
-                    "Youtube Script (油管脚本)", "Press Release (新闻稿)", "Storytelling (故事创作)",
-                    "Translation (专业翻译)", "Resume Polish (简历润色)"
-                ]
-            },
-            "Coding": {
-                label: "💻 Coding & Dev (编程/开发)",
-                scenarios: [
-                    "Python Debugging (Python除错)", "SQL Query Generator (SQL生成)", "Regex Helper (正则助手)",
-                    "Code Refactoring (代码重构)", "React Component (React组件)", "Explain Code (解释代码)",
-                    "Git Commands (Git指令)"
-                ]
-            },
-            "Office": {
-                label: "💼 Office & Productivity (办公/效率)",
-                scenarios: [
-                    "Excel Formula (Excel公式)", "Email Reply (邮件回复)", "Meeting Summary (会议纪要)",
-                    "PPT Outline (PPT大纲)", "SWOT Analysis (SWOT分析)", "Mind Map Structure (思维导图)"
-                ]
-            }
-        };
+        // === 1. 现成词库数据 (The Meat) ===
+        const promptVault = [
+            // --- Visual ---
+            { title: "Midjourney 极简 Logo", category: "visual", tag: "Logo", content: "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details" },
+            { title: "Midjourney 电影感人像", category: "visual", tag: "Portrait", content: "/imagine prompt: extreme close-up portrait of a woman, natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, kodak portra 400 --v 6.0 --style raw" },
+            { title: "Midjourney 赛博朋克城市", category: "visual", tag: "Scene", content: "/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic lighting --v 6.0 --ar 16:9" },
+            { title: "3D 盲盒 IP 角色", category: "visual", tag: "3D", content: "/imagine prompt: cute 3d character design of [Subject], pop mart style, clay material, studio lighting, pastel colors, 3d render, c4d, octane render --v 6.0" },
+            { title: "室内设计 (极简风)", category: "visual", tag: "Interior", content: "/imagine prompt: modern minimalist living room, beige tone, sunlight, indoor plants, architectural photography, high resolution --v 6.0 --ar 16:9" },
+            
+            // --- Writing / Social ---
+            { title: "小红书爆款文案", category: "writing", tag: "Social", content: "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题要包含Emoji，吸引眼球（如：'绝绝子！'，'后悔没早买'）。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。\n4. 添加5个热门Hashtag。" },
+            { title: "SEO 优化博客文章", category: "writing", tag: "SEO", content: "Role: SEO Expert\nTask: Write a blog post about [Topic].\nRequirements:\n- Target keywords: [Keyword1], [Keyword2]\n- Use H1, H2, H3 headers structure.\n- Include a catchy introduction and a FAQ section.\n- Length: 1000 words." },
+            { title: "YouTube 视频脚本", category: "writing", tag: "Video", content: "Role: Scriptwriter\nTask: Write a YouTube video script for [Topic].\nStructure:\n1. Hook (0-15s): Grab attention.\n2. Intro: What we will cover.\n3. Body: 3 key points.\n4. CTA: Like and Subscribe." },
+            
+            // --- Business / Sales ---
+            { title: "外贸开发信 (Cold Email)", category: "office", tag: "Sales", content: "Subject: Question about [Company Name]'s production\n\nHi [Name],\n\nI saw you are leading production at [Company]. We help factories like yours reduce waste by 20% with [Product].\n\nAre you open to a 5-min chat next Tuesday?\n\nBest,\n[Your Name]" },
+            { title: "周报生成器", category: "office", tag: "Work", content: "请根据以下工作内容生成一份周报：\n[输入工作内容]\n\n要求：\n1. 分为'本周进展'、'存在问题'、'下周计划'。\n2. 语言简练，数据量化。\n3. 语气专业。" },
+            { title: "简历润色 (中英文)", category: "office", tag: "Career", content: "请作为资深HR，优化以下简历经历，使其更具成就感和数据驱动，并提供中英文双语版本：\n[粘贴经历]" },
+            
+            // --- Coding ---
+            { title: "Python 代码除错", category: "code", tag: "Python", content: "Role: Python Expert\nTask: Find the bug in this code and explain the fix.\nCode:\n[Paste Code Here]" },
+            { title: "SQL 查询优化", category: "code", tag: "SQL", content: "Role: Database Administrator\nTask: Optimize this SQL query for performance.\nQuery:\n[Paste SQL Here]" },
+            { title: "Excel 复杂公式生成", category: "code", tag: "Excel", content: "I need an Excel formula to: [Describe goal, e.g., sum column A if column B contains 'X']" }
+        ];
 
-        // === 工具配置 ===
+        // === 2. 工具配置 (生成器) ===
         const tools = {
-            visual: {
-                title: "Visual Director (视觉)",
-                models: ['Midjourney V6', 'Niji V6', 'Stable Diffusion XL', 'DALL-E 3'],
-                inputs: [
-                    { id: 'subject', label: '画面主体', type: 'text', placeholder: 'e.g. 赛博朋克风格的猫', magic: true },
-                    { id: 'style', label: '艺术风格', type: 'select', options: [
-                        'Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime (日系动漫)', '3D Render (3D渲染)', 
-                        'UE5 (虚幻引擎5)', 'Oil Painting (油画)', 'Watercolor (水彩)', 'Pixel Art (像素艺术)', 
-                        'Ukiyo-e (浮世绘)', 'Vaporwave (蒸汽波)', 'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)'
-                    ]},
-                    { id: 'shot', label: '构图/运镜', type: 'select', options: [
-                        'Wide Angle (广角)', 'Telephoto (长焦)', 'Drone View (无人机视角)', 'Macro (微距)', 
-                        'Isometric (等轴测)', 'Selfie (自拍)', 'Fisheye (鱼眼)', 'Over-the-Shoulder (过肩镜头)'
-                    ]},
-                    { id: 'light', label: '布光', type: 'select', options: [
-                        'Cinematic (电影光)', 'Natural (自然光)', 'Neon (霓虹光)', 'Rembrandt (伦勃朗光)', 
-                        'Volumetric (体积光/丁达尔)', 'Golden Hour (黄金时刻)', 'Studio Lighting (影棚光)'
-                    ]}
-                ]
-            },
-            library: {
-                title: "Prompt Vault (经典词库)",
-                models: ['Universal Format'],
-                inputs: [
-                    // 这里的选项将由 JS 动态生成
-                    { id: 'category', label: '核心分类', type: 'select', options: Object.keys(libraryDB) },
-                    { id: 'scenario', label: '应用场景', type: 'select', options: [] }, // 初始为空
-                    { id: 'level', label: '指令复杂度', type: 'select', options: ['Standard (标准版)', 'Expert (专家版/思维链)'] }
-                ]
-            },
-            video: {
-                title: "Video Director (视频)",
-                models: ['Runway Gen-2', 'Pika Labs', 'Sora', 'Stable Video'],
-                inputs: [
-                    { id: 'subject', label: '视频内容', type: 'text', placeholder: 'e.g. 海浪拍打礁石' },
-                    { id: 'camera', label: '运镜方式', type: 'select', options: [
-                        'Pan Right (右摇)', 'Pan Left (左摇)', 'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 
-                        'Orbit (环绕)', 'FPV (第一人称)', 'Truck (平移)', 'Tilt (摇摄)'
-                    ]},
-                    { id: 'motion', label: '动态幅度', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)'] },
-                    { id: 'fps', label: '帧率', type: 'select', options: ['24fps (Cinematic/电影感)', '30fps (Standard/标准)', '60fps (Smooth/流畅)'] }
-                ]
-            },
-            audio: {
-                title: "Music Producer (音乐)",
-                models: ['Suno V3', 'Udio'],
-                inputs: [
-                    { id: 'genre', label: '流派', type: 'select', options: [
-                        'Pop (流行)', 'K-pop (韩流)', 'Rock (摇滚)', 'Jazz (爵士)', 'Hip Hop (嘻哈)', 'Phonk (冯克)', 
-                        'EDM (电子舞曲)', 'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)', 'Ambient (氛围音乐)'
-                    ]},
-                    { id: 'mood', label: '情绪', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)', 'Romantic (浪漫)', 'Ethereal (空灵)'] },
-                    { id: 'vocal', label: '人声', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)'] }
-                ]
-            },
-            email: {
-                title: "Global Sales (外贸开发)",
-                models: ['GPT-4o (Sales)', 'Claude 3 Haiku'],
-                inputs: [
-                    { id: 'product', label: '推销产品', type: 'text', placeholder: 'e.g. Solar Panels' },
-                    { id: 'role', label: '收件人职位', type: 'select', options: [
-                        'CEO / Owner (老板)', 'Purchasing Manager (采购经理)', 'Product Manager (产品经理)', 
-                        'Marketing Director (营销总监)', 'General Inquiry (一般咨询)'
-                    ]},
-                    { id: 'stage', label: '营销阶段', type: 'select', options: [
-                        'Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Proposal (报价/提案)', 
-                        'Re-engagement (激活)', 'Last Attempt (最后尝试)'
-                    ]},
-                    { id: 'framework', label: '营销框架', type: 'select', options: [
-                        'AIDA (注意-兴趣-欲望-行动)', 'BAB (前-后-桥梁)', 'PAS (问题-加剧-解决)', 'Direct Pitch (直球推销)'
-                    ]},
-                    { id: 'cta', label: '行动号召 (CTA)', type: 'select', options: [
-                        'Book a Call (预约会议)', 'Reply for Info (回复获取信息)', 'Request Sample (索取样品)', 'Visit Website (访问网站)'
-                    ]},
-                    { id: 'lang', label: '目标语言', type: 'select', options: [
-                        'English US (美式英语)', 'English UK (英式英语)', 'Spanish (西班牙语)', 'French (法语)', 
-                        'German (德语)', 'Japanese (日语)', 'Arabic (阿拉伯语)', 'Chinese (中文)'
-                    ]}
-                ]
-            },
-            academic: {
-                title: "Academic Scholar (学术科研)",
-                models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
-                inputs: [
-                    { id: 'content', label: '论文段落/摘要', type: 'textarea', placeholder: '在此粘贴需要润色或降重的文本...', height: '120px' },
-                    { id: 'field', label: '研究领域', type: 'text', placeholder: 'e.g. Neuroscience, Machine Learning' },
-                    { id: 'target', label: '投稿目标/风格', type: 'select', options: [
-                        'IEEE Standard (IEEE标准)', 'Nature/Science Style (Nature风格)', 'APA Format (APA格式)', 
-                        'MLA Style (MLA格式)', 'General Academic (通用学术)'
-                    ]},
-                    { id: 'goal', label: '优化目标', type: 'select', options: [
-                        'Reduce Repetition (降重)', 'Polish Grammar (润色语法)', 'Enhance Logic (增强逻辑)', 
-                        'Make Academic (学术化)', 'Fix Chinglish (中式英语矫正)'
-                    ]},
-                    { id: 'section', label: '所属部分', type: 'select', options: [
-                        'Abstract (摘要)', 'Introduction (引言)', 'Methodology (方法论)', 
-                        'Results (结果)', 'Discussion (讨论)', 'Conclusion (结论)'
-                    ]}
-                ]
-            },
-            reverse: {
-                title: "Reverse Engineering (逆向工程)",
-                models: ['GPT-4 Vision', 'Claude 3 Opus'],
-                inputs: [
-                    { id: 'desc', label: '补充描述 (可选)', type: 'textarea', placeholder: '例如：我想模仿这张图的灯光，但把猫换成狗...', height: '80px' },
-                    { id: 'mode', label: '分析模式', type: 'select', options: [
-                        'Extract Visual Prompts (提取视觉提示词)', 'Analyze Layout (分析构图)', 
-                        'Extract Color Palette (提取配色)', 'Full Analysis (全量分析)'
-                    ]}
-                ]
-            },
-            text: { 
-                title: "Copywriter (写作)", 
-                models:['GPT-4'], 
-                inputs: [
-                    {id:'topic',label:'主题',type:'text'}, 
-                    {id:'framework',label:'框架',type:'select',options:['AIDA (Attention-Interest/注意-兴趣)', 'PAS (Problem-Solution/问题-解决)', 'First Principles (第一性原理)']}
-                ]
-            },
-            xhs: { 
-                title: "小红书矩阵", 
-                models:['Claude 3'], 
-                inputs: [
-                    {id:'topic',label:'选题',type:'text'}, 
-                    {id:'niche',label:'赛道',type:'select',options:['Beauty (美妆)', 'Tech (数码)', 'Fashion (穿搭)', 'Food (美食)', 'Travel (旅行)', 'Knowledge (知识付费)']}
-                ]
-            },
-            tiktok: { 
-                title: "抖音脚本", 
-                models:['GPT-4'], 
-                inputs: [
-                    {id:'topic',label:'主题',type:'text'}, 
-                    {id:'hook',label:'开头',type:'select',options:['Visual Shock (视觉奇观)', 'Contrast (反差)', 'Question (提问)', 'Pain Point (痛点)']}
-                ]
-            }
+            visual: { title: "Visual Director (视觉)", models: ['Midjourney V6', 'DALL-E 3'], inputs: [{id:'subject',label:'画面主体',type:'text'}, {id:'style',label:'风格',type:'select',options:['Photorealistic','Cyberpunk','Anime']}] },
+            video: { title: "Video Director (视频)", models: ['Runway Gen-2', 'Sora'], inputs: [{id:'prompt',label:'视频描述',type:'text'}, {id:'camera',label:'运镜',type:'select',options:['Pan','Zoom','Orbit']}] },
+            text: { title: "Copywriter (写作)", models: ['GPT-4'], inputs: [{id:'topic',label:'主题',type:'text'}, {id:'tone',label:'语气',type:'select',options:['Professional','Funny']}] },
+            email: { title: "Sales Email (外贸)", models: ['GPT-4 Sales'], inputs: [{id:'product',label:'产品',type:'text'}, {id:'target',label:'客户',type:'text'}] },
+            academic: { title: "Academic (学术)", models: ['Claude 3'], inputs: [{id:'text',label:'原文',type:'textarea'}] },
+            xhs: { title: "小红书矩阵", models: ['Claude 3'], inputs: [{id:'topic',label:'选题',type:'text'}] },
+            reverse: { title: "Reverse Engineering", models: ['GPT-4 Vision'], inputs: [{id:'desc',label:'描述',type:'textarea'}] }
         };
 
-        let currentTool = 'visual';
+        let currentMode = 'library';
 
-        window.onload = () => loadTool('visual');
+        window.onload = () => {
+            loadTool('library');
+            renderLibrary(promptVault);
+        };
 
-        function loadTool(key) {
-            currentTool = key;
-            const data = tools[key];
+        // === 渲染词库 (Grid View) ===
+        function renderLibrary(data) {
+            const grid = document.getElementById('libraryGrid');
+            grid.innerHTML = '';
             
-            document.getElementById('toolTitle').innerText = data.title;
-            document.getElementById('targetModel').innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
-
-            // UI 状态切换
-            const uploadArea = document.getElementById('uploadArea');
-            const abTestGroup = document.getElementById('abTestGroup');
-            const actionBtn = document.getElementById('actionBtn');
-
-            if (key === 'reverse') {
-                uploadArea.style.display = 'block';
-                abTestGroup.style.display = 'none'; 
-                actionBtn.innerHTML = '<i class="fas fa-search"></i> 开始分析';
-                actionBtn.classList.remove('purple');
-            } else if (key === 'library') {
-                uploadArea.style.display = 'none';
-                abTestGroup.style.display = 'none'; 
-                actionBtn.innerHTML = '<i class="fas fa-book-open"></i> 调取词库';
-                actionBtn.classList.add('purple');
-            } else {
-                uploadArea.style.display = 'none';
-                abTestGroup.style.display = 'flex';
-                actionBtn.innerHTML = '<i class="fas fa-bolt"></i> 立即生成';
-                actionBtn.classList.remove('purple');
-            }
-
-            // 渲染表单
-            const container = document.getElementById('dynamicForm');
-            container.innerHTML = '';
-            
-            data.inputs.forEach(field => {
-                const div = document.createElement('div');
-                div.className = 'input-group';
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'prompt-card';
+                card.onclick = () => copyCardContent(item.content);
                 
-                let inputHtml = '';
-                if(field.type === 'select') {
-                    // 特殊处理 library 的 category
-                    if (key === 'library' && field.id === 'category') {
-                         const opts = field.options.map(k => `<option value="${k}">${libraryDB[k].label}</option>`).join('');
-                         inputHtml = `<select id="f_${field.id}" onchange="updateScenario(this.value)">${opts}</select>`;
-                    } else {
-                        const opts = field.options.map(o => `<option>${o}</option>`).join('');
-                        inputHtml = `<select id="f_${field.id}">${opts}</select>`;
-                    }
-                } else if (field.type === 'textarea') {
-                    inputHtml = `<textarea id="f_${field.id}" placeholder="${field.placeholder || ''}" style="height:${field.height || '100px'}"></textarea>`;
-                } else {
-                    inputHtml = `<input type="text" id="f_${field.id}" placeholder="${field.placeholder || ''}">`;
-                }
+                // 标签颜色逻辑
+                let tagClass = 'tag-visual';
+                if(item.category === 'writing') tagClass = 'tag-writing';
+                if(item.category === 'code') tagClass = 'tag-code';
+                if(item.category === 'office') tagClass = 'tag-office';
 
-                let magicBtn = '';
-                if(field.magic) {
-                    magicBtn = `<button class="magic-btn" onclick="magicExpand('f_${field.id}')" title="AI扩写"><i class="fas fa-magic"></i></button>`;
-                }
-
-                div.innerHTML = `<label>${field.label}</label>${inputHtml}${magicBtn}`;
-                container.appendChild(div);
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title-text">${item.title}</div>
+                        <div class="card-tag ${tagClass}">${item.tag}</div>
+                    </div>
+                    <div class="card-preview">${item.content}</div>
+                    <div class="copy-overlay"><i class="fas fa-check"></i> Copied!</div>
+                `;
+                grid.appendChild(card);
             });
+        }
 
-            // 只有 library 需要初始化 scenario
-            if (key === 'library') {
-                updateScenario(Object.keys(libraryDB)[0]);
-            }
+        // 搜索过滤
+        function filterLibrary() {
+            const query = document.getElementById('libSearch').value.toLowerCase();
+            const filtered = promptVault.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.tag.toLowerCase().includes(query) ||
+                item.content.toLowerCase().includes(query)
+            );
+            renderLibrary(filtered);
+        }
 
+        // 复制功能
+        function copyCardContent(text) {
+            navigator.clipboard.writeText(text);
+            // 视觉反馈在 CSS 中处理 (active state)
+        }
+
+        // === 切换视图逻辑 ===
+        function loadTool(key) {
+            currentMode = key;
+            
             // 菜单高亮
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
             const items = document.querySelectorAll('.menu-item');
             items.forEach(item => {
                 if(item.getAttribute('onclick').includes(key)) item.classList.add('active');
             });
-            
+
+            const libView = document.getElementById('libraryView');
+            const genView = document.getElementById('generatorView');
+            const modelSelect = document.getElementById('modelSelectContainer');
+            const title = document.getElementById('toolTitle');
+
+            if (key === 'library') {
+                libView.style.display = 'block';
+                genView.style.display = 'none';
+                modelSelect.style.display = 'none';
+                title.innerText = "全能词库 (Prompt Vault)";
+            } else {
+                libView.style.display = 'none';
+                genView.style.display = 'block';
+                modelSelect.style.display = 'block';
+                
+                // 加载生成器配置
+                const data = tools[key];
+                title.innerText = data.title;
+                document.getElementById('targetModel').innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
+                
+                // 渲染表单
+                const form = document.getElementById('dynamicForm');
+                form.innerHTML = '';
+                data.inputs.forEach(f => {
+                    let html = `<div class="input-group"><label>${f.label}</label>`;
+                    if(f.type==='select') html+=`<select id="f_${f.id}">${f.options.map(o=>`<option>${o}</option>`).join('')}</select>`;
+                    else if(f.type==='textarea') html+=`<textarea id="f_${f.id}" style="height:100px"></textarea>`;
+                    else html+=`<input type="text" id="f_${f.id}">`;
+                    html+=`</div>`;
+                    form.innerHTML += html;
+                });
+
+                // 上传框处理
+                document.getElementById('uploadArea').style.display = (key === 'reverse') ? 'block' : 'none';
+            }
+
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
         }
 
-        // 级联菜单逻辑 (核心)
-        function updateScenario(category) {
-            const scenarioSelect = document.getElementById('f_scenario');
-            if (scenarioSelect && libraryDB[category]) {
-                const scenarios = libraryDB[category].scenarios;
-                scenarioSelect.innerHTML = scenarios.map(s => `<option>${s}</option>`).join('');
-            }
-        }
-
-        // 文件处理
-        function handleFile(input) {
-            const file = input.files[0];
-            if (file) {
-                const display = document.getElementById('fileNameDisplay');
-                display.style.display = 'block';
-                display.innerText = `✅ 文件已就绪: ${file.name} (${(file.size/1024/1024).toFixed(2)}MB)`;
-            }
-        }
-
-        // 核心生成逻辑
+        // 生成器逻辑
         function generate() {
-            const model = document.getElementById('targetModel').value;
-            const isAB = document.getElementById('abTest').checked;
-            const toolData = tools[currentTool];
-            const fileInput = document.getElementById('fileInput');
-            
-            const inputs = {};
-            toolData.inputs.forEach(f => {
-                const el = document.getElementById(`f_${f.id}`);
-                inputs[f.id] = el ? el.value : '';
-            });
-
-            // 1. 逆向工程
-            if (currentTool === 'reverse' && fileInput.files.length > 0) {
-                simulateVisionAnalysis(fileInput.files[0].name, model, inputs);
-                return;
-            }
-
-            // 2. 词库
-            if (currentTool === 'library') {
-                fetchLibraryPrompts(inputs);
-                return;
-            }
-
-            // 3. 常规生成
             const container = document.getElementById('resultContainer');
-            container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-spinner fa-spin"></i> Generating...</div>';
-
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">Processing...</div>';
             setTimeout(() => {
-                container.innerHTML = ''; 
-                const versions = isAB ? ['Version A', 'Version B', 'Version C'] : ['Result'];
-                
-                versions.forEach(ver => {
-                    const prompt = buildPrompt(currentTool, model, inputs, ver);
-                    const box = document.createElement('div');
-                    box.className = 'result-box';
-                    box.innerHTML = `<div class="ab-tag">${ver}</div>${prompt} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
-                    container.appendChild(box);
-                });
-            }, 800);
-        }
-
-        // 词库调取逻辑
-        function fetchLibraryPrompts(inputs) {
-            const container = document.getElementById('resultContainer');
-            container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;"><i class="fas fa-book"></i> Searching Vault...</div>';
-
-            setTimeout(() => {
-                container.innerHTML = '';
-                const box = document.createElement('div');
-                box.className = 'result-box';
-                
-                let content = `### Category: ${inputs.category}\n### Scenario: ${inputs.scenario}\n\n`;
-                
-                const key = inputs.scenario; 
-
-                if (key.includes("Portrait")) {
-                    content += `/imagine prompt: professional portrait photography of [Subject], shot on Hasselblad X2D, 85mm lens, f/1.8, cinematic lighting, ultra-detailed skin texture, 8k resolution, neutral background --v 6.0 --ar 4:5 --style raw`;
-                } else if (key.includes("Logo")) {
-                    content += `/imagine prompt: minimalist vector logo for [Brand Name], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details`;
-                } else if (key.includes("UI")) {
-                    content += `/imagine prompt: mobile app UI design for [App Type], clean layout, neumorphism style, high fidelity, dribbble trend, user friendly, figama --v 6.0 --ar 9:16`;
-                } else if (key.includes("Cyberpunk")) {
-                    content += `/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic atmosphere, highly detailed --v 6.0 --ar 16:9`;
-                } else if (key.includes("Debugging")) {
-                    content += `Role: Senior Software Engineer\nTask: Debug the following code snippet.\nSteps:\n1. Analyze for logical errors and syntax issues.\n2. Explain the root cause.\n3. Provide the corrected code.\n\nCode Snippet: [Paste Code Here]`;
-                } else if (key.includes("SQL")) {
-                    content += `Role: Database Expert\nTask: Write an optimized SQL query to [Goal].\nRequirements: Use JOINs efficiently, ensure index usage, and format for readability.`;
-                } else if (key.includes("SEO")) {
-                    content += `Role: SEO Specialist\nTask: Write a blog post about [Topic].\nRequirements:\n- Use H1, H2 headers.\n- Include keywords: [Keyword1], [Keyword2].\n- Optimize for readability (Flesch-Kincaid score).`;
-                } else if (key.includes("Excel")) {
-                    content += `Role: Excel Expert\nTask: Generate an Excel formula to [Goal].\nContext: Column A is [Data1], Column B is [Data2].\nRequirement: Handle potential errors with IFERROR.`;
-                } else {
-                    // 通用模版
-                    content += `### Role: Expert AI Assistant\n### Task: Execute ${inputs.scenario}\n### Context: Professional and High Quality output.\n\n[Please insert specific details here]`;
-                }
-
-                box.innerHTML = `<div class="ab-tag">Vault Result</div>${content} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
-                container.appendChild(box);
-            }, 500);
-        }
-
-        function simulateVisionAnalysis(filename, model, inputs) {
-            const container = document.getElementById('resultContainer');
-            container.innerHTML = '';
-            const steps = [`🔍 Reading ${filename}...`, `🧠 Extracting semantics...`, `🎨 Detecting style...`, `✨ Generating prompt...`];
-            let stepIndex = 0;
-            const box = document.createElement('div');
-            box.className = 'result-box';
-            box.style.color = 'var(--text-sub)';
-            container.appendChild(box);
-
-            const interval = setInterval(() => {
-                if (stepIndex >= steps.length) {
-                    clearInterval(interval);
-                    box.style.color = '#10b981';
-                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>/imagine prompt: highly detailed shot of ${filename} content, cinematic lighting, 8k --v 6.0`;
-                    box.innerHTML += ` <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
-                } else {
-                    box.innerText = steps[stepIndex];
-                    stepIndex++;
-                }
+                container.innerHTML = `<div class="result-box"><div class="ab-tag">Result</div>Generated Prompt based on your inputs.<i class="fas fa-copy" style="position:absolute; right:10px; top:10px;" onclick="navigator.clipboard.writeText(this.parentNode.innerText)"></i></div>`;
             }, 600);
-        }
-
-        function buildPrompt(toolKey, model, inputs, ver) {
-            const cleanInputs = {};
-            for (const key in inputs) {
-                const val = inputs[key];
-                if (val && val.includes('(')) cleanInputs[key] = val.split('(')[0].trim();
-                else cleanInputs[key] = val;
-            }
-            let res = "";
-            if (toolKey === 'email') res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Writing to ${cleanInputs.role}, Stage: ${cleanInputs.stage})\n\n[Body using ${cleanInputs.framework} model...]\n\n[CTA: ${cleanInputs.cta}]`;
-            else if (toolKey === 'academic') res = `[Goal: ${cleanInputs.goal}]\n[Style: ${cleanInputs.target}]\n\nRevised Text:\n(Polished version of input...)`;
-            else if (toolKey === 'visual') res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
-            else res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}\n### Model: ${model}`;
-            return res;
-        }
-
-        function copyText(icon) {
-            navigator.clipboard.writeText(icon.parentElement.innerText.replace("Copy", "").trim());
-            alert("Copied!");
-        }
-
-        function magicExpand(id) {
-            document.getElementById(id).value += " (AI Optimized)";
         }
     </script>
 </body>
