@@ -4,50 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>AI CommandOS | 极速 AI 指令生成器 (VIP版)</title>
-    <meta name="description" content="你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>AI CommandOS | 极速 AI 指令生成器</title>
+    <meta name="description" content="你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。内置 50+ 高频模版，免费使用。">
     
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ai-commandos.netlify.app/"> <meta property="og:title" content="AI CommandOS | 极速 AI 指令生成器">
+    <meta property="og:description" content="专为创作者设计的 AI 提示词工作流。支持视觉、写作、编程、办公全场景。一键生成，极速响应。">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI CommandOS | 极速 AI 指令生成器">
+    <meta name="twitter:description" content="你的全能 AI 指令控制台。一键生成 MJ、GPT、小红书 Prompt。">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a;
-            --sidebar: #1e293b;
-            --panel: #334155;
-            --input: #1e293b;
+            --bg: #0b0e14;
+            --sidebar: #151921;
+            --panel: #222630;
+            --input: #2f3442;
             --accent: #3b82f6;
             --accent-hover: #2563eb;
-            --text: #f8fafc;
+            --text: #e2e8f0;
             --text-sub: #94a3b8;
-            --border: #475569;
+            --border: #334155;
             --gold: #f59e0b;
             --purple: #8b5cf6;
-            --success: #10b981;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             height: 100vh;
             overflow: hidden;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* --- 滚动条美化 --- */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
 
-        /* --- 布局容器 --- */
+        /* --- 布局 --- */
         .app-container { display: flex; width: 100%; height: 100%; position: relative; }
         
-        /* --- 侧边栏 --- */
         .sidebar {
             width: 260px;
             background: var(--sidebar);
@@ -56,72 +63,60 @@
             flex-direction: column;
             flex-shrink: 0;
             z-index: 30;
-            transition: transform 0.3s ease;
+            overflow-y: auto;
+            will-change: transform;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .brand {
             padding: 20px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: white;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 10px;
-            letter-spacing: 0.5px;
         }
         .brand span { color: var(--accent); }
 
-        .menu-scroll { flex: 1; overflow-y: auto; padding-bottom: 20px; }
-
-        .menu-category { padding: 25px 20px 10px; font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .menu-category { padding: 20px 20px 8px; font-size: 0.7rem; color: var(--text-sub); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
         
         .menu-item {
             padding: 12px 20px;
             cursor: pointer;
             color: var(--text-sub);
-            transition: all 0.2s;
+            transition: background 0.1s;
             display: flex;
             align-items: center;
             gap: 12px;
             font-weight: 500;
             border-left: 3px solid transparent;
-            margin-bottom: 2px;
         }
         .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
-        .menu-item.active { background: rgba(59, 130, 246, 0.1); color: var(--accent); border-left-color: var(--accent); }
-        .menu-item i { width: 20px; text-align: center; }
+        .menu-item.active { background: rgba(59, 130, 246, 0.15); color: var(--accent); border-left-color: var(--accent); }
+        .menu-item i { width: 18px; text-align: center; }
 
-        /* --- VIP 卡片 (核心引流) --- */
-        .vip-card {
-            margin: 15px;
-            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-            border: 1px solid var(--gold);
-            border-radius: 12px;
+        /* === 新增：VIP 私域引流卡片样式 === */
+        .vip-section {
+            margin: 20px 15px;
             padding: 15px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+            margin-top: auto; /* 强制推到底部 */
         }
-        .vip-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(245, 158, 11, 0.1), transparent);
-            transform: rotate(45deg); animation: shine 3s infinite;
-        }
-        @keyframes shine { 0% {left: -100%;} 100% {left: 100%;} }
-        
-        .vip-title { color: var(--gold); font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .vip-desc { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 12px; line-height: 1.4; }
+        .vip-title { color: var(--gold); font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        .vip-desc { color: var(--text-sub); font-size: 0.75rem; margin-bottom: 10px; line-height: 1.4; }
         .btn-vip {
-            background: linear-gradient(90deg, #f59e0b, #d97706);
-            color: white; border: none; padding: 8px 0; width: 100%;
-            border-radius: 6px; font-weight: bold; cursor: pointer;
-            font-size: 0.85rem; transition: transform 0.2s;
+            background: var(--gold); color: #000; border: none; padding: 8px 0; width: 100%;
+            border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 0.85rem;
+            transition: 0.2s;
         }
-        .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+        .btn-vip:hover { background: #d97706; }
 
-        /* --- 主工作区 --- */
+        /* === 原有样式继续 === */
         .workspace {
             flex: 1;
             display: flex;
@@ -129,195 +124,187 @@
             overflow: hidden;
             background: var(--bg);
             position: relative;
+            z-index: 1;
         }
 
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 25;
+            display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .overlay.active { display: block; opacity: 1; }
+
         .topbar {
-            height: 64px;
+            height: 60px;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 30px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 20;
+            background: var(--bg);
         }
 
-        .model-badge {
-            background: var(--panel); border: 1px solid var(--border); color: var(--text);
-            padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
+        .model-selector select {
+            background: var(--panel); color: white; border: 1px solid var(--border);
+            padding: 8px 15px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;
         }
-        .model-badge:hover { border-color: var(--accent); }
-        select#targetModel { background: transparent; border: none; color: white; outline: none; cursor: pointer; font-family: inherit;}
-        select#targetModel option { background: var(--panel); color: white; }
 
         .scroll-area {
             flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%;
+            -webkit-overflow-scrolling: touch; 
         }
 
-        /* --- 表单样式 --- */
+        .card-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 20px; color: var(--text-sub); display: flex; justify-content: space-between; text-transform: uppercase; align-items: center;}
+        
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             gap: 20px;
             margin-bottom: 25px;
         }
 
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group { position: relative; display: flex; flex-direction: column; }
         
-        label { color: var(--text-sub); font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between;}
+        label { display: block; margin-bottom: 8px; color: var(--text-sub); font-size: 0.85rem; font-weight: 500; }
         
         input, select, textarea {
             width: 100%; background: var(--input); border: 1px solid var(--border);
-            color: white; padding: 12px 15px; border-radius: 8px; font-size: 0.95rem;
-            transition: all 0.2s;
+            color: white; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-family: inherit; margin-bottom: 0;
+            transition: border-color 0.15s; 
+            line-height: 1.5; 
         }
-        input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
-        input::placeholder, textarea::placeholder { color: #475569; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
 
-        /* --- 按钮区 --- */
-        .action-bar { display: flex; gap: 15px; align-items: center; margin-top: 10px; padding-bottom: 30px; }
+        optgroup { font-style: normal; font-weight: bold; color: var(--gold); background: var(--sidebar); }
+        option { color: white; padding: 5px; background: var(--input); }
+
+        .action-bar { display: flex; gap: 20px; align-items: center; margin-top: 10px; padding-bottom: 30px; }
         
         .btn-main {
             flex: 1; padding: 14px; background: var(--accent); color: white;
             border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
             display: flex; justify-content: center; align-items: center; gap: 8px;
-            box-shadow: var(--shadow); font-size: 1rem; transition: all 0.2s;
+            box-shadow: var(--shadow); font-size: 1rem;
+            transition: transform 0.1s;
         }
-        .btn-main:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-main:active { transform: scale(0.98); }
+        .btn-main:active { transform: scale(0.98); } 
         .btn-main.purple { background: var(--purple); }
-        .btn-main.purple:hover { background: #7c3aed; }
+        .btn-main.purple:active { transform: scale(0.98); }
         
-        /* --- 结果区 --- */
-        .result-container { display: flex; flex-direction: column; gap: 15px; }
+        .switch-group { display: flex; align-items: center; gap: 10px; color: var(--text); font-size: 0.9rem; cursor: pointer; user-select: none; }
+        .switch-group input { margin: 0; accent-color: var(--accent); width: 16px; height: 16px;}
+
+        .result-container { display: flex; flex-direction: column; gap: 20px; margin-top: 10px; }
         
         .result-box {
-            background: #000; border: 1px solid var(--border); border-radius: 10px;
-            padding: 40px 20px 20px 20px; /* Top padding for tag */
-            font-family: 'Monaco', 'Consolas', monospace; color: var(--success);
-            font-size: 0.9rem; line-height: 1.6; min-height: 80px; 
-            white-space: pre-wrap; position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease;
+            background: #000; border: 1px solid var(--border); border-radius: 8px;
+            padding: 20px; font-family: 'Monaco', monospace; color: #10b981;
+            font-size: 0.9rem; line-height: 1.6; min-height: 100px; white-space: pre-wrap; position: relative;
+            animation: fadeIn 0.2s ease-out;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .ab-tag {
             position: absolute; top: 0; left: 0; background: var(--panel); 
-            padding: 4px 12px; font-size: 0.7rem; border-bottom-right-radius: 8px; 
-            color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
-            font-family: sans-serif; font-weight: bold;
+            padding: 4px 10px; font-size: 0.75rem; border-bottom-right-radius: 6px; color: var(--text-sub); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
         }
 
-        .btn-copy {
-            position: absolute; top: 10px; right: 10px;
-            background: rgba(255,255,255,0.1); border: none; color: var(--text-sub);
-            padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
-            transition: 0.2s; display: flex; align-items: center; gap: 5px;
+        .upload-zone {
+            border: 2px dashed var(--border); border-radius: 8px; padding: 30px;
+            text-align: center; color: var(--text-sub); cursor: pointer;
+            transition: 0.2s; background: rgba(0,0,0,0.2);
+            margin-bottom: 25px; display: none;
         }
-        .btn-copy:hover { background: rgba(255,255,255,0.2); color: white; }
+        .upload-zone:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.05); }
+        .file-name { margin-top: 10px; font-size: 0.85rem; color: var(--gold); display: none; font-weight: bold;}
 
-        /* --- Toast 通知 --- */
-        #toast {
-            visibility: hidden; min-width: 250px; background-color: rgba(16, 185, 129, 0.95); color: #fff;
-            text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 100;
-            left: 50%; top: 30px; transform: translateX(-50%); font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(5px);
-            opacity: 0; transition: opacity 0.3s, top 0.3s;
+        /* 历史记录卡片 */
+        .history-item {
+            background: var(--panel); border: 1px solid var(--border); padding: 12px; border-radius: 6px;
+            margin-bottom: 10px; cursor: pointer; transition: 0.1s;
         }
-        #toast.show { visibility: visible; opacity: 1; top: 50px; }
-        #toast.error { background-color: rgba(239, 68, 68, 0.95); }
-
-        /* --- 移动端适配 --- */
-        .mobile-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 25;
-            display: none; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(3px);
-        }
-        .mobile-overlay.active { display: block; opacity: 1; }
-        .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
+        .history-item:hover { border-color: var(--accent); background: #2a2f3a; }
+        .history-time { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 4px; display: flex; justify-content: space-between;}
+        .history-content { font-size: 0.85rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'Monaco', monospace; }
 
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
             .mobile-toggle { display: block; }
             .topbar { padding: 0 15px; }
-            .scroll-area { padding: 20px 15px; }
+            .scroll-area { padding: 15px; }
             .form-grid { grid-template-columns: 1fr; }
-            .vip-card { margin-bottom: 40px; } /* safe area */
         }
+        .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
-    <div id="toast">Notification</div>
-
     <div class="app-container">
         <div class="sidebar" id="sidebar">
             <div class="brand"><i class="fas fa-terminal"></i> Command<span>OS</span></div>
+            <div class="menu-category">Generative Studio (创作工坊)</div>
+            <div class="menu-item active" onclick="loadTool('visual')"><i class="fas fa-camera"></i> Visual (视觉)</div>
+            <div class="menu-item" onclick="loadTool('video')"><i class="fas fa-video"></i> Video (视频)</div>
+            <div class="menu-item" onclick="loadTool('audio')"><i class="fas fa-music"></i> Audio (音乐)</div>
+            <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> Writing (写作)</div>
             
-            <div class="menu-scroll">
-                <div class="menu-category">Generative Studio</div>
-                <div class="menu-item active" onclick="loadTool('visual')"><i class="fas fa-camera"></i> Visual (视觉)</div>
-                <div class="menu-item" onclick="loadTool('video')"><i class="fas fa-video"></i> Video (视频)</div>
-                <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> Writing (写作)</div>
-                
-                <div class="menu-category">Social Matrix</div>
-                <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> Xiaohongshu (小红书)</div>
-                <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> TikTok (短视频)</div>
-                <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope"></i> Sales Email (销售)</div>
-                
-                <div class="menu-category">Resources</div>
-                <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> Prompt Library (词库)</div>
-                <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-magic"></i> Reverse Eng. (逆向)</div>
-                <div class="menu-item" onclick="loadTool('history')"><i class="fas fa-history"></i> History (历史)</div>
-            </div>
+            <div class="menu-category">Professional Matrix (专业矩阵)</div>
+            <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> TikTok (抖音脚本)</div>
+            <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> Xiaohongshu (小红书)</div>
+            <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> Academic (学术科研)</div>
+            <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> Sales Email (外贸开发)</div>
+            
+            <div class="menu-category">AI Resources (资源库)</div>
+            <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> Prompt Library (经典词库)</div>
+            <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> Reverse Eng. (逆向工程)</div>
+            
+            <div class="menu-category">Storage (存储)</div>
+            <div class="menu-item" onclick="loadTool('history')"><i class="fas fa-history"></i> History (历史记录)</div>
 
-            <div class="vip-card">
+            <div class="vip-section">
                 <div class="vip-title"><i class="fas fa-crown"></i> VIP 资料包</div>
-                <div class="vip-desc">
-                    含 5000+ 条汉化 Prompt 数据库 (Excel) + PDF 教程 + 源码
-                </div>
-                <button class="btn-vip" onclick="getWeChat()">
-                    📥 免费获取 (点击复制)
-                </button>
+                <div class="vip-desc">5000+条提示词库 (Excel/PDF) + 源码免费领</div>
+                <button class="btn-vip" onclick="getWeChat()">📥 点击获取</button>
             </div>
         </div>
 
-        <div class="mobile-overlay" id="overlay" onclick="closeSidebar()"></div>
+        <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
         <div class="workspace">
             <div class="topbar">
                 <div style="display:flex; gap:15px; align-items:center;">
                     <i class="fas fa-bars mobile-toggle" onclick="openSidebar()"></i>
-                    <span style="font-weight:bold; font-size:1.1rem; letter-spacing:0.5px;" id="toolTitle">Visual Director</span>
+                    <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">Visual Director (视觉)</span>
                 </div>
-                
-                <div class="model-badge" id="modelSelectContainer">
-                    <i class="fas fa-robot" style="color:var(--accent)"></i>
+                <div class="model-selector" id="modelSelectContainer">
                     <select id="targetModel"></select>
                 </div>
             </div>
 
             <div class="scroll-area">
+                <div id="uploadArea" class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:2rem; margin-bottom:10px;"></i>
+                    <div>Click or Drag to Upload (点击或拖拽上传)</div>
+                    <div id="fileNameDisplay" class="file-name"></div>
+                    <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)">
+                </div>
+
                 <div id="dynamicForm" class="form-grid"></div>
-                
                 <div id="historyList" style="display:none;"></div>
 
                 <div class="action-bar" id="actionBar">
-                    <div style="display:flex; align-items:center; gap:10px; cursor:pointer;" id="abTestGroup">
-                        <input type="checkbox" id="abTest" style="width:16px; height:16px; accent-color:var(--accent);">
-                        <label for="abTest" style="margin:0; cursor:pointer; font-weight:normal;">A/B Test Mode</label>
+                    <div class="switch-group" id="abTestGroup">
+                        <input type="checkbox" id="abTest"> <span>A/B Test (A/B 测试)</span>
                     </div>
                     <button class="btn-main" id="actionBtn" onclick="generate()">
                         <i class="fas fa-bolt"></i> Generate (立即生成)
                     </button>
                 </div>
 
-                <div id="outputHeader" style="display:flex; justify-content:space-between; margin-bottom:15px; color:var(--text-sub); font-size:0.8rem; font-weight:bold; text-transform:uppercase;">
-                    <span>Output Terminal</span>
-                    <span style="cursor:pointer; color:var(--accent);" onclick="clearResults()">Clear</span>
+                <div class="card-title" id="outputHeader">
+                    <span>Output Terminal (输出终端)</span>
+                    <span style="font-size:0.75rem; cursor:pointer; color:var(--accent);" onclick="document.getElementById('resultContainer').innerHTML=''">Clear (清空)</span>
                 </div>
                 <div id="resultContainer" class="result-container"></div>
             </div>
@@ -325,356 +312,165 @@
     </div>
 
     <script>
-        // === 1. 数据定义 ===
+        // === 1. 词库结构定义 ===
         const libraryGroups = {
-            "🎨 Visual Art": {
-                'MJ Portrait': "/imagine prompt: extreme close-up portrait of [Subject], natural lighting, 85mm lens, f/1.8, detailed skin texture --v 6.0 --style raw",
-                'MJ Logo': "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, white background --v 6.0",
-                'MJ 3D Icon': "/imagine prompt: 3d glass icon of [Subject], frosted glass, soft gradient, macos big sur style, white background --v 6.0"
+            "🎨 Visual Art (视觉创作)": {
+                'MJ Portrait Master (MJ 摄影大师)': "/imagine prompt: extreme close-up portrait of [Subject], natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
+                'MJ Minimalist Logo (MJ 极简 Logo)': "/imagine prompt: minimalist vector logo of [Subject], negative space, geometric shapes, bauhaus style, white background, flat design, vector graphics --v 6.0 --no text shading details",
+                'MJ Pop Mart 3D (MJ 泡泡玛特风)': "/imagine prompt: cute 3d pop mart character, [Subject], clay material, pastel colors, soft studio lighting, 3d render, c4d, octane render, blind box toy --v 6.0 --niji 6",
+                'MJ Apple 3D Icon (MJ 苹果风图标)': "/imagine prompt: 3d glass icon of [Subject], apple design style, frosted glass, soft gradient, transparent, high gloss, macos big sur style, white background --v 6.0",
+                'MJ Interior Design (MJ 室内设计)': "/imagine prompt: modern minimalist living room, beige tone, sunlight, indoor plants, architectural photography, high resolution, unspash style --v 6.0 --ar 16:9",
+                'MJ Cyberpunk City (MJ 赛博朋克城市)': "/imagine prompt: futuristic cyberpunk city street, neon rain, flying cars, holograms, wet pavement reflection, night time, cinematic lighting --v 6.0 --ar 16:9",
+                'MJ Vector Sticker (MJ 矢量贴纸)': "/imagine prompt: die-cut sticker of [Subject], white border, vector art, cute, flat color, simple design, white background --v 6.0",
+                'MJ Product Shot (MJ 产品摄影)': "/imagine prompt: professional product photography of [Subject], studio lighting, neutral beige background, soft shadows, 8k resolution, advertisement quality --v 6.0"
             },
-            "📝 Social Media": {
-                'Xiaohongshu': "Title: [Emoji] [Title]\n\n[Body Content]\n\nTags: #Xiaohongshu #Trend",
-                'LinkedIn': "Hook: [Problem]\nInsight: [Solution]\nCall to Action: Thoughts?"
+            "📝 Writing & Social (写作与社媒)": {
+                'Xiaohongshu Viral (小红书爆款)': "Role: 小红书博主\nTask: 为[产品/主题]写一篇种草笔记。\n要求：\n1. 标题包含Emoji，吸引眼球（如：'绝绝子！'，'后悔没早买'）。\n2. 正文分段，多用表情符号，语气亲切。\n3. 结尾引导评论和收藏。\n4. 添加5个热门Hashtag。",
+                'WeChat Title (公众号爆文标题)': "Role: Experienced Copywriter\nTask: Generate 10 viral titles for an article about [Topic].\nStyle: Clickbaity, Emotional, Curiosity-driven, Numbered Lists.",
+                'Zhihu Answer (知乎高赞回答)': "Role: Knowledge Expert\nTask: Write a detailed, logic-driven answer for the question: [Question].\nStructure: Conclusion first -> Case Study -> Analysis -> Summary. Tone: Professional and objective.",
+                'Video Script (视频脚本)': "Role: Scriptwriter\nTask: Write a video script for [Topic].\nStructure:\n1. Hook (0-5s): Visual/Audio shock.\n2. Pain Point: Why the viewer should care.\n3. Solution: The core content.\n4. CTA: Like and Subscribe.",
+                'LinkedIn Post (领英动态)': "Role: Industry Thought Leader\nTask: Write a LinkedIn post about [Topic].\nTone: Professional, Insightful, Encouraging discussion.\nStructure: Hook -> Insight -> Question for audience.",
+                'Storytelling (小说故事创作)': "Role: Novelist\nTask: Write a short story scene about [Scenario].\nFocus: Show, don't tell. Focus on sensory details and character emotions."
+            },
+            "💻 Coding & Dev (编程与开发)": {
+                'Python Debugger (Python 除错)': "Role: Python Expert\nTask: Find the bug in this code and explain the fix.\nCode:\n[Paste Code Here]",
+                'Code Explainer (代码解释)': "Role: Senior Engineer\nTask: Explain the following code snippet to a junior developer in simple terms.\nCode:\n[Paste Code Here]",
+                'SQL Optimizer (SQL 查询优化)': "Role: Database Administrator\nTask: Optimize this SQL query for performance.\nQuery:\n[Paste SQL Here]",
+                'Regex Generator (正则生成器)': "Role: Regex Expert\nTask: Create a Regular Expression to match: [Describe Requirement]\nOutput: The Regex pattern and a breakdown of how it works.",
+                'Git Commit (Git 提交信息生成)': "Role: Developer\nTask: Generate a conventional commit message for these changes: [Describe Changes]",
+                'React Component (前端组件生成)': "Role: Frontend Dev\nTask: Create a React functional component for [Component Name] using Tailwind CSS. It should handle [Functionality]."
+            },
+            "🎓 Academic & Office (学术与办公)": {
+                'Academic Polish (学术论文润色)': "Role: Academic Editor\nTask: Polish the following text for a top-tier journal (Nature/Science style).\nRequirements: Enhance clarity, fix grammar, remove repetition, and ensure a formal academic tone.\nText:\n[Paste Text Here]",
+                'Weekly Report (周报生成器)': "请根据以下工作内容生成一份周报：\n[输入工作内容]\n\n要求：分为'本周进展'、'存在问题'、'下周计划'，语言简练，数据量化。",
+                'Email Polisher (邮件润色)': "Role: Communication Coach\nTask: Rewrite this email to be more professional, polite, and concise.\nDraft:\n[Paste Draft]",
+                'Excel Formula (Excel 公式生成)': "I need an Excel formula to: [Describe goal, e.g., sum column A if column B contains 'X']. Explain how it works.",
+                'Presentation (PPT 大纲生成)': "Role: Presentation Expert\nTask: Create a 10-slide outline for a presentation about [Topic].\nInclude: Slide Title, Key Bullet Points, and Visual Suggestion for each slide.",
+                'Pro Translator (中英互译)': "Role: Professional Translator\nTask: Translate the following text into [Target Language]. Maintain the original nuance and tone."
+            },
+            "🤣 Fun & Roleplay (趣味与角色)": {
+                'Linux Terminal (Linux 终端)': "I want you to act as a linux terminal. I will type commands and you will reply with what the terminal should show. I want you to only reply with the terminal output inside one unique code block, and nothing else. do not write explanations. My first command is pwd",
+                'Text Adventure (文字冒险游戏)': "I want you to act as a text based adventure game. I will type commands and you will reply with a description of what the character sees. The game is set in [Setting, e.g., Zombie Apocalypse].",
+                'Tarot Reader (塔罗牌占卜)': "Role: Tarot Reader\nTask: Draw 3 cards for me regarding [Question].\nOutput: Card names, meanings, and a final interpretation of the spread.",
+                'Socratic Guide (苏格拉底导游)': "Role: Socrates\nTask: Help me solve [Problem] not by giving answers, but by asking me probing questions that lead me to the solution myself.",
+                'Debate Opponent (辩论对手)': "Role: Debater\nTask: I argue that [Opinion]. You must argue the opposite side logically and persuasively.",
+                'Dream Interpreter (解梦大师)': "Role: Jungian Analyst\nTask: Interpret my dream: [Describe Dream]. Focus on archetypes and subconscious meanings."
             }
         };
 
+        const libraryTemplates = {};
+        Object.values(libraryGroups).forEach(group => Object.assign(libraryTemplates, group));
+
+        // === 2. 工具配置 ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
-                models: ['Midjourney V6', 'Niji V6', 'DALL-E 3', 'SDXL'],
+                models: ['Midjourney V6', 'Niji V6', 'Stable Diffusion XL', 'DALL-E 3'],
                 inputs: [
-                    { id: 'subject', label: 'Subject (主体)', type: 'text', placeholder: 'e.g. A cyberpunk cat' },
-                    { id: 'style', label: 'Art Style (风格)', type: 'select', options: ['Photorealistic (真实)', 'Cyberpunk (赛博朋克)', 'Anime (动漫)', '3D Render (3D)', 'Oil Painting (油画)', 'Minimalist (极简)']},
-                    { id: 'lighting', label: 'Lighting (光影)', type: 'select', options: ['Cinematic (电影光)', 'Natural (自然光)', 'Neon (霓虹)', 'Volumetric (丁达尔)']},
-                    { id: 'ar', label: 'Ratio (比例)', type: 'select', options: ['--ar 16:9 (横屏)', '--ar 9:16 (竖屏)', '--ar 1:1 (方图)', '--ar 4:3']}
+                    { id: 'subject', label: 'Subject (画面主体)', type: 'text', placeholder: 'e.g. A cyberpunk cat (例如：赛博朋克猫)'},
+                    { id: 'style', label: 'Art Style (艺术风格)', type: 'select', options: ['Photorealistic (真实摄影)', 'Cyberpunk (赛博朋克)', 'Anime/Manga (日系动漫)', '3D Render (3D渲染)', 'Oil Painting (油画)', 'Watercolor (水彩)', 'Pixel Art (像素艺术)', 'Ukiyo-e (浮世绘)', 'Vaporwave (蒸汽波)', 'Steampunk (蒸汽朋克)', 'Bauhaus (包豪斯)', 'Minimalist Vector (极简矢量)', 'Claymation (粘土动画)', 'Gothic (哥特风)', 'Surrealism (超现实主义)', 'Impressionism (印象派)']},
+                    { id: 'shot', label: 'Camera Shot (构图/运镜)', type: 'select', options: ['Wide Angle (广角)', 'Ultra-Wide (超广角 14mm)', 'Telephoto (长焦 85mm)', 'Macro (微距)', 'Drone View (上帝视角)', 'Isometric (等轴测)', 'Selfie (自拍)', 'Fisheye (鱼眼)', 'Over-the-Shoulder (过肩镜头)', 'Low Angle (低角度仰拍)', 'Dutch Angle (荷兰式倾斜)', 'Eye-Level (平视)']},
+                    { id: 'light', label: 'Lighting (布光)', type: 'select', options: ['Cinematic Lighting (电影光)', 'Natural Light (自然光)', 'Golden Hour (黄金时刻)', 'Blue Hour (蓝调时刻)', 'Neon Lights (霓虹光)', 'Rembrandt Lighting (伦勃朗光)', 'Butterfly Lighting (蝴蝶光)', 'Split Lighting (侧逆光)', 'Volumetric/God Rays (丁达尔光)', 'Studio Softbox (影棚柔光)', 'Bioluminescent (生物荧光)']},
+                    { id: 'film', label: 'Film Stock (胶片质感)', type: 'select', options: ['Digital Clean (数码洁净)', 'Kodak Portra 400 (人像胶片)', 'Fujifilm Velvia (高饱和)', 'Ilford HP5 (黑白胶片)', 'Kodak Gold 200 (暖色怀旧)', 'Polaroid (拍立得)', 'VHS Tape (录像带噪点)']}
+                ]
+            },
+            library: { title: "Prompt Library (经典词库)", models: ['Universal Format'], inputs: [{ id: 'template', label: 'Select Template (选择高频模版)', type: 'select', options: [] }] },
+            history: { title: "History (历史记录)", models: [], inputs: [] },
+            tiktok: {
+                title: "TikTok Director (抖音脚本)",
+                models: ['GPT-4o', 'Claude 3 Opus'],
+                inputs: [
+                    { id: 'topic', label: 'Video Topic (视频主题)', type: 'text', placeholder: 'e.g. Unboxing iPhone 15 (例如：开箱 iPhone 15)' },
+                    { id: 'hook', label: 'Opening Hook (开头黄金3秒)', type: 'select', options: ['Visual Shock (视觉奇观/特效)', 'Contrast/Reversal (巨大反差/反转)', 'Pain Point Question (痛点提问)', 'Controversial Statement (暴论/争议)', 'ASMR Sound (沉浸式音效)', 'Direct Benefit (利益点直给)', 'Storytime (故事引入)']},
+                    { id: 'niche', label: 'Niche (赛道/垂类)', type: 'select', options: ['Beauty/Skincare (美妆护肤)', 'Tech/Gadgets (数码科技)', 'Food/Cooking (美食烹饪)', 'Travel/Vlog (旅行生活)', 'Education/Tips (知识干货)', 'Comedy/Skit (剧情搞笑)', 'Fitness/Health (运动健康)', 'Pet/Animals (萌宠)']},
+                    { id: 'pace', label: 'Editing Pace (剪辑节奏)', type: 'select', options: ['Fast & Punchy (快节奏/卡点)', 'Slow & Cinematic (慢节奏/电影感)', 'Sync to Beat (踩点剪辑)', 'Vlog Style (生活流/自然)']},
+                    { id: 'bgm', label: 'BGM Mood (音乐情绪)', type: 'select', options: ['Trending/Viral (热门榜单)', 'Upbeat/Fun (欢快搞怪)', 'Suspense/Dark (悬疑/吃瓜)', 'Lo-fi/Chill (治愈/放松)', 'Epic/Dramatic (史诗/反转)', 'Phonk/Drift (运动/燃)']},
+                    { id: 'cta', label: 'CTA (互动引导)', type: 'select', options: ['Follow for More (关注看下集)', 'Comment Below (评论区互动)', 'Check Link in Bio (主页链接)', 'Save this Video (收藏防走丢)']}
                 ]
             },
             xhs: {
-                title: "Xiaohongshu (小红书)",
-                models: ['Claude 3 (Vibe)', 'GPT-4'],
+                title: "Xiaohongshu (小红书矩阵)",
+                models: ['Claude 3 (Best for Vibe)', 'GPT-4'],
                 inputs: [
-                    { id: 'topic', label: 'Topic (选题)', type: 'text', placeholder: 'e.g. 减肥食谱' },
-                    { id: 'niche', label: 'Niche (赛道)', type: 'select', options: ['Beauty (美妆)', 'Fashion (穿搭)', 'Food (美食)', 'Travel (旅行)', 'Tech (数码)']},
-                    { id: 'title_style', label: 'Title (标题)', type: 'select', options: ['Emotional (情绪化)', 'Warning (避雷)', 'List (盘点)', 'Tutorial (教程)']},
-                    { id: 'emoji', label: 'Emoji (浓度)', type: 'select', options: ['Standard (标准)', 'Heavy (氛围感)', 'Minimal (极简)']}
+                    { id: 'topic', label: 'Topic (选题)', type: 'text', placeholder: 'e.g. Diet Plan (例如：减肥食谱)' },
+                    { id: 'niche', label: 'Niche (赛道/垂类)', type: 'select', options: ['Beauty/Skincare (美妆护肤)', 'Fashion/OOTD (时尚穿搭)', 'Food/Cooking (美食烹饪)', 'Home/Decor (家居装修)', 'Travel/Vlog (旅行攻略)', 'Education (知识干货)', 'Career/Work (职场经验)', 'Fitness (运动健身)', 'Baby/Parenting (母婴育儿)', 'Tech/Digital (数码科技)']},
+                    { id: 'persona', label: 'Persona (博主人设)', type: 'select', options: ['Girlfriend/BFF (好闺蜜/种草姬)', 'Professional Coach (专业导师/成分党)', 'Big Sister (知心大姐姐/情感)', 'Student/Gen Z (学生党/省钱)', 'Rich/Luxury (贵妇/名媛)', 'Minimalist (极简主义者)', 'Funny/Drama (搞笑女/戏精)']},
+                    { id: 'title_style', label: 'Title Hook (标题风格)', type: 'select', options: ['Emotional Shock (情绪宣泄: 绝绝子!)', 'Negative Warning (避雷预警: 千万别买!)', 'Number List (数字盘点: 3个好物...)', 'Tutorial (保姆级教程: 手把手教你)', 'Curiosity (悬念勾引: 谁懂啊...)', 'Comparison (红黑榜测评)']},
+                    { id: 'emoji', label: 'Emoji Density (Emoji浓度)', type: 'select', options: ['Standard (标准: 适量点缀)', 'Heavy (氛氛感: 满屏✨💖🔥)', 'Minimal (极简: 几乎没有)', 'Key Points (仅用于列表)']},
+                    { id: 'cta', label: 'Interaction (互动策略)', type: 'select', options: ['Ask Question (提问引导评论)', 'Collect for Later (引导收藏防走丢)', 'Tag Friends (艾特闺蜜来看)', 'Follow Series (关注看下集)', 'Get Resources (回复求资料)']}
+                ]
+            },
+            academic: {
+                title: "Academic Scholar (学术科研)",
+                models: ['Claude 3.5 Sonnet', 'GPT-4o (Academic)'],
+                inputs: [
+                    { id: 'content', label: 'Abstract/Paragraph (段落/摘要)', type: 'textarea', placeholder: 'Paste text here (在此粘贴需要润色或降重的文本...)', height: '150px' },
+                    { id: 'field', label: 'Research Field (研究领域)', type: 'select', options: ['Computer Science (计算机科学)', 'Artificial Intelligence (人工智能)', 'Medicine/Clinical (临床医学)', 'Biology/Life Sciences (生物科学)', 'Business/Management (商科/管理)', 'Economics (经济学)', 'Engineering (工程学)', 'Psychology (心理学)', 'Sociology (社会学)', 'Education (教育学)', 'Physics/Astronomy (物理/天文)', 'Chemistry (化学)', 'Law/Legal (法学)', 'History/Arts (历史/艺术)']},
+                    { id: 'target', label: 'Target Style (投稿目标)', type: 'select', options: ['IEEE Standard (IEEE标准)', 'Nature/Science (顶级期刊风格)', 'APA Format (APA格式)', 'MLA Style (MLA格式)', 'Chicago Style (芝加哥格式)', 'Harvard Style (哈佛格式)', 'General Academic (通用学术)', 'Thesis/Dissertation (学位论文)']},
+                    { id: 'goal', label: 'Optimization Goal (优化目标)', type: 'select', options: ['Polish Grammar (深度润色)', 'Reduce Repetition (降重/去AI味)', 'Enhance Logic (逻辑增强)', 'Make Concise (精简语句)', 'Fix Chinglish (中式英语矫正)', 'Translate to English (中译英)']}
+                ]
+            },
+            video: {
+                title: "Video Director (视频)",
+                models: ['Runway Gen-2', 'Pika Labs', 'Sora', 'Stable Video'],
+                inputs: [
+                    { id: 'subject', label: 'Subject (视频内容)', type: 'text', placeholder: 'e.g. Waves hitting rocks (例如：海浪拍打礁石)' },
+                    { id: 'camera', label: 'Camera Movement (运镜方式)', type: 'select', options: ['Pan Right (右摇)', 'Pan Left (左摇)', 'Tilt Up (上摇)', 'Tilt Down (下摇)', 'Zoom In (推镜头)', 'Zoom Out (拉镜头)', 'Orbit/Arc (环绕)', 'FPV Drone (穿越机)', 'Truck Left/Right (左右平移)', 'Dolly In/Out (轨道推拉)', 'Handheld (手持感)']},
+                    { id: 'motion', label: 'Motion Intensity (动态幅度)', type: 'select', options: ['Low (低动态)', 'Medium (中动态)', 'High (高动态)', 'Speed Ramp (变速)']},
+                    { id: 'style', label: 'Visual Style (视觉风格)', type: 'select', options: ['Cinematic (电影感)', '3D Animation (3D动画)', 'Anime (二次元)', 'Vintage VHS (复古录像带)', 'Documentary (纪录片)']}
+                ]
+            },
+            audio: {
+                title: "Music Producer (音乐)",
+                models: ['Suno V3', 'Udio'],
+                inputs: [
+                    { id: 'genre', label: 'Genre (流派)', type: 'select', options: ['Pop (流行)', 'K-pop (韩流)', 'Rock (摇滚)', 'Jazz (爵士)', 'Hip Hop (嘻哈)', 'EDM (电子舞曲)', 'House (浩室)', 'Techno (科技舞曲)', 'Dubstep (回响贝斯)', 'R&B (节奏蓝调)', 'Country (乡村)', 'Reggae (雷鬼)', 'Classical (古典)', 'Epic Orchestral (史诗管弦)', 'Lo-fi (低保真)', 'Phonk (冯克)', 'Synthwave (合成器波)']},
+                    { id: 'mood', label: 'Mood (情绪)', type: 'select', options: ['Happy (快乐)', 'Sad (悲伤)', 'Energetic (活力)', 'Chill (放松)', 'Dark (黑暗)', 'Romantic (浪漫)', 'Ethereal (空灵)', 'Aggressive (激昂)']},
+                    { id: 'vocal', label: 'Vocals (人声)', type: 'select', options: ['Female (女声)', 'Male (男声)', 'Duet (对唱)', 'Instrumental (纯音乐)', 'Choir (合唱)', 'Whisper (耳语)', 'Autotune (电音)']}
                 ]
             },
             text: {
                 title: "Copywriter (写作)",
-                models: ['GPT-4o', 'Claude 3'],
+                models: ['GPT-4o', 'Claude 3 Opus', 'Gemini Pro'],
                 inputs: [
-                    { id: 'topic', label: 'Topic (主题)', type: 'text', placeholder: 'e.g. AI Trends' },
-                    { id: 'type', label: 'Type (类型)', type: 'select', options: ['Blog Post', 'Tweet', 'Script', 'Email']},
-                    { id: 'tone', label: 'Tone (语气)', type: 'select', options: ['Professional', 'Humorous', 'Urgent', 'Empathetic']}
-                ]
-            },
-            tiktok: {
-                title: "TikTok Script (短视频)",
-                models: ['GPT-4o', 'Claude 3'],
-                inputs: [
-                    { id: 'topic', label: 'Topic (主题)', type: 'text', placeholder: 'e.g. iPhone Review' },
-                    { id: 'hook', label: 'Hook (开头)', type: 'select', options: ['Visual Shock', 'Controversial', 'Question', 'Story']},
-                    { id: 'duration', label: 'Duration (时长)', type: 'select', options: ['15s', '30s', '60s']}
+                    { id: 'topic', label: 'Topic (主题)', type: 'text', placeholder: 'e.g. AI Trends 2026 (例如：2026年人工智能趋势)' },
+                    { id: 'type', label: 'Format (文体类型)', type: 'select', options: ['Blog Post (博客/公众号)', 'Social Media Post (社媒动态)', 'Press Release (新闻通稿)', 'Speech/Script (演讲稿/脚本)', 'Cold Email (冷邮件)', 'Twitter/X Thread (推特串推)', 'Product Description (产品文案)', 'Story/Fiction (故事/小说)', 'Poem/Lyric (诗歌/歌词)']},
+                    { id: 'framework', label: 'Framework (思维模型)', type: 'select', options: ['AIDA (注意-兴趣-欲望-行动)', 'PAS (问题-痛点-解决)', 'FAB (特性-优势-利益)', '4Ps (产品-价格-渠道-推广)', 'StoryBrand (品牌故事七步法)', 'QUEST (筛选-理解-教育-刺激-转化)', 'First Principles (第一性原理)', 'Golden Circle (黄金圈法则: Why-How-What)', 'SCQA (情境-冲突-问题-答案)']},
+                    { id: 'tone', label: 'Tone of Voice (语气风格)', type: 'select', options: ['Professional (专业严谨)', 'Conversational (像朋友聊天)', 'Humorous/Witty (幽默风趣)', 'Urgent/Hype (紧迫感/营销)', 'Empathetic (共情/治愈)', 'Academic (学术/客观)', 'Sarcastic (讽刺/毒舌)', 'Luxury (高端/奢华)']},
+                    { id: 'length', label: 'Length (篇幅长度)', type: 'select', options: ['Short (<100 words / 短文案)', 'Medium (300-500 words / 中篇)', 'Long (>1000 words / 长文)', 'Twitter Style (280 chars / 推文)', 'Outline Only (仅大纲)']}
                 ]
             },
             email: {
-                title: "Sales Email (外贸)",
-                models: ['GPT-4o (Sales)'],
+                title: "Sales Email (外贸开发)",
+                models: ['GPT-4o (Sales)', 'Claude 3 Haiku'],
                 inputs: [
-                    { id: 'product', label: 'Product (产品)', type: 'text' },
-                    { id: 'role', label: 'To (收件人)', type: 'select', options: ['CEO', 'Purchasing Manager', 'Marketing Director']},
-                    { id: 'framework', label: 'Model (框架)', type: 'select', options: ['AIDA', 'PAS', 'Direct Pitch']}
+                    { id: 'product', label: 'Product (推销产品)', type: 'text', placeholder: 'e.g. Solar Panels (例如：太阳能板)' },
+                    { id: 'role', label: 'Recipient (收件人)', type: 'select', options: ['CEO / Owner (老板)', 'Purchasing Manager (采购经理)', 'Product Manager (产品经理)', 'Marketing Director (营销总监)', 'CTO (技术总监)', 'General Inquiry (一般咨询)']},
+                    { id: 'stage', label: 'Stage (营销阶段)', type: 'select', options: ['Cold Outreach (首次开发)', 'Follow Up 1 (跟进 1)', 'Follow Up 2 (跟进 2)', 'Proposal (报价/提案)', 'Re-engagement (激活僵尸粉)', 'Break-up Email (最后尝试)']},
+                    { id: 'framework', label: 'Framework (营销框架)', type: 'select', options: ['AIDA (注意-兴趣-欲望-行动)', 'BAB (前-后-桥梁)', 'PAS (问题-加剧-解决)', 'Direct Pitch (开门见山)', 'Storytelling (讲故事)', 'Value Proposition (价值主张)']},
+                    { id: 'cta', label: 'CTA (行动号召)', type: 'select', options: ['Book a Call (预约会议)', 'Reply for Info (回复获取信息)', 'Request Sample (索取样品)', 'Visit Website (访问网站)']},
+                    { id: 'lang', label: 'Language (目标语言)', type: 'select', options: ['English US (美式英语)', 'English UK (英式英语)', 'Spanish (西班牙语)', 'French (法语)', 'German (德语)', 'Japanese (日语)', 'Arabic (阿拉伯语)', 'Chinese (中文)', 'Russian (俄语)']}
                 ]
             },
-            video: {
-                title: "Video Gen (AI视频)",
-                models: ['Runway Gen-2', 'Pika'],
+            reverse: {
+                title: "Reverse Eng. (逆向工程)",
+                models: ['GPT-4 Vision', 'Claude 3 Opus'],
                 inputs: [
-                    { id: 'prompt', label: 'Prompt (画面)', type: 'text' },
-                    { id: 'camera', label: 'Camera (运镜)', type: 'select', options: ['Pan Left', 'Zoom In', 'Orbit', 'Static']}
+                    { id: 'desc', label: 'Description (补充描述)', type: 'textarea', placeholder: 'e.g. Mimic this lighting... (例如：模仿这个灯光...)', height: '80px' },
+                    { id: 'mode', label: 'Mode (分析模式)', type: 'select', options: ['Extract Visual Prompts (提取视觉提示词)', 'Analyze Layout (分析构图)', 'Extract Color (提取配色)']}
                 ]
-            },
-            library: { title: "Prompt Library (词库)", models: ['Universal'], inputs: [{ id: 'template', label: 'Template (模版)', type: 'select', options: [] }] },
-            reverse: { title: "Reverse Engineering (逆向)", models: ['GPT-4 Vision'], inputs: [{ id: 'desc', label: 'Image Desc (描述)', type: 'text', placeholder: 'Describe the image...' }] },
-            history: { title: "History (历史记录)", models: [], inputs: [] }
+            }
         };
 
         let currentTool = 'visual';
 
-        // === 2. 初始化逻辑 ===
+        // 页面加载初始化
         window.onload = () => { loadTool('visual'); };
 
-        function loadTool(key) {
-            currentTool = key;
-            const data = tools[key];
-            
-            // UI 更新
-            document.getElementById('toolTitle').innerText = data.title;
-            const modelSelect = document.getElementById('targetModel');
-            
-            // 更新模型选择
-            if(data.models.length > 0) {
-                document.getElementById('modelSelectContainer').style.display = 'flex';
-                modelSelect.innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
-            } else {
-                document.getElementById('modelSelectContainer').style.display = 'none';
-            }
-
-            // 菜单高亮
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(item => {
-                if(item.getAttribute('onclick').includes(key)) item.classList.add('active');
-            });
-
-            // 移动端收起菜单
-            if(window.innerWidth <= 768) closeSidebar();
-
-            renderInterface(key, data);
+        // 切换侧边栏 (移动端)
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
         }
-
-        function renderInterface(key, data) {
-            const formGrid = document.getElementById('dynamicForm');
-            const historyList = document.getElementById('historyList');
-            const actionBar = document.getElementById('actionBar');
-            const outputHeader = document.getElementById('outputHeader');
-            const resultContainer = document.getElementById('resultContainer');
-
-            // 重置视图
-            formGrid.style.display = 'none';
-            historyList.style.display = 'none';
-            actionBar.style.display = 'flex';
-            outputHeader.style.display = 'flex';
-            resultContainer.style.display = 'flex';
-            document.getElementById('abTestGroup').style.display = 'flex';
-
-            if (key === 'history') {
-                historyList.style.display = 'block';
-                actionBar.style.display = 'none';
-                outputHeader.style.display = 'none';
-                resultContainer.style.display = 'none';
-                renderHistory();
-                return;
-            }
-
-            formGrid.style.display = 'grid';
-            formGrid.innerHTML = '';
-            resultContainer.innerHTML = '';
-
-            // 渲染输入框
-            if(data.inputs) {
-                data.inputs.forEach(field => {
-                    const div = document.createElement('div');
-                    div.className = 'input-group';
-                    let inputHtml = '';
-                    
-                    if(field.type === 'select') {
-                        if(key === 'library' && field.id === 'template') {
-                            // 渲染词库选项
-                            let optsHtml = '';
-                            for(const [gName, gItems] of Object.entries(libraryGroups)) {
-                                optsHtml += `<optgroup label="${gName}" style="color:var(--gold); background:var(--sidebar);">`;
-                                for(const tName of Object.keys(gItems)) {
-                                    optsHtml += `<option value="${tName}">${tName}</option>`;
-                                }
-                                optsHtml += `</optgroup>`;
-                            }
-                            inputHtml = `<select id="f_${field.id}" onchange="autoGenerateLibrary()">${optsHtml}</select>`;
-                        } else {
-                            const opts = field.options.map(o => `<option>${o}</option>`).join('');
-                            inputHtml = `<select id="f_${field.id}">${opts}</select>`;
-                        }
-                    } else {
-                        inputHtml = `<input type="text" id="f_${field.id}" placeholder="${field.placeholder || ''}">`;
-                    }
-                    div.innerHTML = `<label>${field.label}</label>${inputHtml}`;
-                    formGrid.appendChild(div);
-                });
-            }
-
-            // 按钮文字适配
-            const btn = document.getElementById('actionBtn');
-            if(key === 'library') {
-                document.getElementById('abTestGroup').style.display = 'none';
-                btn.innerHTML = '<i class="fas fa-copy"></i> Get Template (获取模版)';
-                btn.classList.add('purple');
-                setTimeout(autoGenerateLibrary, 100); // 自动加载第一个
-            } else if (key === 'reverse') {
-                document.getElementById('abTestGroup').style.display = 'none';
-                btn.innerHTML = '<i class="fas fa-magic"></i> Analyze (开始分析)';
-                btn.classList.remove('purple');
-            } else {
-                btn.innerHTML = '<i class="fas fa-bolt"></i> Generate (立即生成)';
-                btn.classList.remove('purple');
-            }
-        }
-
-        // === 3. 核心生成逻辑 ===
-        function generate() {
-            const toolData = tools[currentTool];
-            const inputs = {};
-            
-            // 收集数据并清洗 (去除中文备注)
-            if(toolData.inputs) {
-                toolData.inputs.forEach(f => {
-                    const el = document.getElementById(`f_${f.id}`);
-                    if(el) {
-                        let val = el.value;
-                        if(f.type === 'select' && val.includes('(')) {
-                            val = val.split('(')[0].trim();
-                        }
-                        inputs[f.id] = val;
-                    }
-                });
-            }
-
-            if(currentTool === 'reverse') {
-                simulateReverse();
-                return;
-            }
-
-            const prompt = buildPromptString(currentTool, inputs);
-            const container = document.getElementById('resultContainer');
-            container.innerHTML = '';
-
-            const isAB = document.getElementById('abTest').checked;
-            
-            if(isAB && currentTool !== 'library') {
-                createResultBox("Version A (Standard)", prompt);
-                createResultBox("Version B (Creative)", prompt + " --stylize 250 --weird 50");
-            } else {
-                createResultBox("Result", prompt);
-            }
-
-            saveToHistory(toolData.title, prompt);
-            showToast("✅ Generated Successfully!", "success");
-        }
-
-        function buildPromptString(key, data) {
-            if(key === 'visual') {
-                return `/imagine prompt: ${data.subject}, ${data.style} style, ${data.lighting} lighting ${data.ar} --v 6.0`;
-            } else if (key === 'xhs') {
-                return `Role: Xiaohongshu Creator\nTopic: ${data.topic}\nNiche: ${data.niche}\nStyle: ${data.title_style}\n\n[Content Generation...]`;
-            } else if (key === 'library') {
-                // 查找模版
-                for(const g of Object.values(libraryGroups)) {
-                    if(g[data.template]) return g[data.template];
-                }
-                return "Template not found.";
-            }
-            return `### ${key.toUpperCase()} Task\nInput: ${JSON.stringify(data)}`;
-        }
-
-        function createResultBox(tag, text) {
-            const box = document.createElement('div');
-            box.className = 'result-box';
-            // Store raw text in a data attribute for clean copying
-            box.setAttribute('data-raw', text); 
-            box.innerHTML = `
-                <div class="ab-tag">${tag}</div>
-                <button class="btn-copy" onclick="copyResult(this)"><i class="fas fa-copy"></i> Copy</button>
-                ${text}
-            `;
-            document.getElementById('resultContainer').appendChild(box);
-        }
-
-        // 模拟逆向工程动画
-        function simulateReverse() {
-            const container = document.getElementById('resultContainer');
-            container.innerHTML = '';
-            const box = document.createElement('div');
-            box.className = 'result-box';
-            box.style.color = 'var(--text-sub)';
-            container.appendChild(box);
-
-            const steps = ["🔍 Scanning Image...", "🧠 Analyzing Style...", "🎨 Extracting Palette...", "✨ Done!"];
-            let i = 0;
-            const timer = setInterval(() => {
-                if(i >= steps.length) {
-                    clearInterval(timer);
-                    box.style.color = 'var(--success)';
-                    const res = "/imagine prompt: analyzed image content, cinematic lighting, 8k resolution --v 6.0";
-                    box.setAttribute('data-raw', res);
-                    box.innerHTML = `<div class="ab-tag">Analysis</div><button class="btn-copy" onclick="copyResult(this)"><i class="fas fa-copy"></i> Copy</button>${res}`;
-                    showToast("Analysis Complete!");
-                } else {
-                    box.innerText = steps[i++];
-                }
-            }, 600);
-        }
-
-        function autoGenerateLibrary() {
-            if(currentTool === 'library') generate();
-        }
-
-        // === 4. 工具函数 ===
-        
-        // 核心引流功能：复制微信号
-        function getWeChat() {
-            const wechatId = "zID0001";
-            navigator.clipboard.writeText(wechatId).then(() => {
-                showToast("✅ 微信号已复制: " + wechatId, "success");
-                setTimeout(() => {
-                    alert("👉 请去微信添加好友\n备注【PDF】\n即可领取 5000+ 词库！");
-                }, 500);
-            }).catch(() => {
-                prompt("请手动复制微信号：", wechatId);
-            });
-        }
-
-        // 纯净复制功能
-        function copyResult(btn) {
-            const box = btn.parentElement;
-            const text = box.getAttribute('data-raw');
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
-                btn.style.background = 'rgba(16, 185, 129, 0.2)';
-                showToast("Copied to clipboard!");
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = 'rgba(255,255,255,0.1)';
-                }, 2000);
-            });
-        }
-
-        // Toast 通知
-        function showToast(message, type = 'normal') {
-            const toast = document.getElementById("toast");
-            toast.innerText = message;
-            toast.className = type === 'error' ? 'error show' : 'show';
-            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
-        }
-
-        function clearResults() {
-            document.getElementById('resultContainer').innerHTML = '';
-        }
-
-        // 历史记录
-        function saveToHistory(type, content) {
-            let h = JSON.parse(localStorage.getItem('cmd_history') || '[]');
-            h.unshift({type, content, time: new Date().toLocaleTimeString()});
-            if(h.length > 20) h.pop();
-            localStorage.setItem('cmd_history', JSON.stringify(h));
-        }
-
-        function renderHistory() {
-            const list = document.getElementById('historyList');
-            const h = JSON.parse(localStorage.getItem('cmd_history') || '[]');
-            if(h.length === 0) {
-                list.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:30px;">暂无历史记录</div>';
-                return;
-            }
-            list.innerHTML = h.map(item => `
-                <div class="result-box" style="margin-bottom:10px; min-height:auto; cursor:pointer;" onclick="navigator.clipboard.writeText(this.innerText);showToast('Copied!')">
-                    <div style="font-size:0.75rem; color:var(--text-sub); margin-bottom:5px; display:flex; justify-content:space-between;">
-                        <span>${item.type}</span><span>${item.time}</span>
-                    </div>
-                    ${item.content}
-                </div>
-            `).join('');
-        }
-
-        // 侧边栏控制
         function openSidebar() {
             document.getElementById('sidebar').classList.add('open');
             document.getElementById('overlay').classList.add('active');
@@ -682,6 +478,327 @@
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('overlay').classList.remove('active');
+        }
+
+        // 核心：切换工具逻辑
+        function loadTool(key) {
+            currentTool = key;
+            const data = tools[key];
+            
+            // 更新标题和模型
+            document.getElementById('toolTitle').innerText = data.title;
+            const modelSelect = document.getElementById('targetModel');
+            if(data.models.length > 0) {
+                modelSelect.parentElement.style.display = 'block';
+                modelSelect.innerHTML = data.models.map(m => `<option>${m}</option>`).join('');
+            } else {
+                modelSelect.parentElement.style.display = 'none'; 
+            }
+
+            const uploadArea = document.getElementById('uploadArea');
+            const abTestGroup = document.getElementById('abTestGroup');
+            const actionBtn = document.getElementById('actionBtn');
+            const formGrid = document.getElementById('dynamicForm');
+            const historyList = document.getElementById('historyList');
+            const outputHeader = document.getElementById('outputHeader');
+            const resultContainer = document.getElementById('resultContainer');
+
+            // 1. History 模式特殊处理
+            if (key === 'history') {
+                uploadArea.style.display = 'none';
+                formGrid.style.display = 'none';
+                abTestGroup.style.display = 'none';
+                actionBtn.style.display = 'none';
+                outputHeader.style.display = 'none';
+                resultContainer.style.display = 'none';
+                historyList.style.display = 'block';
+                renderHistory(); 
+            } 
+            // 2. 其他模式
+            else {
+                historyList.style.display = 'none';
+                formGrid.style.display = 'grid';
+                actionBtn.style.display = 'block';
+                outputHeader.style.display = 'flex';
+                resultContainer.style.display = 'flex';
+                resultContainer.innerHTML = ''; 
+
+                // 按钮和上传框逻辑
+                if (key === 'reverse') {
+                    uploadArea.style.display = 'block';
+                    abTestGroup.style.display = 'none'; 
+                    actionBtn.innerHTML = '<i class="fas fa-search"></i> Analyze (开始分析)';
+                    actionBtn.classList.remove('purple');
+                } else if (key === 'library') {
+                    uploadArea.style.display = 'none';
+                    abTestGroup.style.display = 'none'; 
+                    actionBtn.innerHTML = '<i class="fas fa-copy"></i> Get Prompt (获取模版)';
+                    actionBtn.classList.add('purple');
+                } else {
+                    uploadArea.style.display = 'none';
+                    abTestGroup.style.display = 'flex';
+                    actionBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate (立即生成)';
+                    actionBtn.classList.remove('purple');
+                }
+
+                // 渲染表单
+                formGrid.innerHTML = '';
+                data.inputs.forEach(field => {
+                    const div = document.createElement('div');
+                    div.className = 'input-group';
+                    
+                    let inputHtml = '';
+                    if(field.type === 'select') {
+                        if(key === 'library' && field.id === 'template') {
+                            let optsHtml = '';
+                            for(const [groupName, groupItems] of Object.entries(libraryGroups)) {
+                                optsHtml += `<optgroup label="${groupName}">`;
+                                for(const templateName of Object.keys(groupItems)) {
+                                    optsHtml += `<option value="${templateName}">${templateName}</option>`;
+                                }
+                                optsHtml += `</optgroup>`;
+                            }
+                            inputHtml = `<select id="f_${field.id}" onchange="previewTemplate(this.value)">${optsHtml}</select>`;
+                        } else {
+                            const opts = field.options.map(o => `<option>${o}</option>`).join('');
+                            inputHtml = `<select id="f_${field.id}">${opts}</select>`;
+                        }
+                    } else if (field.type === 'textarea') {
+                        inputHtml = `<textarea id="f_${field.id}" placeholder="${field.placeholder || ''}" style="height:${field.height || '100px'}"></textarea>`;
+                    } else {
+                        inputHtml = `<input type="text" id="f_${field.id}" placeholder="${field.placeholder || ''}">`;
+                    }
+
+                    div.innerHTML = `<label>${field.label}</label>${inputHtml}`;
+                    formGrid.appendChild(div);
+                });
+
+                // Library 模式下初始化预览
+                if (key === 'library') {
+                    const firstKey = Object.keys(libraryGroups["🎨 Visual Art (视觉创作)"])[0];
+                    previewTemplate(firstKey);
+                }
+            }
+
+            // 菜单高亮
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            const items = document.querySelectorAll('.menu-item');
+            items.forEach(item => {
+                if(item.getAttribute('onclick').includes(key)) item.classList.add('active');
+            });
+            
+            // 移动端收起侧边栏
+            if(window.innerWidth <= 768) closeSidebar();
+        }
+
+        // 仅处理文件显示
+        function handleFile(input) {
+            const file = input.files[0];
+            if (file) {
+                const display = document.getElementById('fileNameDisplay');
+                display.style.display = 'block';
+                display.innerText = `✅ File Ready: ${file.name} (${(file.size/1024/1024).toFixed(2)}MB)`;
+            }
+        }
+
+        function previewTemplate(key) {
+            if(currentTool !== 'library') return;
+            // 不做动作，等待点击
+        }
+
+        // 核心：生成逻辑
+        function generate() {
+            const model = document.getElementById('targetModel').value;
+            const isAB = document.getElementById('abTest').checked;
+            const toolData = tools[currentTool];
+            
+            // 收集数据
+            const inputs = {};
+            if(toolData.inputs) {
+                toolData.inputs.forEach(f => {
+                    const el = document.getElementById(`f_${f.id}`);
+                    inputs[f.id] = el ? el.value : '';
+                });
+            }
+
+            let resultText = "";
+
+            // 1. Library 模式直接获取
+            if (currentTool === 'library') {
+                const selectedKey = inputs.template;
+                resultText = libraryTemplates[selectedKey] || "Prompt not found.";
+                const container = document.getElementById('resultContainer');
+                container.innerHTML = `<div class="result-box"><div class="ab-tag">Template Loaded</div>${resultText} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i></div>`;
+                saveToHistory("Library Template", resultText);
+                return;
+            } 
+            // 2. Reverse 模式模拟
+            else if (currentTool === 'reverse') {
+                simulateVisionAnalysis(inputs);
+                return;
+            }
+            // 3. 常规生成
+            else {
+                resultText = buildPrompt(currentTool, model, inputs);
+            }
+
+            // 保存到历史记录
+            saveToHistory(tools[currentTool].title, resultText);
+
+            // 显示结果
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = ''; // 清空
+
+            // A/B 测试逻辑
+            if (isAB && currentTool !== 'library' && currentTool !== 'reverse') {
+                ['Version A (标准版)', 'Version B (创意版)', 'Version C (极简版)'].forEach(ver => {
+                    const box = document.createElement('div');
+                    box.className = 'result-box';
+                    box.innerHTML = `<div class="ab-tag">${ver}</div>${resultText} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
+                    container.appendChild(box);
+                });
+            } else {
+                const box = document.createElement('div');
+                box.className = 'result-box';
+                box.innerHTML = `<div class="ab-tag">Result (生成结果)</div>${resultText} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
+                container.appendChild(box);
+            }
+        }
+
+        // 增强版逆向工程模拟
+        function simulateVisionAnalysis(inputs) {
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = '';
+            
+            const randomStyles = ['Cyberpunk', 'Cinematic', 'Minimalist', 'Vintage'];
+            const randomLight = ['Neon', 'Natural', 'Studio', 'Volumetric'];
+            const style = randomStyles[Math.floor(Math.random() * randomStyles.length)];
+            const light = randomLight[Math.floor(Math.random() * randomLight.length)];
+            
+            const steps = [
+                `🔍 Analyzing Image Pixels...`, 
+                `🧠 Extracting Semantics: ${style} style detected...`, 
+                `✨ Generating Prompt...`
+            ];
+            
+            let stepIndex = 0;
+            const box = document.createElement('div');
+            box.className = 'result-box';
+            box.style.color = 'var(--text-sub)';
+            container.appendChild(box);
+
+            const interval = setInterval(() => {
+                if (stepIndex >= steps.length) {
+                    clearInterval(interval);
+                    box.style.color = '#10b981';
+                    const finalPrompt = `/imagine prompt: highly detailed shot of uploaded content, ${style} aesthetic, ${light} lighting, 8k resolution, trending on artstation --v 6.0`;
+                    box.innerHTML = `<div class="ab-tag">Analysis Result</div>${finalPrompt} <i class="fas fa-copy" style="position:absolute; right:10px; top:10px; cursor:pointer;" onclick="copyText(this)"></i>`;
+                    saveToHistory("Reverse Eng.", finalPrompt);
+                } else {
+                    box.innerText = steps[stepIndex];
+                    stepIndex++;
+                }
+            }, 600);
+        }
+
+        function buildPrompt(toolKey, model, inputs, ver) {
+            const cleanInputs = {};
+            const toolConfig = tools[toolKey];
+            
+            for (const key in inputs) {
+                const val = inputs[key];
+                // 核心修复：只清洗 Select 类型的输入
+                const inputConfig = toolConfig.inputs.find(i => i.id === key);
+                if (val && inputConfig && inputConfig.type === 'select' && val.includes('(')) {
+                    cleanInputs[key] = val.split('(')[0].trim();
+                } else {
+                    cleanInputs[key] = val;
+                }
+            }
+
+            let res = "";
+            if (toolKey === 'email') {
+                res = `Subject: [Hook for ${cleanInputs.product}]\n\nHi [Name],\n\n(Context: Sales to ${cleanInputs.role})\n[Body using ${cleanInputs.framework}...]\n\n[CTA: ${cleanInputs.cta}]`;
+            } else if (toolKey === 'text') {
+                res = `Role: Expert Copywriter\nTask: Write a [${cleanInputs.type}] about [${cleanInputs.topic}].\nTone: ${cleanInputs.tone}\nFramework: ${cleanInputs.framework}\nLength: ${cleanInputs.length}\n\n[Please generate content now]`;
+            } else if (toolKey === 'xhs') {
+                res = `Role: Xiaohongshu Creator (${cleanInputs.persona})\nTopic: ${cleanInputs.topic}\nNiche: ${cleanInputs.niche}\n\nGuidelines:\n1. Title Style: ${cleanInputs.title_style}\n2. Emoji Usage: ${cleanInputs.emoji}\n3. Interaction Goal: ${cleanInputs.cta}\n\n[Generate the Note Content]`;
+            } else if (toolKey === 'tiktok') {
+                res = `Title: [${cleanInputs.topic}]\nTarget: TikTok\nLength: ${cleanInputs.duration}\n\n[Hook (${cleanInputs.hook})]: (0-3s script)\n[Content]: (Main script, Pace: ${cleanInputs.pace})\n[BGM]: (${cleanInputs.bgm})\n[CTA]: ${cleanInputs.cta}`;
+            } else if (toolKey === 'academic') {
+                res = `[Field: ${cleanInputs.field}]\n[Target: ${cleanInputs.target}]\n[Goal: ${cleanInputs.goal}]\n\nRevised Text:\n(AI Polished version of input...)`;
+            } else if (toolKey === 'visual') {
+                res = `/imagine prompt: ${Object.values(cleanInputs).join(', ')} --v 6.0`;
+            } else if (toolKey === 'audio') {
+                res = `[Genre: ${cleanInputs.genre}] [Instruments: ${cleanInputs.genre}] [Mood: ${cleanInputs.mood}] [Vocals: ${cleanInputs.vocal}]`;
+            } else if (toolKey === 'video') {
+                res = `/animate prompt: ${cleanInputs.subject}, Camera: ${cleanInputs.camera}, Motion: ${cleanInputs.motion}, Style: ${cleanInputs.style}`;
+            } else {
+                res = `### Task: ${tools[toolKey].title}\n### Inputs: ${JSON.stringify(cleanInputs)}`;
+            }
+            return res;
+        }
+
+        // === 历史记录功能 ===
+        function saveToHistory(type, content) {
+            let history = JSON.parse(localStorage.getItem('ai_command_history') || '[]');
+            const newItem = {
+                type: type,
+                content: content,
+                time: new Date().toLocaleString()
+            };
+            history.unshift(newItem); 
+            if(history.length > 10) history.pop(); 
+            localStorage.setItem('ai_command_history', JSON.stringify(history));
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('ai_command_history') || '[]');
+            
+            if(history.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;">No History Yet (暂无历史记录)</div>';
+                return;
+            }
+
+            let html = '<div style="display:flex; justify-content:flex-end; margin-bottom:10px;"><span style="cursor:pointer; color:var(--text-sub); font-size:0.8rem;" onclick="clearHistory()"><i class="fas fa-trash"></i> Clear All</span></div>';
+            
+            history.forEach(item => {
+                html += `
+                <div class="history-item" onclick="copyTextDirect('${item.content.replace(/'/g, "\\'")}')">
+                    <div class="history-time">
+                        <span>${item.type}</span>
+                        <span>${item.time}</span>
+                    </div>
+                    <div class="history-content">${item.content}</div>
+                </div>`;
+            });
+            list.innerHTML = html;
+        }
+
+        function clearHistory() {
+            localStorage.removeItem('ai_command_history');
+            renderHistory();
+        }
+
+        function copyText(icon) {
+            navigator.clipboard.writeText(icon.parentElement.innerText.replace("Copy", "").trim());
+            alert("Copied (已复制)!");
+        }
+        
+        function copyTextDirect(text) {
+            navigator.clipboard.writeText(text);
+            alert("Copied from History (已从历史记录复制)!");
+        }
+
+        // === 新增：私域引流逻辑 ===
+        function getWeChat() {
+            const wechatId = "zID0001";
+            navigator.clipboard.writeText(wechatId).then(() => {
+                alert("✅ 微信号 " + wechatId + " 已复制！\n\n请去微信添加好友，备注【PDF】\n即可免费领取 5000+ 条数据库！");
+            }).catch(() => {
+                prompt("请手动复制微信号添加：", wechatId);
+            });
         }
     </script>
 </body>
