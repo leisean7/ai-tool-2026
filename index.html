@@ -2,10 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <title>AI CommandOS | 极速 AI 指令生成器 (专业版)</title>
-    <meta name="description" content="你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。">
+    <meta name="description" content="你的全能 AI 指令控制台。">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
@@ -119,8 +119,10 @@
         }
         .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(245, 158, 11, 0.3); }
 
-        /* === 📱 移动端底部吸底条 (新增) === */
-        .mobile-buy-bar { display: none; } /* 默认隐藏 */
+        /* === 📱 移动端底部吸底条 (强制显示) === */
+        .mobile-buy-bar { 
+            display: none; /* 桌面端隐藏 */
+        } 
 
         /* --- 工作区 --- */
         .workspace {
@@ -223,26 +225,37 @@
         #toast.show { visibility: visible; opacity: 1; top: 50px; }
         #toast.error { background-color: rgba(239, 68, 68, 0.95); }
 
-        /* --- 📱 Mobile Responsiveness (重点修改) --- */
+        /* --- 📱 Mobile Responsiveness (强制覆盖) --- */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
             .mobile-toggle { display: block; }
             .topbar { padding: 0 15px; }
-            .scroll-area { padding: 15px; padding-bottom: 100px; /* 防止内容被底部购买条遮挡 */ }
+            
+            /* 防止内容被底部按钮遮挡 */
+            .scroll-area { padding: 15px; padding-bottom: 120px !important; }
+            
             .form-grid { grid-template-columns: 1fr; }
             
-            /* 移动端底部购买条 */
+            /* 移动端底部购买条 (强制显示) */
             .mobile-buy-bar {
-                display: flex; position: fixed; bottom: 0; left: 0; width: 100%;
-                background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--gold);
-                padding: 15px; z-index: 50; justify-content: center; backdrop-filter: blur(10px);
+                display: flex !important; /* 核心：强制显示 */
+                position: fixed; 
+                bottom: 0; left: 0; right: 0; width: 100%;
+                background: rgba(15, 23, 42, 0.98); 
+                border-top: 1px solid var(--gold);
+                padding: 15px; 
+                padding-bottom: env(safe-area-inset-bottom, 20px); /* 适配 iPhone X+ */
+                z-index: 9999; /* 核心：最高层级 */
+                justify-content: center; 
+                backdrop-filter: blur(10px);
                 box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
             }
             .btn-mobile-buy {
-                width: 100%; background: linear-gradient(90deg, #f59e0b, #d97706);
-                color: white; border: none; padding: 12px; border-radius: 8px;
-                font-weight: bold; font-size: 1rem; cursor: pointer;
+                width: 100%; 
+                background: linear-gradient(90deg, #f59e0b, #d97706);
+                color: white; border: none; padding: 14px; border-radius: 8px;
+                font-weight: bold; font-size: 1.1rem; cursor: pointer;
                 box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
                 animation: pulse 2s infinite;
             }
@@ -255,10 +268,6 @@
 <body>
 
     <div id="toast">Notification</div>
-
-    <div class="mobile-buy-bar">
-        <button class="btn-mobile-buy" onclick="getWeChat()">🔥 获取完整资料包 (¥9.9)</button>
-    </div>
 
     <div class="app-container">
         <div class="sidebar" id="sidebar">
@@ -339,6 +348,10 @@
         </div>
     </div>
 
+    <div class="mobile-buy-bar">
+        <button class="btn-mobile-buy" onclick="getWeChat()">🔥 获取完整资料包 (¥9.9)</button>
+    </div>
+
     <script>
         // === 1. 完整词库数据 ===
         const libraryGroups = {
@@ -389,7 +402,7 @@
         const libraryTemplates = {};
         Object.values(libraryGroups).forEach(group => Object.assign(libraryTemplates, group));
 
-        // === 2. 工具配置 (完整版) ===
+        // === 2. 工具配置 ===
         const tools = {
             visual: {
                 title: "Visual Director (视觉)",
