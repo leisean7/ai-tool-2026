@@ -38,11 +38,10 @@
             font-size: 14px;
         }
 
-        /* --- 滚动条美化 --- */
+        /* --- 滚动条 --- */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
         /* --- 布局 --- */
         .app-container { display: flex; width: 100%; height: 100%; position: relative; }
@@ -91,17 +90,12 @@
         .menu-item.active { background: rgba(59, 130, 246, 0.1); color: var(--accent); border-left-color: var(--accent); }
         .menu-item i { width: 20px; text-align: center; }
 
-        /* === 💰 商业变现模块 === */
+        /* === 💰 桌面端 VIP 卡片 === */
         .vip-section {
-            margin: 20px 15px;
-            padding: 20px 15px;
+            margin: 20px 15px; padding: 20px 15px;
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid var(--gold);
-            border-radius: 12px;
-            text-align: center;
-            margin-top: auto; 
-            position: relative;
-            overflow: hidden;
+            border: 1px solid var(--gold); border-radius: 12px;
+            text-align: center; margin-top: auto; position: relative; overflow: hidden;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
         }
         .vip-section::after {
@@ -113,7 +107,6 @@
 
         .vip-title { color: var(--gold); font-weight: bold; font-size: 1rem; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .vip-desc { color: var(--text-sub); font-size: 0.75rem; margin-bottom: 12px; line-height: 1.4; }
-        
         .price-tag { margin-bottom: 12px; font-weight: bold; display: flex; justify-content: center; align-items: baseline; gap: 5px;}
         .price-old { text-decoration: line-through; color: var(--text-sub); font-size: 0.8rem; }
         .price-new { color: var(--red); font-size: 1.2rem; }
@@ -126,11 +119,13 @@
         }
         .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(245, 158, 11, 0.3); }
 
+        /* === 📱 移动端底部吸底条 (新增) === */
+        .mobile-buy-bar { display: none; } /* 默认隐藏 */
+
         /* --- 工作区 --- */
         .workspace {
             flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); position: relative; z-index: 1;
         }
-
         .overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 25;
             display: none; opacity: 0; transition: opacity 0.3s;
@@ -223,20 +218,37 @@
         .history-time { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 4px; display: flex; justify-content: space-between;}
         .history-content { font-size: 0.85rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'Monaco', monospace; }
 
+        /* Toast */
+        #toast { visibility: hidden; min-width: 250px; background-color: rgba(16, 185, 129, 0.95); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 100; left: 50%; top: 30px; transform: translateX(-50%); font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s, top 0.3s; }
+        #toast.show { visibility: visible; opacity: 1; top: 50px; }
+        #toast.error { background-color: rgba(239, 68, 68, 0.95); }
+
+        /* --- 📱 Mobile Responsiveness (重点修改) --- */
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
             .mobile-toggle { display: block; }
             .topbar { padding: 0 15px; }
-            .scroll-area { padding: 15px; }
+            .scroll-area { padding: 15px; padding-bottom: 100px; /* 防止内容被底部购买条遮挡 */ }
             .form-grid { grid-template-columns: 1fr; }
+            
+            /* 移动端底部购买条 */
+            .mobile-buy-bar {
+                display: flex; position: fixed; bottom: 0; left: 0; width: 100%;
+                background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--gold);
+                padding: 15px; z-index: 50; justify-content: center; backdrop-filter: blur(10px);
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            }
+            .btn-mobile-buy {
+                width: 100%; background: linear-gradient(90deg, #f59e0b, #d97706);
+                color: white; border: none; padding: 12px; border-radius: 8px;
+                font-weight: bold; font-size: 1rem; cursor: pointer;
+                box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
         }
         .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
-
-        /* Toast */
-        #toast { visibility: hidden; min-width: 250px; background-color: rgba(16, 185, 129, 0.95); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 100; left: 50%; top: 30px; transform: translateX(-50%); font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s, top 0.3s; }
-        #toast.show { visibility: visible; opacity: 1; top: 50px; }
-        #toast.error { background-color: rgba(239, 68, 68, 0.95); }
 
     </style>
 </head>
@@ -244,27 +256,33 @@
 
     <div id="toast">Notification</div>
 
+    <div class="mobile-buy-bar">
+        <button class="btn-mobile-buy" onclick="getWeChat()">🔥 获取完整资料包 (¥9.9)</button>
+    </div>
+
     <div class="app-container">
         <div class="sidebar" id="sidebar">
             <div class="brand"><i class="fas fa-terminal"></i> Command<span>OS</span></div>
-            <div class="menu-category">Generative Studio (创作工坊)</div>
-            <div class="menu-item active" onclick="loadTool('visual')"><i class="fas fa-camera"></i> Visual (视觉)</div>
-            <div class="menu-item" onclick="loadTool('video')"><i class="fas fa-video"></i> Video (视频)</div>
-            <div class="menu-item" onclick="loadTool('audio')"><i class="fas fa-music"></i> Audio (音乐)</div>
-            <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> Writing (写作)</div>
-            
-            <div class="menu-category">Professional Matrix (专业矩阵)</div>
-            <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> TikTok (抖音脚本)</div>
-            <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> Xiaohongshu (小红书)</div>
-            <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> Academic (学术科研)</div>
-            <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> Sales Email (外贸开发)</div>
-            
-            <div class="menu-category">AI Resources (资源库)</div>
-            <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> Prompt Library (经典词库)</div>
-            <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> Reverse Eng. (逆向工程)</div>
-            
-            <div class="menu-category">Storage (存储)</div>
-            <div class="menu-item" onclick="loadTool('history')"><i class="fas fa-history"></i> History (历史记录)</div>
+            <div class="menu-scroll">
+                <div class="menu-category">Generative Studio</div>
+                <div class="menu-item active" onclick="loadTool('visual')"><i class="fas fa-camera"></i> Visual (视觉)</div>
+                <div class="menu-item" onclick="loadTool('video')"><i class="fas fa-video"></i> Video (视频)</div>
+                <div class="menu-item" onclick="loadTool('audio')"><i class="fas fa-music"></i> Audio (音乐)</div>
+                <div class="menu-item" onclick="loadTool('text')"><i class="fas fa-pen-nib"></i> Writing (写作)</div>
+                
+                <div class="menu-category">Professional Matrix</div>
+                <div class="menu-item" onclick="loadTool('tiktok')"><i class="fab fa-tiktok"></i> TikTok (抖音)</div>
+                <div class="menu-item" onclick="loadTool('xhs')"><i class="fab fa-instagram"></i> Xiaohongshu (小红书)</div>
+                <div class="menu-item" onclick="loadTool('academic')"><i class="fas fa-graduation-cap"></i> Academic (学术)</div>
+                <div class="menu-item" onclick="loadTool('email')"><i class="fas fa-envelope-open-text"></i> Sales Email (销售)</div>
+                
+                <div class="menu-category">AI Resources</div>
+                <div class="menu-item" onclick="loadTool('library')"><i class="fas fa-book"></i> Prompt Library (词库)</div>
+                <div class="menu-item" onclick="loadTool('reverse')"><i class="fas fa-upload"></i> Reverse Eng. (逆向)</div>
+                
+                <div class="menu-category">Storage</div>
+                <div class="menu-item" onclick="loadTool('history')"><i class="fas fa-history"></i> History (历史)</div>
+            </div>
 
             <div class="vip-section">
                 <div class="vip-title"><i class="fas fa-crown"></i> VIP 终极资料包</div>
@@ -285,7 +303,7 @@
             <div class="topbar">
                 <div style="display:flex; gap:15px; align-items:center;">
                     <i class="fas fa-bars mobile-toggle" onclick="openSidebar()"></i>
-                    <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">Visual Director (视觉)</span>
+                    <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">Visual Director</span>
                 </div>
                 <div class="model-selector" id="modelSelectContainer">
                     <select id="targetModel"></select>
@@ -322,7 +340,7 @@
     </div>
 
     <script>
-        // === 1. 完整词库数据 (全功能) ===
+        // === 1. 完整词库数据 ===
         const libraryGroups = {
             "🎨 Visual Art (视觉创作)": {
                 'MJ Portrait Master (MJ 摄影大师)': "/imagine prompt: extreme close-up portrait of [Subject], natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
@@ -801,11 +819,13 @@
             showToast("Copied from History (已从历史记录复制)!");
         }
 
-        // === 💰 商业变现逻辑 (无源码承诺) ===
+        // === 💰 商业变现逻辑 ===
         function getWeChat() {
             const wechatId = "zID0001";
             navigator.clipboard.writeText(wechatId).then(() => {
+                // Toast 提示
                 showToast("✅ 微信号已复制: " + wechatId, "success");
+                // 弹窗指引
                 setTimeout(() => {
                     alert("👉 微信号已复制：zID0001\n\n请去微信添加好友，备注【购买】\n\n转账 9.9 元，立即发货完整资料包！");
                 }, 500);
