@@ -4,44 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>AI CommandOS | 极速 AI 指令生成器 (商业版)</title>
+    <title>AI CommandOS | 极速 AI 指令生成器 (专业版)</title>
     <meta name="description" content="你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。内置 50+ 高频模版，免费使用。">
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         :root {
-            --bg: #0b0e14;
-            --sidebar: #151921;
-            --panel: #222630;
-            --input: #2f3442;
+            --bg: #0f172a;
+            --sidebar: #1e293b;
+            --panel: #334155;
+            --input: #1e293b;
             --accent: #3b82f6;
             --accent-hover: #2563eb;
-            --text: #e2e8f0;
+            --text: #f8fafc;
             --text-sub: #94a3b8;
-            --border: #334155;
+            --border: #475569;
             --gold: #f59e0b;
-            --red: #ef4444; /* 商业版新增 */
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --red: #ef4444; 
+            --success: #10b981;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             height: 100vh;
             overflow: hidden;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         /* --- 滚动条美化 --- */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
         /* --- 布局 --- */
         .app-container { display: flex; width: 100%; height: 100%; position: relative; }
@@ -54,41 +55,43 @@
             flex-direction: column;
             flex-shrink: 0;
             z-index: 30;
-            overflow-y: auto;
-            will-change: transform;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
         }
 
         .brand {
             padding: 20px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 800;
             color: white;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: 0.5px;
         }
         .brand span { color: var(--accent); }
 
-        .menu-category { padding: 20px 20px 8px; font-size: 0.7rem; color: var(--text-sub); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; }
+        .menu-scroll { flex: 1; overflow-y: auto; padding-bottom: 20px; }
+
+        .menu-category { padding: 25px 20px 10px; font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
         
         .menu-item {
             padding: 12px 20px;
             cursor: pointer;
             color: var(--text-sub);
-            transition: background 0.1s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 12px;
             font-weight: 500;
             border-left: 3px solid transparent;
+            margin-bottom: 2px;
         }
         .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
-        .menu-item.active { background: rgba(59, 130, 246, 0.15); color: var(--accent); border-left-color: var(--accent); }
-        .menu-item i { width: 18px; text-align: center; }
+        .menu-item.active { background: rgba(59, 130, 246, 0.1); color: var(--accent); border-left-color: var(--accent); }
+        .menu-item i { width: 20px; text-align: center; }
 
-        /* === 💰 商业变现模块 (新增) === */
+        /* === 💰 商业变现模块 === */
         .vip-section {
             margin: 20px 15px;
             padding: 20px 15px;
@@ -96,12 +99,11 @@
             border: 1px solid var(--gold);
             border-radius: 12px;
             text-align: center;
-            margin-top: auto; /* 强制推到底部 */
+            margin-top: auto; 
             position: relative;
             overflow: hidden;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
         }
-        /* 流光特效 */
         .vip-section::after {
             content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
@@ -123,8 +125,8 @@
             transition: 0.2s; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
         }
         .btn-vip:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(245, 158, 11, 0.3); }
-        /* === 结束 === */
 
+        /* --- 工作区 --- */
         .workspace {
             flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); position: relative; z-index: 1;
         }
@@ -231,9 +233,16 @@
         }
         .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
 
+        /* Toast */
+        #toast { visibility: hidden; min-width: 250px; background-color: rgba(16, 185, 129, 0.95); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 100; left: 50%; top: 30px; transform: translateX(-50%); font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s, top 0.3s; }
+        #toast.show { visibility: visible; opacity: 1; top: 50px; }
+        #toast.error { background-color: rgba(239, 68, 68, 0.95); }
+
     </style>
 </head>
 <body>
+
+    <div id="toast">Notification</div>
 
     <div class="app-container">
         <div class="sidebar" id="sidebar">
@@ -260,13 +269,13 @@
             <div class="vip-section">
                 <div class="vip-title"><i class="fas fa-crown"></i> VIP 终极资料包</div>
                 <div class="vip-desc">
-                    5000+条汉化数据库 (Excel)<br>+ 商业级 PDF 教程 + 源码
+                    5000+条汉化数据库 (Excel)<br>+ 商业级 PDF 教程 (无源码)
                 </div>
                 <div class="price-tag">
                     <span class="price-old">¥99</span>
                     <span class="price-new">¥9.9</span>
                 </div>
-                <button class="btn-vip" onclick="getWeChat()">📥 购买完整版 (限时)</button>
+                <button class="btn-vip" onclick="getWeChat()">📥 购买资料包 (限时)</button>
             </div>
         </div>
 
@@ -313,7 +322,7 @@
     </div>
 
     <script>
-        // === 1. 词库结构定义 (完整版) ===
+        // === 1. 完整词库数据 (已100%恢复) ===
         const libraryGroups = {
             "🎨 Visual Art (视觉创作)": {
                 'MJ Portrait Master (MJ 摄影大师)': "/imagine prompt: extreme close-up portrait of [Subject], natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
@@ -784,24 +793,40 @@
 
         function copyText(icon) {
             navigator.clipboard.writeText(icon.parentElement.innerText.replace("Copy", "").trim());
-            alert("Copied (已复制)!");
+            showToast("Copied (已复制)!");
         }
         
         function copyTextDirect(text) {
             navigator.clipboard.writeText(text);
-            alert("Copied from History (已从历史记录复制)!");
+            showToast("Copied from History (已从历史记录复制)!");
         }
 
-        // === 💰 商业变现逻辑 (核心新增) ===
+        // === 💰 商业变现逻辑 ===
         function getWeChat() {
             const wechatId = "zID0001";
             navigator.clipboard.writeText(wechatId).then(() => {
-                alert("✅ 微信号 " + wechatId + " 已复制！\n\n👉 请去微信添加好友\n👉 备注【购买】\n\n转账 9.9 元后，我会立即发送 5000条数据库！");
+                // 使用 Toast 提示
+                showToast("✅ 微信号已复制: " + wechatId, "success");
+                // 延迟弹出 Alert 说明具体步骤
+                setTimeout(() => {
+                    alert("👉 微信号已复制：zID0001\n\n请去微信添加好友，备注【购买】\n\n转账 9.9 元，立即发货完整资料包！\n(本站源码不包含在内)");
+                }, 500);
             }).catch(() => {
                 prompt("请手动复制微信号添加购课：", wechatId);
             });
         }
+
+        // === Toast 提示逻辑 ===
+        function showToast(message, type = 'normal') {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = type === 'error' ? 'error show' : 'show';
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        function autoGenerateLibrary() { if(currentTool === 'library') generate(); }
+        function clearResults() { document.getElementById('resultContainer').innerHTML = ''; }
+
     </script>
 </body>
 </html>
-
