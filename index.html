@@ -33,9 +33,8 @@
             background-color: var(--bg);
             color: var(--text);
             display: flex;
-            /* 核心修复：使用 dvh 适应移动端动态高度 */
             height: 100vh; 
-            height: 100dvh; 
+            height: 100dvh; /* 适配手机浏览器 */
             overflow: hidden;
             font-size: 14px;
         }
@@ -55,7 +54,7 @@
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            z-index: 50; /* 提高层级 */
+            z-index: 200; /* Sidebar 最高 */
             transition: transform 0.3s ease;
         }
 
@@ -128,9 +127,8 @@
         .workspace {
             flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); position: relative; z-index: 1;
         }
-        
         .overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; /* 层级调整 */
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150;
             display: none; opacity: 0; transition: opacity 0.3s;
         }
         .overlay.active { display: block; opacity: 1; }
@@ -138,7 +136,9 @@
         .topbar {
             height: 60px; border-bottom: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 30px; background: var(--bg); flex-shrink: 0;
+            padding: 0 30px; background: var(--bg); 
+            flex-shrink: 0;
+            z-index: 10; /* 确保不被遮挡 */
         }
 
         .model-selector select {
@@ -148,7 +148,7 @@
 
         .scroll-area {
             flex: 1; overflow-y: auto; padding: 30px; max-width: 1000px; margin: 0 auto; width: 100%;
-            -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
+            -webkit-overflow-scrolling: touch; 
         }
 
         .card-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 20px; color: var(--text-sub); display: flex; justify-content: space-between; text-transform: uppercase; align-items: center;}
@@ -226,11 +226,25 @@
         #toast.show { visibility: visible; opacity: 1; top: 50px; }
         #toast.error { background-color: rgba(239, 68, 68, 0.95); }
 
-        /* --- 📱 Mobile Responsiveness (核心修复) --- */
+        /* --- 📱 核心修复区域 --- */
+        /* 手动创建“三道杠”按钮，不依赖 FontAwesome */
+        .hamburger-icon {
+            display: none;
+            width: 24px; height: 24px;
+            cursor: pointer;
+            font-size: 24px;
+            line-height: 1;
+            color: white;
+            user-select: none;
+        }
+
         @media (max-width: 768px) {
-            .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); z-index: 200; /* Sidebar 最高 */ }
+            .sidebar { position: fixed; left: -100%; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
-            .mobile-toggle { display: block; }
+            
+            /* 显示自定义的汉堡按钮 */
+            .hamburger-icon { display: block; }
+            
             .topbar { padding: 0 15px; }
             
             /* 1. 给底部加巨大 Padding，防止内容被遮挡 */
@@ -238,7 +252,7 @@
             
             .form-grid { grid-template-columns: 1fr; }
             
-            /* 2. 移动端底部购买条 (层级设为 100，低于 Sidebar) */
+            /* 2. 移动端底部购买条 */
             .mobile-buy-bar {
                 display: flex !important;
                 position: fixed; 
@@ -261,11 +275,7 @@
                 animation: pulse 2s infinite;
             }
             @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.02);} 100% {transform: scale(1);} }
-            
-            /* 3. 调整遮罩层级 */
-            .overlay { z-index: 150; } 
         }
-        .mobile-toggle { display: none; font-size: 1.2rem; color: white; cursor: pointer; }
 
     </style>
 </head>
@@ -319,7 +329,7 @@
         <div class="workspace">
             <div class="topbar">
                 <div style="display:flex; gap:15px; align-items:center;">
-                    <i class="fas fa-bars mobile-toggle" onclick="openSidebar()"></i>
+                    <span class="hamburger-icon" onclick="openSidebar()">☰</span>
                     <span style="font-weight:bold; font-size:1.1rem;" id="toolTitle">Visual Director</span>
                 </div>
                 <div class="model-selector" id="modelSelectContainer">
