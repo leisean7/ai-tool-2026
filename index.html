@@ -796,7 +796,7 @@
         function getWeChat() {
             const wechatId = "zID0001";
             navigator.clipboard.writeText(wechatId).then(() => {
-                alert("✅ 微信号 " + wechatId + " 已复制！\n\n👉 请去微信添加好友\n👉 备注【购买】\n\n转账 9.9 元后，我会立即发送 5000条数据库+源码！");
+                alert("✅ 微信号 " + wechatId + " 已复制！\n\n👉 请去微信添加好友\n👉 备注【购买】\n\n转账 9.9 元后，我会立即发送 5000条数据库！");
             }).catch(() => {
                 prompt("请手动复制微信号添加购课：", wechatId);
             });
@@ -804,3 +804,4 @@
     </script>
 </body>
 </html>
+
