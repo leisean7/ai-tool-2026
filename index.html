@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>AI CommandOS | 极速 AI 指令生成器 (专业版)</title>
-    <meta name="description" content="你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。内置 50+ 高频模版，免费使用。">
+    <meta name="description" content="你的全能 AI 指令控制台。一键生成 Midjourney、ChatGPT、小红书、代码除错等专业提示词。">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <style>
@@ -269,7 +269,7 @@
             <div class="vip-section">
                 <div class="vip-title"><i class="fas fa-crown"></i> VIP 终极资料包</div>
                 <div class="vip-desc">
-                    5000+条汉化数据库 (Excel)<br>+ 商业级 PDF 教程 (无源码)
+                    5000+条汉化 Prompt 数据库<br>+ 商业级 PDF 实战教程
                 </div>
                 <div class="price-tag">
                     <span class="price-old">¥99</span>
@@ -322,7 +322,7 @@
     </div>
 
     <script>
-        // === 1. 完整词库数据 (已100%恢复) ===
+        // === 1. 完整词库数据 (全功能) ===
         const libraryGroups = {
             "🎨 Visual Art (视觉创作)": {
                 'MJ Portrait Master (MJ 摄影大师)': "/imagine prompt: extreme close-up portrait of [Subject], natural lighting, 85mm lens, f/1.8, detailed skin texture, cinematic atmosphere, neutral background, shot on Hasselblad X2D --v 6.0 --style raw",
@@ -801,15 +801,13 @@
             showToast("Copied from History (已从历史记录复制)!");
         }
 
-        // === 💰 商业变现逻辑 ===
+        // === 💰 商业变现逻辑 (无源码承诺) ===
         function getWeChat() {
             const wechatId = "zID0001";
             navigator.clipboard.writeText(wechatId).then(() => {
-                // 使用 Toast 提示
                 showToast("✅ 微信号已复制: " + wechatId, "success");
-                // 延迟弹出 Alert 说明具体步骤
                 setTimeout(() => {
-                    alert("👉 微信号已复制：zID0001\n\n请去微信添加好友，备注【购买】\n\n转账 9.9 元，立即发货完整资料包！\n(本站源码不包含在内)");
+                    alert("👉 微信号已复制：zID0001\n\n请去微信添加好友，备注【购买】\n\n转账 9.9 元，立即发货完整资料包！");
                 }, 500);
             }).catch(() => {
                 prompt("请手动复制微信号添加购课：", wechatId);
